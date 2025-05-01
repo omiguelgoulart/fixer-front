@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📦 Manual Rápido – Uso do Yarn
 
-## Getting Started
-
-First, run the development server:
-
+## 🔧 Instalar dependências do projeto
 ```bash
-npm run dev
-# or
+yarn install
+```
+Deve ser o primeiro comando executado após clonar o repositório.
+
+## 🚀 Rodar o projeto em ambiente de desenvolvimento
+```bash
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Inicia o servidor de desenvolvimento do Next.js em [http://localhost:3000](http://localhost:3000).
+
+## 📦 Adicionar uma nova dependência
+```bash
+yarn add nome-da-biblioteca
+```
+Exemplo: `yarn add axios`
+
+## 🧪 Adicionar uma dependência de desenvolvimento
+```bash
+yarn add -D nome-da-biblioteca
+```
+Exemplo: `yarn add -D tailwindcss postcss autoprefixer`
+
+## 🔄 Atualizar as dependências
+```bash
+yarn upgrade
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧹 Remover uma dependência
+```bash
+yarn remove nome-da-biblioteca
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🗂️ Gerar ou atualizar o arquivo `yarn.lock`
+Esse arquivo é gerado automaticamente pelo Yarn e não deve ser editado manualmente. Ele deve ser versionado no Git.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏗️ Build para produção (Next.js)
+```bash
+yarn build
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## 💬 Padrão de Commits com Gitmoji
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Utilizamos o padrão [Gitmoji](https://gitmoji.dev/) para manter um histórico de commits claro e padronizado.  
+Sempre que for realizar um commit, use um emoji correspondente ao tipo de alteração.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 📌 Exemplo de commit:
+```bash
+git commit -m ":sparkles: Adiciona tela de cadastro de ativos"
+```
 
-## Deploy on Vercel
+### 📘 Tabela de Emojis mais usados
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Emoji | Código            | Tipo                  | Quando usar?                                      |
+|-------|-------------------|-----------------------|--------------------------------------------------|
+| ✨    | `:sparkles:`      | Nova funcionalidade   | Quando adicionar algo novo                       |
+| 🐛    | `:bug:`           | Correção de bug       | Corrigiu algo que estava quebrado               |
+| ♻️    | `:recycle:`       | Refatoração           | Melhorou o código sem alterar funcionalidade    |
+| 🎨    | `:art:`           | Estilo / Layout       | Alterações visuais ou de formatação             |
+| 📝    | `:memo:`          | Documentação          | Atualizou README, comentários ou docs           |
+| 🚀    | `:rocket:`        | Deploy                | Preparou para produção                          |
+| 🔥    | `:fire:`          | Remoção de código     | Removeu código, arquivos ou funcionalidades     |
+| 💄    | `:lipstick:`      | Estilo visual         | Ajustes de UI, CSS, responsividade              |
+| ✅    | `:white_check_mark:` | Testes             | Criou ou atualizou testes                       |
+| 🔧    | `:wrench:`        | Configuração          | Alterações em arquivos de config ou scripts     |
+| 📦    | `:package:`       | Dependências          | Instalou, atualizou ou removeu pacotes          |
+| 🚧    | `:construction:`  | Em desenvolvimento    | Funcionalidade incompleta ou em progresso       |
+| ⬆️    | `:arrow_up:`      | Upgrade               | Atualização de versão ou dependência            |
+| ⬇️    | `:arrow_down:`    | Downgrade             | Downgrade de versão ou dependência              |
