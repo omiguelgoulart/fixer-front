@@ -122,3 +122,31 @@ git commit -m ":sparkles: Adiciona tela de cadastro de ativos"
 - Sempre crie branches novas a partir da `dev`.
 - Faça commits pequenos e objetivos, com o emoji correspondente.
 - Não faça merge direto na `main` – use Pull Requests com revisão.
+
+### 🔁 Finalizando uma tarefa: merge na `dev`
+
+Após terminar e testar sua feature na sua branch (ex: `feat/xxx`), siga estes passos para integrá-la na `dev`:
+
+1. Troque para a branch `dev`:
+    ```bash
+    git checkout dev
+    ```
+
+2. Atualize a `dev` com o que está no repositório remoto:
+    ```bash
+    git pull origin dev
+    ```
+
+3. Faça o merge da sua branch de feature na `dev`:
+    ```bash
+    git merge nome-da-sua-branch
+    ```
+    Exemplo:
+    ```bash
+    git merge feat/rotas-validacoes-zod
+    ```
+
+4. Envie a `dev` atualizada para o GitHub:
+    ```bash
+    git push origin dev
+    ```
