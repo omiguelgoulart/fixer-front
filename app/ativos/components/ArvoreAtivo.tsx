@@ -1,55 +1,60 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Building2, FolderCog, Cog, CircleDot, ChevronRight, ChevronDown } from "lucide-react"
-import { PlantaItf } from "@/app/utils/types/PlantaItf"
+import { useState, useEffect } from "react";
+import {
+  Building2,
+  FolderCog,
+  Cog,
+  CircleDot,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
+import { PlantaItf } from "@/app/utils/types/PlantaItf";
 
-// Componente Client para a árvore de ativos suspensa
-export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo: (id: number) => void }) {
-
-  const [plantas, setPlantas] = useState<PlantaItf[]>([])
-  const [carregando, setCarregando] = useState(true)
-
-  // Estado para controlar quais nós estão expandidos
-  const [expandidos, setExpandidos] = useState<Record<string, boolean>>({})
-
-  // Estado para armazenar o ID do ativo ou subativo selecionado
+export default function ArvoreAtivos({
+  onSelecionarAtivo,
+}: {
+  onSelecionarAtivo: (id: number) => void;
+}) {
+  const [plantas, setPlantas] = useState<PlantaItf[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     async function fetchPlantas() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`);
         if (!response.ok) {
-          throw new Error("Erro ao carregar dados")
+          throw new Error("Erro ao carregar dados");
         }
-        const dados = await response.json()
-        setPlantas(dados)
-        setCarregando(false)
+        const dados = await response.json();
+        setPlantas(dados);
       } catch {
-        setCarregando(false)
+        console.error("Erro ao carregar plantas");
+      } finally {
+        setCarregando(false);
       }
     }
-    fetchPlantas()
-  }, [])
+    fetchPlantas();
+  }, []);
 
   const alternarExpansao = (tipo: string, id: number) => {
-    const chave = `${tipo}-${id}`
+    const chave = `${tipo}-${id}`;
     setExpandidos((prev) => ({
       ...prev,
       [chave]: !prev[chave],
-    }))
-  }
+    }));
+  };
 
   const estaExpandido = (tipo: string, id: number): boolean => {
-    return !!expandidos[`${tipo}-${id}`]
-  }
+    return !!expandidos[`${tipo}-${id}`];
+  };
 
   const selecionarDetalhes = (tipo: string, id: number) => {
     if (tipo === "ativo") {
       onSelecionarAtivo(id);
     }
-    // você pode estender isso para subativo também, se quiser detalhar
-  };  
+  };
 
   if (carregando) {
     return (
@@ -60,7 +65,7 @@ export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo:
           <div className="h-5 bg-gray-200 rounded w-2/3"></div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -83,7 +88,6 @@ export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo:
               <span className="ml-2 text-sm font-medium">{planta.nome}</span>
               <span className="ml-2 text-xs text-gray-500">{planta.codigo}</span>
             </div>
-
             {estaExpandido("planta", planta.id) && (
               <ul className="ml-6 mt-1 space-y-1">
                 {planta.area.map((area) => (
@@ -101,9 +105,10 @@ export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo:
                       </span>
                       <FolderCog className="h-4 w-4 text-orange-600" />
                       <span className="ml-2 text-sm">{area.nome}</span>
-                      <span className="ml-2 text-xs text-gray-500">{area.codigo}</span>
+                      <span className="ml-2 text-xs text-gray-500">
+                        {area.codigo}
+                      </span>
                     </div>
-
                     {estaExpandido("area", area.id) && (
                       <ul className="ml-6 mt-1 space-y-1">
                         {area.sistema.map((sistema) => (
@@ -121,9 +126,10 @@ export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo:
                               </span>
                               <Cog className="h-4 w-4 text-blue-600" />
                               <span className="ml-2 text-sm">{sistema.nome}</span>
-                              <span className="ml-2 text-xs text-gray-500">{sistema.codigo}</span>
+                              <span className="ml-2 text-xs text-gray-500">
+                                {sistema.codigo}
+                              </span>
                             </div>
-
                             {estaExpandido("sistema", sistema.id) && (
                               <ul className="ml-6 mt-1 space-y-1">
                                 {sistema.ativo.map((ativo) => (
@@ -134,31 +140,43 @@ export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo:
                                     >
                                       <span className="mr-1">
                                         {ativo.subativos &&
-                                          ativo.subativos.length > 0 &&
-                                          (estaExpandido("ativo", ativo.id) ? (
-                                            <ChevronDown className="h-3 w-3 text-gray-500" />
-                                          ) : (
-                                            <ChevronRight className="h-3 w-3 text-gray-500" />
-                                          ))}
+                                          ativo.subativos.length > 0 && (
+                                            <span
+                                              onClick={() =>
+                                                alternarExpansao("ativo", ativo.id)
+                                              }
+                                            >
+                                              {estaExpandido("ativo", ativo.id) ? (
+                                                <ChevronDown className="h-3 w-3 text-gray-500" />
+                                              ) : (
+                                                <ChevronRight className="h-3 w-3 text-gray-500" />
+                                              )}
+                                            </span>
+                                          )}
                                       </span>
                                       <Cog className="h-4 w-4 text-green-600" />
                                       <span className="ml-2 text-sm">{ativo.nome}</span>
-                                      <span className="ml-2 text-xs text-gray-500">{ativo.codigo}</span>
+                                      <span className="ml-2 text-xs text-gray-500">
+                                        {ativo.codigo}
+                                      </span>
                                     </div>
-
                                     {estaExpandido("ativo", ativo.id) &&
                                       ativo.subativos &&
                                       ativo.subativos.length > 0 && (
                                         <ul className="ml-6 mt-1 space-y-1">
                                           {ativo.subativos.map((subativo) => (
-                                            <li key={`subativo-${subativo.id}`} className="py-1">
-                                              <div
-                                                className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1"
-                                                onClick={() => selecionarDetalhes("subativo", subativo.id)}
-                                              >
+                                            <li
+                                              key={`subativo-${subativo.id}`}
+                                              className="py-1"
+                                            >
+                                              <div className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1">
                                                 <CircleDot className="h-4 w-4 text-purple-600" />
-                                                <span className="ml-2 text-sm">{subativo.nome}</span>
-                                                <span className="ml-2 text-xs text-gray-500">{subativo.codigo}</span>
+                                                <span className="ml-2 text-sm">
+                                                  {subativo.nome}
+                                                </span>
+                                                <span className="ml-2 text-xs text-gray-500">
+                                                  {subativo.codigo}
+                                                </span>
                                               </div>
                                             </li>
                                           ))}
@@ -180,5 +198,5 @@ export default function ArvoreAtivos({ onSelecionarAtivo }: { onSelecionarAtivo:
         ))}
       </ul>
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
 
-import PaginaAtivos from "./ativos/Page";
+import PaginaAtivos from "./ativos/page";
 
 export default function Home() {
   return (
