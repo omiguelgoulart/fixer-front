@@ -1,32 +1,36 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import BotaoNovoAtivo from "./NovoAtivo";
-import { Badge } from "@/components/ui/badge";
-import { AtivoItf } from "@/app/utils/types/AtivoITF";
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { Badge } from "@/components/ui/badge"
+import { AtivoItf } from "@/app/utils/types/AtivoITF"
+import { Button } from "@/components/ui/button"
 
-export default function DetalhesAtivo({ ativoId }: { ativoId: number }) {
-  const [ativo, setAtivo] = useState<AtivoItf | null>(null);
-  const [carregando, setCarregando] = useState(true);
+interface DetalhesAtivoProps {
+  ativoId: number
+  onVoltar: () => void
+}
+
+export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps) {
+  const [ativo, setAtivo] = useState<AtivoItf | null>(null)
+  const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
     async function fetchAtivo() {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`
-        );
-        if (!response.ok) throw new Error("Erro ao carregar dados");
-        const dados = await response.json();
-        setAtivo(dados);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`)
+        if (!response.ok) throw new Error("Erro ao carregar dados")
+        const dados = await response.json()
+        setAtivo(dados)
       } catch (error) {
-        console.error(error);
+        console.error(error)
       } finally {
-        setCarregando(false);
+        setCarregando(false)
       }
     }
-    fetchAtivo();
-  }, [ativoId]);
+
+    fetchAtivo()
+  }, [ativoId])
 
   if (carregando) {
     return (
@@ -35,28 +39,36 @@ export default function DetalhesAtivo({ ativoId }: { ativoId: number }) {
         <div className="h-5 bg-gray-200 rounded w-1/2"></div>
         <div className="h-5 bg-gray-200 rounded w-2/3"></div>
       </div>
-    );
+    )
   }
 
-  if (!ativo) return <p className="text-gray-500">Ativo não encontrado.</p>;
+  if (!ativo) return <p className="text-gray-500">Ativo não encontrado.</p>
 
   const obterCorCriticidade = (criticidade: string) => {
     switch (criticidade.toUpperCase()) {
-      case "ALTA": return "bg-red-500";
-      case "MEDIA": return "bg-yellow-500";
-      case "BAIXA": return "bg-green-500";
-      default: return "bg-gray-500";
+      case "ALTA":
+        return "bg-red-500"
+      case "MEDIA":
+        return "bg-yellow-500"
+      case "BAIXA":
+        return "bg-green-500"
+      default:
+        return "bg-gray-500"
     }
-  };
+  }
 
   const obterCorSituacao = (situacao: string) => {
     switch (situacao.toUpperCase()) {
-      case "ATIVO": return "bg-green-500";
-      case "INATIVO": return "bg-gray-500";
-      case "MANUTENCAO": return "bg-yellow-500";
-      default: return "bg-blue-500";
+      case "ATIVO":
+        return "bg-green-500"
+      case "INATIVO":
+        return "bg-gray-500"
+      case "MANUTENCAO":
+        return "bg-yellow-500"
+      default:
+        return "bg-blue-500"
     }
-  };
+  }
 
   return (
     <div className="border border-gray-300 rounded-lg overflow-hidden">
@@ -68,7 +80,8 @@ export default function DetalhesAtivo({ ativoId }: { ativoId: number }) {
             <Badge className={obterCorCriticidade(ativo.criticidade)}>Criticidade: {ativo.criticidade}</Badge>
           </div>
         </div>
-        <BotaoNovoAtivo />
+
+        <Button variant="outline" onClick={onVoltar}>Fechar</Button>
       </div>
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -86,12 +99,30 @@ export default function DetalhesAtivo({ ativoId }: { ativoId: number }) {
 
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-6">
-            <div><p className="font-semibold">Código:</p><p>{ativo.codigo}</p></div>
-            <div><p className="font-semibold">Fabricante:</p><p>{ativo.fabricante}</p></div>
-            <div><p className="font-semibold">Modelo:</p><p>{ativo.modelo}</p></div>
-            <div><p className="font-semibold">Tipo:</p><p>{ativo.tipo_ativo}</p></div>
-            <div><p className="font-semibold">Data de Aquisição:</p><p>{ativo.data_aquisicao?.split("T")[0]}</p></div>
-            <div><p className="font-semibold">Localização Interna:</p><p>{ativo.localizacao_interna || "-"}</p></div>
+            <div>
+              <p className="font-semibold">Código:</p>
+              <p>{ativo.codigo}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Fabricante:</p>
+              <p>{ativo.fabricante}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Modelo:</p>
+              <p>{ativo.modelo}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Tipo:</p>
+              <p>{ativo.tipo_ativo}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Data de Aquisição:</p>
+              <p>{ativo.data_aquisicao?.split("T")[0]}</p>
+            </div>
+            <div>
+              <p className="font-semibold">Localização Interna:</p>
+              <p>{ativo.localizacao_interna || "-"}</p>
+            </div>
           </div>
 
           <div>
@@ -117,5 +148,5 @@ export default function DetalhesAtivo({ ativoId }: { ativoId: number }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
