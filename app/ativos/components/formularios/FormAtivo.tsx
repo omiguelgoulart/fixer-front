@@ -1,368 +1,229 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { PlantaItf } from "@/app/utils/types/PlantaItf"
-import type { AreaItf } from "@/app/utils/types/AreaItf"
-import type { SistemaItf } from "@/app/utils/types/SistemaItf"
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { PlantaItf } from "@/app/utils/types/PlantaItf";
+import type { AreaItf } from "@/app/utils/types/AreaItf";
+import type { SistemaItf } from "@/app/utils/types/SistemaItf";
+import { AtivoItf } from "@/app/utils/types/AtivoITF";
+import { toast } from "sonner";
 
 export default function FormularioAtivo() {
-  const [enviando, setEnviando] = useState(false)
-  const [plantas, setPlantas] = useState<PlantaItf[]>([])
-  const [areas, setAreas] = useState<AreaItf[]>([])
-  const [sistemas, setSistemas] = useState<SistemaItf[]>([])
-  const [carregando, setCarregando] = useState(true)
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<AtivoItf>();
 
-  const [formData, setFormData] = useState({
-    nome: "",
-    codigo: "",
-    fabricante: "",
-    modelo: "",
-    data_aquisicao: "",
-    localizacao_interna: "",
-    tipo_ativo: "",
-    situacao: "",
-    criticidade: "",
-    id_planta: "",
-    id_area: "",
-    id_sistema: "",
-    descricao: "",
-  })
+  const [plantas, setPlantas] = useState<PlantaItf[]>([]);
+  const [areas, setAreas] = useState<AreaItf[]>([]);
+  const [sistemas, setSistemas] = useState<SistemaItf[]>([]);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const [erros, setErros] = useState<Record<string, string>>({})
+  const id_planta = watch("id_planta");
+  const id_area = watch("id_area");
 
-  // Carregar plantas disponíveis temporariamente
+  // Carrega todas as plantas
   useEffect(() => {
-    const carregarPlantasTemporarias = () => {
-      setCarregando(true)
-      setTimeout(() => {
-        setPlantas([
-          {
-            id: 1,
-            nome: "Planta A",
-            codigo: "PLA-001",
-            localizacao: "Setor 1",
-            area: [
-              {
-                id: 1,
-                nome: "Área 1",
-                codigo: "ARE-001",
-                id_planta: 1,
-                sistema: [
-                  {
-                    id: 1,
-                    nome: "Sistema A1",
-                    codigo: "SYS-001",
-                    id_area: 1,
-                    ativo: []
-                  },
-                  {
-                    id: 2,
-                    nome: "Sistema A2",
-                    codigo: "SYS-002",
-                    id_area: 1,
-                    ativo: []
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 2,
-            nome: "Planta B",
-            codigo: "PLA-002",
-            localizacao: "Setor 2",
-            area: [
-              {
-                id: 2,
-                nome: "Área 2",
-                codigo: "ARE-002",
-                id_planta: 2,
-                sistema: [
-                  {
-                    id: 3,
-                    nome: "Sistema B1",
-                    codigo: "SYS-003",
-                    id_area: 2,
-                    ativo: []
-                  },
-                  {
-                    id: 4,
-                    nome: "Sistema B2",
-                    codigo: "SYS-004",
-                    id_area: 2,
-                    ativo: []
-                  }
-                ]
-              }
-            ]
-          }
-        ])
-        
-        setCarregando(false)
-      }, 1000) // Simula um atraso de 1 segundo
-    }
-
-    carregarPlantasTemporarias()
-  }, [])
-
-  // Atualizar áreas quando a planta for selecionada
-  useEffect(() => {
-    if (formData.id_planta) {
-      const plantaSelecionada = plantas.find((p) => p.id.toString() === formData.id_planta)
-      if (plantaSelecionada) {
-        setAreas(plantaSelecionada.area)
-      } else {
-        setAreas([])
+    async function carregarPlantas() {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/planta`
+        );
+        if (!response.ok) throw new Error("Erro ao carregar plantas");
+        const data = await response.json();
+        setPlantas(data);
+      } catch (error) {
+        console.error("Erro ao carregar plantas:", error);
+        setApiError("Erro ao carregar as plantas. Tente novamente mais tarde.");
       }
-      // Limpar área e sistema selecionados quando trocar de planta
-      setFormData((prev) => ({ ...prev, id_area: "", id_sistema: "" }))
-    } else {
-      setAreas([])
     }
-  }, [formData.id_planta, plantas])
 
-  // Atualizar sistemas quando a área for selecionada
+    carregarPlantas();
+  }, []);
+
+  // Ao selecionar a planta, carrega suas áreas
   useEffect(() => {
-    if (formData.id_area) {
-      const areaSelecionada = areas.find((a) => a.id.toString() === formData.id_area)
-      if (areaSelecionada) {
-        setSistemas(areaSelecionada.sistema)
-      } else {
-        setSistemas([])
-      }
-      // Limpar sistema selecionado quando trocar de área
-      setFormData((prev) => ({ ...prev, id_sistema: "" }))
-    } else {
-      setSistemas([])
-    }
-  }, [formData.id_area, areas])
+    if (!id_planta) return;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-
-    // Limpar erro quando o usuário começa a digitar
-    if (erros[name]) {
-      setErros((prev) => {
-        const newErros = { ...prev }
-        delete newErros[name]
-        return newErros
+    fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta/${id_planta}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAreas(data.area || []);
+        setSistemas([]); // Limpa os sistemas enquanto a área não for selecionada
       })
-    }
-  }
+      .catch((err) => {
+        console.error("Erro ao carregar áreas da planta", err);
+        setApiError("Erro ao carregar dados da planta.");
+      });
+  }, [id_planta]);
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }))
+  // Ao selecionar a área, carrega os sistemas dela
+  useEffect(() => {
+    if (!id_area) return;
 
-    // Limpar erro quando o usuário seleciona um valor
-    if (erros[name]) {
-      setErros((prev) => {
-        const newErros = { ...prev }
-        delete newErros[name]
-        return newErros
+    fetch(`${process.env.NEXT_PUBLIC_URL_API}/area/${id_area}/sistemas`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSistemas(data.sistema || []);
       })
-    }
-  }
+      .catch((err) => {
+        console.error("Erro ao carregar sistemas da área", err);
+        setApiError("Erro ao carregar sistemas da área.");
+      });
+  }, [id_area]);
 
-  const validarFormulario = () => {
-    const novosErros: Record<string, string> = {}
-
-    if (!formData.nome.trim()) {
-      novosErros.nome = "O nome do ativo é obrigatório"
-    }
-
-    if (!formData.codigo.trim()) {
-      novosErros.codigo = "O código é obrigatório"
-    } else if (!/^[A-Z]+-\d{4}$/.test(formData.codigo)) {
-      novosErros.codigo = "O código deve seguir o formato XXX-0000 (ex: ELT-0001)"
-    }
-
-    if (!formData.fabricante.trim()) {
-      novosErros.fabricante = "O fabricante é obrigatório"
-    }
-
-    if (!formData.modelo.trim()) {
-      novosErros.modelo = "O modelo é obrigatório"
-    }
-
-    if (!formData.data_aquisicao) {
-      novosErros.data_aquisicao = "A data de aquisição é obrigatória"
-    }
-
-    if (!formData.tipo_ativo) {
-      novosErros.tipo_ativo = "O tipo de ativo é obrigatório"
-    }
-
-    if (!formData.situacao) {
-      novosErros.situacao = "A situação é obrigatória"
-    }
-
-    if (!formData.criticidade) {
-      novosErros.criticidade = "A criticidade é obrigatória"
-    }
-
-    if (!formData.id_planta) {
-      novosErros.id_planta = "A planta é obrigatória"
-    }
-
-    if (!formData.id_area) {
-      novosErros.id_area = "A área é obrigatória"
-    }
-
-    if (!formData.id_sistema) {
-      novosErros.id_sistema = "O sistema é obrigatório"
-    }
-
-    setErros(novosErros)
-    return Object.keys(novosErros).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validarFormulario()) {
-      return
-    }
-
-    setEnviando(true)
-
+  async function onSubmit(data: AtivoItf) {
     try {
-      // Simulando envio para API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setApiError(null);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      // Limpar formulário
-      setFormData({
-        nome: "",
-        codigo: "",
-        fabricante: "",
-        modelo: "",
-        data_aquisicao: "",
-        localizacao_interna: "",
-        tipo_ativo: "",
-        situacao: "",
-        criticidade: "",
-        id_planta: "",
-        id_area: "",
-        id_sistema: "",
-        descricao: "",
-      })
+      if (!response.ok) {
+        throw new Error("Erro ao enviar formulário");
+      }
+
+      console.log("Dados enviados:", data);
+
+      toast.success("Cadastro realizado com sucesso!", {
+        description: "Sua área foi registrada no sistema.",
+      });
+
+      reset();
     } catch (error) {
-      console.error("Erro ao cadastrar ativo:", error)
-
-
-    } finally {
-      setEnviando(false)
+      console.error(error);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
             <Label htmlFor="nome">
               Nome do Ativo <span className="text-red-500">*</span>
             </Label>
             <Input
               id="nome"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
               placeholder="Ex: Motor Elétrico 1"
-              className={erros.nome ? "border-red-500" : ""}
+              {...register("nome", {
+                required: "O nome do ativo é obrigatório",
+              })}
+              className={errors.nome ? "border-red-500" : ""}
             />
-            {erros.nome && <p className="text-sm text-red-500">{erros.nome}</p>}
+            {errors.nome && (
+              <p className="text-sm text-red-500">{errors.nome.message}</p>
+            )}
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="codigo">
-              Código <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="codigo"
-              name="codigo"
-              value={formData.codigo}
-              onChange={handleChange}
-              placeholder="Ex: ELT-0001"
-              className={erros.codigo ? "border-red-500" : ""}
-            />
-            {erros.codigo && <p className="text-sm text-red-500">{erros.codigo}</p>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label htmlFor="fabricante">
               Fabricante <span className="text-red-500">*</span>
             </Label>
             <Input
               id="fabricante"
-              name="fabricante"
-              value={formData.fabricante}
-              onChange={handleChange}
               placeholder="Ex: WEG"
-              className={erros.fabricante ? "border-red-500" : ""}
+              {...register("fabricante", {
+                required: "O fabricante é obrigatório",
+              })}
+              className={errors.fabricante ? "border-red-500" : ""}
             />
-            {erros.fabricante && <p className="text-sm text-red-500">{erros.fabricante}</p>}
+            {errors.fabricante && (
+              <p className="text-sm text-red-500">
+                {errors.fabricante.message}
+              </p>
+            )}
           </div>
+        </div>
 
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
             <Label htmlFor="modelo">
               Modelo <span className="text-red-500">*</span>
             </Label>
             <Input
               id="modelo"
-              name="modelo"
-              value={formData.modelo}
-              onChange={handleChange}
               placeholder="Ex: M90"
-              className={erros.modelo ? "border-red-500" : ""}
+              {...register("modelo", { required: "O modelo é obrigatório" })}
+              className={errors.modelo ? "border-red-500" : ""}
             />
-            {erros.modelo && <p className="text-sm text-red-500">{erros.modelo}</p>}
+            {errors.modelo && (
+              <p className="text-sm text-red-500">{errors.modelo.message}</p>
+            )}
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label htmlFor="data_aquisicao">
               Data de Aquisição <span className="text-red-500">*</span>
             </Label>
             <Input
               id="data_aquisicao"
-              name="data_aquisicao"
               type="date"
-              value={formData.data_aquisicao}
-              onChange={handleChange}
-              className={erros.data_aquisicao ? "border-red-500" : ""}
+              {...register("data_aquisicao", {
+                required: "A data de aquisição é obrigatória",
+              })}
+              className={errors.data_aquisicao ? "border-red-500" : ""}
+              onChange={(e) => setValue("data_aquisicao", e.target.value)}
             />
-            {erros.data_aquisicao && <p className="text-sm text-red-500">{erros.data_aquisicao}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="localizacao_interna">Localização Interna</Label>
-            <Input
-              id="localizacao_interna"
-              name="localizacao_interna"
-              value={formData.localizacao_interna}
-              onChange={handleChange}
-              placeholder="Ex: Linha 1 - Ponto A"
-            />
+            {errors.data_aquisicao && (
+              <p className="text-sm text-red-500">
+                {errors.data_aquisicao.message}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <Label htmlFor="localizacao_interna">Localização Interna</Label>
+            <Input
+              id="localizacao_interna"
+              placeholder="Ex: Linha 1 - Ponto A"
+              {...register("localizacao_interna")}
+              className={errors.localizacao_interna ? "border-red-500" : ""}
+            />
+            {errors.localizacao_interna && (
+              <p className="text-sm text-red-500">
+                {errors.localizacao_interna.message}
+              </p>
+            )}
+          </div>
+          <div className="space-y-4">
             <Label htmlFor="tipo_ativo">
               Tipo de Ativo <span className="text-red-500">*</span>
             </Label>
-            <Select value={formData.tipo_ativo} onValueChange={(value) => handleSelectChange("tipo_ativo", value)}>
-              <SelectTrigger className={erros.tipo_ativo ? "border-red-500" : ""}>
+            <Select
+              onValueChange={(value) =>
+                setValue(
+                  "tipo_ativo",
+                  value as
+                    | "MECANICO"
+                    | "ELETRICO"
+                    | "ELETRONICO"
+                    | "HIDRAULICO"
+                    | "OUTRO"
+                )
+              }
+            >
+              <SelectTrigger
+                className={errors.tipo_ativo ? "border-red-500" : ""}
+              >
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -373,32 +234,55 @@ export default function FormularioAtivo() {
                 <SelectItem value="OUTRO">Outro</SelectItem>
               </SelectContent>
             </Select>
-            {erros.tipo_ativo && <p className="text-sm text-red-500">{erros.tipo_ativo}</p>}
+            {errors.tipo_ativo && (
+              <p className="text-sm text-red-500">
+                {errors.tipo_ativo.message}
+              </p>
+            )}
           </div>
+        </div>
 
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
             <Label htmlFor="situacao">
               Situação <span className="text-red-500">*</span>
             </Label>
-            <Select value={formData.situacao} onValueChange={(value) => handleSelectChange("situacao", value)}>
-              <SelectTrigger className={erros.situacao ? "border-red-500" : ""}>
+            <Select
+              onValueChange={(value) =>
+                setValue(
+                  "situacao",
+                  value as "ATIVO" | "INATIVO" | "MANUTENCAO" | "DESCARTADO"
+                )
+              }
+            >
+              <SelectTrigger
+                className={errors.situacao ? "border-red-500" : ""}
+              >
                 <SelectValue placeholder="Selecione a situação" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ATIVO">Ativo</SelectItem>
                 <SelectItem value="INATIVO">Inativo</SelectItem>
                 <SelectItem value="MANUTENCAO">Em Manutenção</SelectItem>
+                <SelectItem value="DESCARTADO">Descartado</SelectItem>
               </SelectContent>
             </Select>
-            {erros.situacao && <p className="text-sm text-red-500">{erros.situacao}</p>}
+            {errors.situacao && (
+              <p className="text-sm text-red-500">{errors.situacao.message}</p>
+            )}
           </div>
-
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Label htmlFor="criticidade">
               Criticidade <span className="text-red-500">*</span>
             </Label>
-            <Select value={formData.criticidade} onValueChange={(value) => handleSelectChange("criticidade", value)}>
-              <SelectTrigger className={erros.criticidade ? "border-red-500" : ""}>
+            <Select
+              onValueChange={(value) =>
+                setValue("criticidade", value as "ALTA" | "MEDIA" | "BAIXA")
+              }
+            >
+              <SelectTrigger
+                className={errors.criticidade ? "border-red-500" : ""}
+              >
                 <SelectValue placeholder="Selecione a criticidade" />
               </SelectTrigger>
               <SelectContent>
@@ -407,21 +291,26 @@ export default function FormularioAtivo() {
                 <SelectItem value="BAIXA">Baixa</SelectItem>
               </SelectContent>
             </Select>
-            {erros.criticidade && <p className="text-sm text-red-500">{erros.criticidade}</p>}
+            {errors.criticidade && (
+              <p className="text-sm text-red-500">
+                {errors.criticidade.message}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Planta */}
+          <div className="space-y-4">
             <Label htmlFor="id_planta">
               Planta <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={formData.id_planta}
-              onValueChange={(value) => handleSelectChange("id_planta", value)}
-              disabled={carregando}
+              onValueChange={(value) => setValue("id_planta", Number(value))}
             >
-              <SelectTrigger className={erros.id_planta ? "border-red-500" : ""}>
+              <SelectTrigger
+                className={errors.id_planta ? "border-red-500" : ""}
+              >
                 <SelectValue placeholder="Selecione uma planta" />
               </SelectTrigger>
               <SelectContent>
@@ -432,22 +321,22 @@ export default function FormularioAtivo() {
                 ))}
               </SelectContent>
             </Select>
-            {erros.id_planta && <p className="text-sm text-red-500">{erros.id_planta}</p>}
+            {errors.id_planta?.message && (
+              <p className="text-sm text-red-500">{errors.id_planta.message}</p>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="id_area">
+          {/* Área */}
+          <div className="space-y-4">
+            <Label htmlFor="id">
               Área <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={formData.id_area}
-              onValueChange={(value) => handleSelectChange("id_area", value)}
-              disabled={!formData.id_planta || areas.length === 0}
+              onValueChange={(v) => setValue("id_area", Number(v))}
+              disabled={!id_planta}
             >
-              <SelectTrigger className={erros.id_area ? "border-red-500" : ""}>
-                <SelectValue
-                  placeholder={!formData.id_planta ? "Selecione uma planta primeiro" : "Selecione uma área"}
-                />
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione uma área" />
               </SelectTrigger>
               <SelectContent>
                 {areas.map((area) => (
@@ -457,20 +346,25 @@ export default function FormularioAtivo() {
                 ))}
               </SelectContent>
             </Select>
-            {erros.id_area && <p className="text-sm text-red-500">{erros.id_area}</p>}
+
+            {errors.id_area && (
+              <p className="text-sm text-red-500">{errors.id_area.message}</p>
+            )}
           </div>
 
-          <div className="space-y-2">
+          {/* Sistema */}
+          <div className="space-y-4">
             <Label htmlFor="id_sistema">
               Sistema <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={formData.id_sistema}
-              onValueChange={(value) => handleSelectChange("id_sistema", value)}
-              disabled={!formData.id_area || sistemas.length === 0}
+              onValueChange={(v) => setValue("id_sistema", Number(v))}
+              disabled={!id_area}
             >
-              <SelectTrigger className={erros.id_sistema ? "border-red-500" : ""}>
-                <SelectValue placeholder={!formData.id_area ? "Selecione uma área primeiro" : "Selecione um sistema"} />
+              <SelectTrigger
+                className={errors.id_sistema ? "border-red-500" : ""}
+              >
+                <SelectValue placeholder="Selecione um sistema" />
               </SelectTrigger>
               <SelectContent>
                 {sistemas.map((sistema) => (
@@ -480,52 +374,24 @@ export default function FormularioAtivo() {
                 ))}
               </SelectContent>
             </Select>
-            {erros.id_sistema && <p className="text-sm text-red-500">{erros.id_sistema}</p>}
+            {errors.id_sistema && (
+              <p className="text-sm text-red-500">
+                {errors.id_sistema.message}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="descricao">Descrição</Label>
-          <textarea
-            id="descricao"
-            name="descricao"
-            value={formData.descricao}
-            onChange={handleChange}
-            placeholder="Descreva detalhes adicionais sobre o ativo..."
-            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
+        {apiError && <p className="text-sm text-red-500">{apiError}</p>}
+        <div className="flex justify-end space-x-4">
+        <Button type="button" variant="outline" onClick={() => reset()}>
+            Limpar
+          </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Cadastrando..." : "Cadastrar Ativo"}
+          </Button>
         </div>
       </div>
-
-      <div className="flex justify-end space-x-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            setFormData({
-              nome: "",
-              codigo: "",
-              fabricante: "",
-              modelo: "",
-              data_aquisicao: "",
-              localizacao_interna: "",
-              tipo_ativo: "",
-              situacao: "",
-              criticidade: "",
-              id_planta: "",
-              id_area: "",
-              id_sistema: "",
-              descricao: "",
-            })
-            setErros({})
-          }}
-        >
-          Limpar
-        </Button>
-        <Button type="submit" disabled={enviando || carregando}>
-          {enviando ? "Cadastrando..." : "Cadastrar Ativo"}
-        </Button>
-      </div>
     </form>
-  )
+  );
 }

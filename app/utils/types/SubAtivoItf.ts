@@ -4,4 +4,8 @@ export interface SubAtivoItf {
   tipo: string;
   codigo: string;
   id_ativo: number;
+
+  id_planta?: number;
+  id_area?: number;
+  id_sistema?: number;
 }

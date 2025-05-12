@@ -24,7 +24,7 @@ export default function ModalCadastroEntidades({ aberto, aoFechar }: ModalCadast
 
   return (
     <Dialog open={aberto} onOpenChange={aoFechar}>
-      <DialogContent className="max-w-4xl max-h-screen overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-screen overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold mb-2">Cadastro de Entidades</DialogTitle>
           <p className="text-sm text-muted-foreground">Cadastre planta, área, sistema, ativo ou subativo.</p>
