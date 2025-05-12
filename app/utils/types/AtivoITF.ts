@@ -13,4 +13,7 @@ export interface AtivoItf {
   id_sistema: number;
   codigo: string;
   subativos: SubAtivoItf[];
+
+  id_planta?: number;
+  id_area?: number;
 }
