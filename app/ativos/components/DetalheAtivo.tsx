@@ -1,10 +1,21 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { AtivoItf } from "@/app/utils/types/AtivoITF"
 import { Button } from "@/components/ui/button"
+import ModalEditarAtivo from "./ModalEditarAtivo"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { toast } from "sonner"
+import { Pencil, Trash2, X } from "lucide-react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+
 
 interface DetalhesAtivoProps {
   ativoId: number
@@ -14,21 +25,38 @@ interface DetalhesAtivoProps {
 export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps) {
   const [ativo, setAtivo] = useState<AtivoItf | null>(null)
   const [carregando, setCarregando] = useState(true)
+  const [modalAberto, setModalAberto] = useState(false)
+  const [confirmarExclusao, setConfirmarExclusao] = useState(false)
+
+  async function fetchAtivo() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`)
+      if (!response.ok) throw new Error("Erro ao carregar dados")
+      const dados = await response.json()
+      setAtivo(dados)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setCarregando(false)
+    }
+  }
+
+  async function excluirAtivo() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`, {
+        method: "DELETE"
+      })
+      if (!response.ok) throw new Error("Erro ao excluir ativo")
+      toast.success("Ativo excluído com sucesso")
+      setConfirmarExclusao(false)
+      onVoltar()
+    } catch (error) {
+      console.error(error)
+      toast.error("Erro ao excluir ativo")
+    }
+  }
 
   useEffect(() => {
-    async function fetchAtivo() {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`)
-        if (!response.ok) throw new Error("Erro ao carregar dados")
-        const dados = await response.json()
-        setAtivo(dados)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setCarregando(false)
-      }
-    }
-
     fetchAtivo()
   }, [ativoId])
 
@@ -81,18 +109,48 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
           </div>
         </div>
 
-        <Button variant="outline" onClick={onVoltar}>Fechar</Button>
+<TooltipProvider>
+  <div className="flex gap-3">
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="default" size="icon" onClick={() => setModalAberto(true)}>
+          <Pencil className="w-4 h-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Editar</TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="destructive" size="icon" onClick={() => setConfirmarExclusao(true)}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Excluir</TooltipContent>
+    </Tooltip>
+
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="outline" size="icon" onClick={onVoltar}>
+          <X className="w-4 h-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Fechar</TooltipContent>
+    </Tooltip>
+  </div>
+</TooltipProvider>
+
+
       </div>
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="flex justify-center">
           <div className="relative w-full max-w-md aspect-square">
-            <Image
-              src="/placeholder.svg?height=400&width=400"
+            <img
+              src={ativo.imagem || "/placeholder.png"}
               alt={ativo.nome}
-              width={400}
-              height={400}
               className="object-contain rounded-md border border-gray-200"
+              style={{ width: "100%", height: "100%" }}
             />
           </div>
         </div>
@@ -147,6 +205,28 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
           </div>
         </div>
       </div>
+
+      {modalAberto && ativo && (
+        <ModalEditarAtivo
+          aberto={modalAberto}
+          aoFechar={() => setModalAberto(false)}
+          ativo={ativo}
+          aoAtualizar={fetchAtivo}
+        />
+      )}
+
+      <Dialog open={confirmarExclusao} onOpenChange={setConfirmarExclusao}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deseja realmente excluir este ativo?</DialogTitle>
+            <p className="text-sm text-gray-500">Essa ação não poderá ser desfeita.</p>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>Cancelar</Button>
+            <Button variant="destructive" onClick={excluirAtivo}>Confirmar exclusão</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
