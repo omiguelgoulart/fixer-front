@@ -1,87 +1,44 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { PlantaItf } from "@/app/utils/types/PlantaItf";
+import { useState } from "react";
+import { toast } from "sonner"
 
 export default function FormularioPlanta() {
-  const [enviando, setEnviando] = useState(false)
-  const [formData, setFormData] = useState({
-    nome: "",
-    localizacao: "",
-    codigo: "",
-    descricao: "",
-  })
-  const [erros, setErros] = useState<Record<string, string>>({})
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<PlantaItf>();
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-
-    // Limpar erro quando o usuário começa a digitar
-    if (erros[name]) {
-      setErros((prev) => {
-        const newErros = { ...prev }
-        delete newErros[name]
-        return newErros
-      })
-    }
-  }
-
-  const validarFormulario = () => {
-    const novosErros: Record<string, string> = {}
-
-    if (!formData.nome.trim()) {
-      novosErros.nome = "O nome da planta é obrigatório"
-    }
-
-    if (!formData.localizacao.trim()) {
-      novosErros.localizacao = "A localização é obrigatória"
-    }
-
-    if (!formData.codigo.trim()) {
-      novosErros.codigo = "O código é obrigatório"
-    } else if (!/^[A-Z]+-\d{3}$/.test(formData.codigo)) {
-      novosErros.codigo = "O código deve seguir o formato XXX-000 (ex: PLT-001)"
-    }
-
-    setErros(novosErros)
-    return Object.keys(novosErros).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validarFormulario()) {
-      return
-    }
-
-    setEnviando(true)
-
+  const onSubmit = async (data: PlantaItf) => {
     try {
-      // Simulando envio para API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setApiError(null); // Limpa erro anterior
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      // Limpar formulário
-      setFormData({
-        nome: "",
-        localizacao: "",
-        codigo: "",
-        descricao: "",
-      })
+      if (!response.ok) {
+        throw new Error("Erro ao enviar formulário");
+      }
+
+      toast.success("Cadastro realizado com sucesso!", {
+        description: "Sua planta foi registrada no sistema.",
+      });      
+      reset(); // Limpa o formulário
     } catch (error) {
-      console.error("Erro ao cadastrar planta:", error)
-  
-    } finally {
-      setEnviando(false)
+      setApiError("Erro ao enviar os dados. Tente novamente.");
+      console.error(error);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
@@ -90,67 +47,39 @@ export default function FormularioPlanta() {
             </Label>
             <Input
               id="nome"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
               placeholder="Ex: Planta Industrial Norte"
-              className={erros.nome ? "border-red-500" : ""}
+              {...register("nome", { required: "O nome da planta é obrigatório" })}
+              className={errors.nome ? "border-red-500" : ""}
             />
-            {erros.nome && <p className="text-sm text-red-500">{erros.nome}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="codigo">
-              Código <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="codigo"
-              name="codigo"
-              value={formData.codigo}
-              onChange={handleChange}
-              placeholder="Ex: PLT-001"
-              className={erros.codigo ? "border-red-500" : ""}
-            />
-            {erros.codigo && <p className="text-sm text-red-500">{erros.codigo}</p>}
+            {errors.nome && <p className="text-sm text-red-500">{errors.nome.message}</p>}
           </div>
         </div>
-
         <div className="space-y-2">
           <Label htmlFor="localizacao">
             Localização <span className="text-red-500">*</span>
           </Label>
           <Input
             id="localizacao"
-            name="localizacao"
-            value={formData.localizacao}
-            onChange={handleChange}
             placeholder="Ex: Cuiabá - MT"
-            className={erros.localizacao ? "border-red-500" : ""}
+            {...register("localizacao", { required: "A localização é obrigatória" })}
+            className={errors.localizacao ? "border-red-500" : ""}
           />
-          {erros.localizacao && <p className="text-sm text-red-500">{erros.localizacao}</p>}
+          {errors.localizacao && (
+            <p className="text-sm text-red-500">{errors.localizacao.message}</p>
+          )}
         </div>
       </div>
 
+      {apiError && <p className="text-sm text-red-500">{apiError}</p>}
+
       <div className="flex justify-end space-x-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            setFormData({
-              nome: "",
-              localizacao: "",
-              codigo: "",
-              descricao: ""
-            })
-            setErros({})
-          }}
-        >
-          Limpar
-        </Button>
-        <Button type="submit" disabled={enviando}>
-          {enviando ? "Cadastrando..." : "Cadastrar Planta"}
+      <Button type="button" variant="outline" onClick={() => reset()}>
+            Limpar
+          </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Cadastrando..." : "Cadastrar Planta"}
         </Button>
       </div>
     </form>
-  )
+  );
 }
