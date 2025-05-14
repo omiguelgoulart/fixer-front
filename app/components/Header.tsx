@@ -1,8 +1,19 @@
-import Link from "next/link"
-import Image from "next/image"
+"use client";
 
-// Server Component para o cabeçalho
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { AvatarLogout } from "./Avatar";
+
 export default function Header() {
+  const pathname = usePathname();
+
+  // Esconder header nas páginas de login, cadastro etc.
+  const hiddenRoutes = ["/login"];
+  const hideHeader = hiddenRoutes.includes(pathname);
+
+  if (hideHeader) return null;
+
   return (
     <header className="bg-blue-500 text-white p-4 flex justify-between items-center">
       <div className="flex items-center">
@@ -20,7 +31,7 @@ export default function Header() {
         </Link>
       </div>
       <nav>
-        <ul className="flex space-x-6">
+        <ul className="flex items-center space-x-6">
           <li>
             <Link href="/dashboard" className="hover:underline">
               Dashboard
@@ -36,8 +47,11 @@ export default function Header() {
               Ativos
             </Link>
           </li>
+          <li className="flex items-center">
+            <AvatarLogout />
+          </li>
         </ul>
       </nav>
     </header>
-  )
+  );
 }
