@@ -382,9 +382,21 @@ export default function FormularioAtivo() {
           </div>
         </div>
 
+        <div className="space-y-4">
+          <Label htmlFor="imagem">Imagem (URL)</Label>
+          <Input
+            id="imagem"
+            placeholder="https://exemplo.com/imagem.jpg"
+            {...register("imagem")}
+          />
+        </div>
+        {errors.imagem && (
+          <p className="text-sm text-red-500">{errors.imagem.message}</p>
+        )}
+
         {apiError && <p className="text-sm text-red-500">{apiError}</p>}
         <div className="flex justify-end space-x-4">
-        <Button type="button" variant="outline" onClick={() => reset()}>
+          <Button type="button" variant="outline" onClick={() => reset()}>
             Limpar
           </Button>
           <Button type="submit" disabled={isSubmitting}>
