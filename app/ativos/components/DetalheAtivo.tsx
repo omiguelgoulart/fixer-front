@@ -147,7 +147,7 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
         <div className="flex justify-center">
           <div className="relative w-full max-w-md aspect-square">
             <img
-              src={ativo.imagem || "/placeholder.png"}
+              src={ativo.foto || "/placeholder.png"}
               alt={ativo.nome}
               className="object-contain rounded-md border border-gray-200"
               style={{ width: "100%", height: "100%" }}

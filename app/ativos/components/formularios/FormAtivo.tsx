@@ -112,7 +112,6 @@ export default function FormularioAtivo() {
       console.error(error);
     }
   }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <div className="space-y-6">
@@ -383,24 +382,29 @@ export default function FormularioAtivo() {
         </div>
 
         <div className="space-y-4">
-          <Label htmlFor="imagem">Imagem (URL)</Label>
+          <Label htmlFor="imagem">
+            Imagem (URL) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="imagem"
             placeholder="https://exemplo.com/imagem.jpg"
-            {...register("imagem")}
+            {...register("foto", {
+              required: "A URL da imagem é obrigatória",
+            })}
+            className={errors.foto ? "border-red-500" : ""}
           />
+          {errors.foto && (
+            <p className="text-sm text-red-500">{errors.foto.message}</p>
+          )}
         </div>
-        {errors.imagem && (
-          <p className="text-sm text-red-500">{errors.imagem.message}</p>
-        )}
 
         {apiError && <p className="text-sm text-red-500">{apiError}</p>}
         <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={() => reset()}>
             Limpar
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Cadastrando..." : "Cadastrar Ativo"}
+          <Button type="submit" disabled={isSubmitting }>
+            {isSubmitting ? "Enviando..." : "Cadastrar Ativo"}
           </Button>
         </div>
       </div>

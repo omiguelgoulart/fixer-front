@@ -5,7 +5,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Calendar, List, Kanban } from "lucide-react";
 import { PageListas } from "./components/PageListas";
 import CalendarioManutencoes from "./components/PageCalendario";
-import KanbanOrdens from "./components/PageKanban";
 import { Button } from "@/components/ui/button";
 
 export default function PagePlanejamento() {
@@ -48,7 +47,7 @@ export default function PagePlanejamento() {
             <CalendarioManutencoes />
           </TabsContent>
           <TabsContent value="kanban">
-            <KanbanOrdens />
+            <Kanban />
           </TabsContent>
         </Tabs>
       </main>
