@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PlantaItf } from "@/app/utils/types/PlantaItf";
-import type { AreaItf } from "@/app/utils/types/AreaItf";
-import type { SistemaItf } from "@/app/utils/types/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/AtivoITF";
+import type { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
+import type { AreaItf } from "@/app/utils/types/ativo/AreaItf";
+import type { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
 import { toast } from "sonner";
 
 export default function FormularioAtivo() {
@@ -403,7 +403,7 @@ export default function FormularioAtivo() {
           <Button type="button" variant="outline" onClick={() => reset()}>
             Limpar
           </Button>
-          <Button type="submit" disabled={isSubmitting }>
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Enviando..." : "Cadastrar Ativo"}
           </Button>
         </div>

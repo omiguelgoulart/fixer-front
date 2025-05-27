@@ -1,26 +1,14 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Clock, Plus } from "lucide-react"
+import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
 
-interface Tarefa {
-  id: number
-  descricao: string
-  concluida: boolean
+interface Props {
+  ordem: OrdemServicoItf
 }
 
-export default function AbaAtividades() {
-  const [tarefas, setTarefas] = useState<Tarefa[]>([
-    { id: 1, descricao: "Verificar integridade do equipamento", concluida: true },
-    { id: 2, descricao: "Substituir eixo", concluida: true },
-    { id: 3, descricao: "Aplicar lubrificante", concluida: false },
-  ])
-
-  const toggleTarefa = (id: number) => {
-    setTarefas(tarefas.map((tarefa) => (tarefa.id === id ? { ...tarefa, concluida: !tarefa.concluida } : tarefa)))
-  }
+export default function AbaAtividades({ ordem }: Props) {
 
   return (
     <div className="p-4">
@@ -35,21 +23,15 @@ export default function AbaAtividades() {
         </div>
       </div>
 
-      <ul className="space-y-4 mb-6">
-        {tarefas.map((tarefa) => (
-          <li key={tarefa.id} className="flex items-center gap-3">
-            <Checkbox
-              id={`tarefa-${tarefa.id}`}
-              checked={tarefa.concluida}
-              onCheckedChange={() => toggleTarefa(tarefa.id)}
-            />
-            <label
-              htmlFor={`tarefa-${tarefa.id}`}
-              className={`text-sm ${tarefa.concluida ? "line-through text-gray-500" : ""}`}
-            >
-              {tarefa.descricao}
-            </label>
-          </li>
+      <ul className="space-y-4 mb-6 list-disc list-inside">
+        {ordem.tarefas?.map((tarefa) => (
+        <li key={tarefa.id} className="flex items-center gap-3">
+        <span
+          className={`text-sm ${tarefa.concluida ? "text-gray-500" : ""}`}
+        >
+          {tarefa.descricao}
+        </span>
+        </li>
         ))}
       </ul>
 

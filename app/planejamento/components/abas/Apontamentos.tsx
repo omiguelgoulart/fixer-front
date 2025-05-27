@@ -4,8 +4,14 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Clock } from "lucide-react"
+import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
 
-export default function AbaApontamentos() {
+
+interface Props {
+  ordem: OrdemServicoItf
+}
+
+export default function AbaApontamentos({ ordem }: Props) {
   const [observacoes, setObservacoes] = useState("")
 
   return (

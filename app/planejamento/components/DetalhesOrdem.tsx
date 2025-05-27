@@ -1,39 +1,37 @@
 "use client"
 
-
+// import { useEffect } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Printer, Plus } from "lucide-react"
-import { useContextoPlanejamento } from "@/app/contexts/ContextoPlanejamento"
+import { Printer } from "lucide-react"
 import AbaGeral from "./abas/Geral"
 import AbaAtividades from "./abas/Atividade"
 import AbaApontamentos from "./abas/Apontamentos"
 import AbaItens from "./abas/Itens"
-import AbaProcedimentos from "./abas/Procedimentos"
+// import AbaProcedimentos from "./abas/Procedimentos"
+import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
 
-export default function DetalhesOrdem() {
-  const { ordemSelecionada } = useContextoPlanejamento()
+interface Props {
+  ordem: OrdemServicoItf | null
+}
 
-  if (!ordemSelecionada) {
+export default function DetalhesOrdem({ ordem }: Props) {
+  if (!ordem) {
     return <div className="p-8 text-center text-gray-500">Selecione uma ordem para visualizar os detalhes</div>
   }
+
 
   return (
     <div>
       <div className="p-4 border-b flex justify-between items-center">
         <div>
-          <span className="text-gray-500 text-sm">#{ordemSelecionada.id}</span>
-          <h2 className="font-medium">{ordemSelecionada.titulo}</h2>
+          <span className="text-gray-500 text-sm">#{ordem.id}</span>
+          <h2 className="font-medium">{ordem.titulo}</h2>
         </div>
 
         <div className="flex gap-2">
           <Button variant="ghost" size="icon">
             <Printer className="h-5 w-5" />
-          </Button>
-
-          <Button variant="default" className="bg-blue-500 text-white hover:bg-blue-600">
-            <Plus className="h-4 w-4 mr-1" />
-            Adicionar
           </Button>
         </div>
       </div>
@@ -48,24 +46,24 @@ export default function DetalhesOrdem() {
         </TabsList>
 
         <TabsContent value="geral">
-          <AbaGeral ordem={ordemSelecionada} />
+          <AbaGeral ordem={ordem} />
         </TabsContent>
 
         <TabsContent value="atividades">
-          <AbaAtividades />
+          <AbaAtividades ordem={ordem} />
         </TabsContent>
 
         <TabsContent value="apontamentos">
-          <AbaApontamentos />
+          <AbaApontamentos ordem={ordem} />
         </TabsContent>
 
         <TabsContent value="itens">
-          <AbaItens />
+          <AbaItens ordem={ordem} />
         </TabsContent>
 
-        <TabsContent value="procedimentos">
-          <AbaProcedimentos />
-        </TabsContent>
+        {/* <TabsContent value="procedimentos">
+          <AbaProcedimentos ordem={ordem} />
+        </TabsContent> */}
       </Tabs>
     </div>
   )

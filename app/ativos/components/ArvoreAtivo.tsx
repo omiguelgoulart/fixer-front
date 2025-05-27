@@ -9,7 +9,7 @@ import {
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
-import { PlantaItf } from "@/app/utils/types/PlantaItf";
+import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
 
 export default function ArvoreAtivos({
   onSelecionarAtivo,
@@ -23,7 +23,9 @@ export default function ArvoreAtivos({
   useEffect(() => {
     async function fetchPlantas() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/planta`
+        );
         if (!response.ok) {
           throw new Error("Erro ao carregar dados");
         }
@@ -86,7 +88,9 @@ export default function ArvoreAtivos({
               </span>
               <Building2 className="h-4 w-4 text-red-600" />
               <span className="ml-2 text-sm font-medium">{planta.nome}</span>
-              <span className="ml-2 text-xs text-gray-500">{planta.codigo}</span>
+              <span className="ml-2 text-xs text-gray-500">
+                {planta.codigo}
+              </span>
             </div>
             {estaExpandido("planta", planta.id) && (
               <ul className="ml-6 mt-1 space-y-1">
@@ -115,7 +119,9 @@ export default function ArvoreAtivos({
                           <li key={`sistema-${sistema.id}`} className="py-1">
                             <div
                               className="flex items-center cursor-pointer hover:bg-blue-100 rounded-md px-2 py-1"
-                              onClick={() => alternarExpansao("sistema", sistema.id)}
+                              onClick={() =>
+                                alternarExpansao("sistema", sistema.id)
+                              }
                             >
                               <span className="mr-1">
                                 {estaExpandido("sistema", sistema.id) ? (
@@ -125,7 +131,9 @@ export default function ArvoreAtivos({
                                 )}
                               </span>
                               <Cog className="h-4 w-4 text-blue-600" />
-                              <span className="ml-2 text-sm">{sistema.nome}</span>
+                              <span className="ml-2 text-sm">
+                                {sistema.nome}
+                              </span>
                               <span className="ml-2 text-xs text-gray-500">
                                 {sistema.codigo}
                               </span>
@@ -133,20 +141,31 @@ export default function ArvoreAtivos({
                             {estaExpandido("sistema", sistema.id) && (
                               <ul className="ml-6 mt-1 space-y-1">
                                 {sistema.ativo.map((ativo) => (
-                                  <li key={`ativo-${ativo.id}`} className="py-1">
+                                  <li
+                                    key={`ativo-${ativo.id}`}
+                                    className="py-1"
+                                  >
                                     <div
                                       className="flex items-center cursor-pointer hover:bg-blue-100 rounded-md px-2 py-1"
-                                      onClick={() => selecionarDetalhes("ativo", ativo.id)}
+                                      onClick={() =>
+                                        selecionarDetalhes("ativo", ativo.id)
+                                      }
                                     >
                                       <span className="mr-1">
                                         {ativo.subativos &&
                                           ativo.subativos.length > 0 && (
                                             <span
                                               onClick={() =>
-                                                alternarExpansao("ativo", ativo.id)
+                                                alternarExpansao(
+                                                  "ativo",
+                                                  ativo.id
+                                                )
                                               }
                                             >
-                                              {estaExpandido("ativo", ativo.id) ? (
+                                              {estaExpandido(
+                                                "ativo",
+                                                ativo.id
+                                              ) ? (
                                                 <ChevronDown className="h-3 w-3 text-gray-500" />
                                               ) : (
                                                 <ChevronRight className="h-3 w-3 text-gray-500" />
@@ -155,7 +174,9 @@ export default function ArvoreAtivos({
                                           )}
                                       </span>
                                       <Cog className="h-4 w-4 text-green-600" />
-                                      <span className="ml-2 text-sm">{ativo.nome}</span>
+                                      <span className="ml-2 text-sm">
+                                        {ativo.nome}
+                                      </span>
                                       <span className="ml-2 text-xs text-gray-500">
                                         {ativo.codigo}
                                       </span>

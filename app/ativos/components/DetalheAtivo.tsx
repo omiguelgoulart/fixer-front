@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
-import { AtivoItf } from "@/app/utils/types/AtivoITF"
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF"
 import { Button } from "@/components/ui/button"
 import ModalEditarAtivo from "./ModalEditarAtivo"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"

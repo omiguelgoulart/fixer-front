@@ -1,49 +1,79 @@
-"use client"
+'use client'
 
-
-import { useContextoPlanejamento } from "@/app/contexts/ContextoPlanejamento"
+import { useEffect, useState } from "react"
+import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
 import { cn } from "@/lib/utils"
 
-export default function ListaOrdens() {
-  const { ordens, ordemSelecionadaId, selecionarOrdem } = useContextoPlanejamento()
+interface Props {
+  onSelect: (ordem: OrdemServicoItf) => void
+}
+
+export default function ListaOrdens({ onSelect }: Props) {
+  const [ordensServico, setOrdensServico] = useState<OrdemServicoItf[]>([])
+  const [carregando, setCarregando] = useState(true)
+  const [ordemSelecionadaId, setOrdemSelecionadaId] = useState<number | null>(null)
+
+  useEffect(() => {
+    async function fetchOrdemServico() {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico`)
+        const dados = await response.json()
+        setOrdensServico(dados)
+      } catch {
+        console.error("Erro ao carregar OrdemServico")
+      } finally {
+        setCarregando(false)
+      }
+    }
+    fetchOrdemServico()
+  }, [])
+
+  async function selecionarOrdem(id: number) {
+    setOrdemSelecionadaId(id)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico/${id}/os`)
+      const dados = await response.json()
+      onSelect(dados)
+    } catch (error) {
+      console.error("Erro ao carregar detalhes da ordem", error)
+    }
+  }
+
+  if (carregando) {
+    return <div className="p-4 text-gray-500">Carregando ordens...</div>
+  }
 
   return (
-    <div className="overflow-auto max-h-[calc(100vh-250px)]">
-      <ul className="divide-y">
-        {ordens.map((ordem) => (
-          <li
-            key={ordem.id}
-            className={cn("p-4 hover:bg-gray-50 cursor-pointer", ordemSelecionadaId === ordem.id && "bg-blue-50")}
-            onClick={() => selecionarOrdem(ordem.id)}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-                <span className="text-xs">#{ordem.id.toString().slice(-2)}</span>
-              </div>
-
-              <div className="flex-1">
-                <h3 className="font-medium text-sm">{ordem.titulo}</h3>
-                <p className="text-xs text-gray-500">#{ordem.id}</p>
-
-                <div className="flex items-center mt-2">
-                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Em aberto</span>
-
-                  <span
-                    className={cn(
-                      "ml-2 text-xs text-white px-2 py-0.5 rounded-full",
-                      ordem.prioridade === "Alta" && "bg-red-500",
-                      ordem.prioridade === "Média" && "bg-yellow-500",
-                      ordem.prioridade === "Baixa" && "bg-green-500",
-                    )}
-                  >
-                    {ordem.prioridade}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className="divide-y">
+      {ordensServico.map((ordem) => (
+      <li
+        key={ordem.id}
+        className={cn("p-4 cursor-pointer hover:bg-gray-50", ordemSelecionadaId === ordem.id && "bg-blue-50")}
+        onClick={() => selecionarOrdem(ordem.id)}
+      >
+        <div className="font-medium text-sm flex items-center gap-2">
+        <span className="text-xs text-gray-400">- {ordem.codigo}</span>
+        <span>{ordem.titulo}</span>
+        </div>
+        <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
+        <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+          {ordem.status
+          ? ordem.status.replace("_", " ").toLowerCase()
+          : "Em aberto"}
+        </span>
+        <span
+          className={cn(
+          "px-2 py-0.5 rounded-full text-white",
+          ordem.prioridade === "ALTA" && "bg-red-500",
+          ordem.prioridade === "MEDIA" && "bg-yellow-500",
+          ordem.prioridade === "BAIXA" && "bg-green-500"
+          )}
+        >
+          {ordem.prioridade}
+        </span>
+        </div>
+      </li>
+      ))}
+    </ul>
   )
 }
