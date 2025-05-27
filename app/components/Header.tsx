@@ -2,17 +2,27 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AvatarLogout } from "./Avatar";
 
 export default function Header() {
   const pathname = usePathname();
+  const [hasToken, setHasToken] = useState<boolean | null>(null);
 
-  // Esconder header nas páginas de login, cadastro etc.
-  const hiddenRoutes = ["/login"];
-  const hideHeader = hiddenRoutes.includes(pathname);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setHasToken(!!token);
+  }, []);
 
-  if (hideHeader) return null;
+  const hiddenRoutes = ["/login", "/"];
+  const isHiddenRoute = hiddenRoutes.includes(pathname);
+
+  // Se estiver numa rota oculta E não tiver token → não renderiza header
+  if (hasToken === false && isHiddenRoute) return null;
+
+  // Espera carregar o token do localStorage (evita piscar)
+  if (hasToken === null) return null;
 
   return (
     <header className="bg-blue-500 text-white p-4 flex justify-between items-center">

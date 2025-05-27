@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PlantaItf } from "@/app/utils/types/PlantaItf";
-import type { AreaItf } from "@/app/utils/types/AreaItf";
-import type { SistemaItf } from "@/app/utils/types/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/AtivoITF";
+import type { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
+import type { AreaItf } from "@/app/utils/types/ativo/AreaItf";
+import type { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
 import { toast } from "sonner";
 
 export default function FormularioAtivo() {
@@ -112,7 +112,6 @@ export default function FormularioAtivo() {
       console.error(error);
     }
   }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <div className="space-y-6">
@@ -383,16 +382,21 @@ export default function FormularioAtivo() {
         </div>
 
         <div className="space-y-4">
-          <Label htmlFor="imagem">Imagem (URL)</Label>
+          <Label htmlFor="imagem">
+            Imagem (URL) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="imagem"
             placeholder="https://exemplo.com/imagem.jpg"
-            {...register("imagem")}
+            {...register("foto", {
+              required: "A URL da imagem é obrigatória",
+            })}
+            className={errors.foto ? "border-red-500" : ""}
           />
+          {errors.foto && (
+            <p className="text-sm text-red-500">{errors.foto.message}</p>
+          )}
         </div>
-        {errors.imagem && (
-          <p className="text-sm text-red-500">{errors.imagem.message}</p>
-        )}
 
         {apiError && <p className="text-sm text-red-500">{apiError}</p>}
         <div className="flex justify-end space-x-4">
@@ -400,7 +404,7 @@ export default function FormularioAtivo() {
             Limpar
           </Button>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Cadastrando..." : "Cadastrar Ativo"}
+            {isSubmitting ? "Enviando..." : "Cadastrar Ativo"}
           </Button>
         </div>
       </div>

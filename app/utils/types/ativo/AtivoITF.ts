@@ -12,7 +12,7 @@ export interface AtivoItf {
   criticidade: 'ALTA' | 'MEDIA' | 'BAIXA';
   id_sistema: number;
   codigo: string;
-  imagem: string;
+  foto?: string;
   subativos: SubAtivoItf[];
 
   id_planta?: number;

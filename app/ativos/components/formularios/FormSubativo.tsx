@@ -12,11 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PlantaItf } from "@/app/utils/types/PlantaItf";
-import { AreaItf } from "@/app/utils/types/AreaItf";
-import { SistemaItf } from "@/app/utils/types/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/AtivoITF";
-import { SubAtivoItf } from "@/app/utils/types/SubAtivoItf";
+import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
+import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
+import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
+import { SubAtivoItf } from "@/app/utils/types/ativo/SubAtivoItf";
 import { toast } from "sonner";
 
 export default function FormularioSubativo() {
@@ -91,7 +91,7 @@ export default function FormularioSubativo() {
   // Ao selecionar o sistema, carrega os ativos dele
   useEffect(() => {
     if (!id_sistema) return;
-  
+
     fetch(`${process.env.NEXT_PUBLIC_URL_API}/sistema/${id_sistema}/ativos`)
       .then((res) => res.json())
       .then((data) => {
@@ -103,7 +103,6 @@ export default function FormularioSubativo() {
         setApiError("Erro ao carregar ativos do sistema.");
       });
   }, [id_sistema]);
-  
 
   async function onSubmit(data: SubAtivoItf) {
     try {
@@ -298,7 +297,7 @@ export default function FormularioSubativo() {
             )}
           </div>
         </div>
-        
+
         {apiError && <p className="text-sm text-red-500">{apiError}</p>}
         <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={() => reset()}>
@@ -308,7 +307,7 @@ export default function FormularioSubativo() {
             {isSubmitting ? "Cadastrando..." : "Cadastrar SubAtivo"}
           </Button>
         </div>
-        </div>
+      </div>
     </form>
   );
 }

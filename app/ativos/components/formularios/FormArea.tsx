@@ -5,20 +5,34 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
-import { AreaItf } from "@/app/utils/types/AreaItf";
-import { PlantaItf } from "@/app/utils/types/PlantaItf";
+import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
+import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
 
 export default function FormularioArea() {
-  const { register, handleSubmit, setValue, formState: { errors, isSubmitting }, reset } = useForm<AreaItf>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<AreaItf>();
   const [apiError, setApiError] = useState<string | null>(null);
   const [plantas, setPlantas] = useState<PlantaItf[]>([]);
 
   useEffect(() => {
     const carregarPlantas = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_API}/planta`
+        );
         const data = await response.json();
         setPlantas(data);
       } catch (error) {
@@ -66,10 +80,14 @@ export default function FormularioArea() {
             <Input
               id="nome"
               placeholder="Ex: Área de Produção"
-              {...register("nome", { required: "O nome da área é obrigatório" })}
+              {...register("nome", {
+                required: "O nome da área é obrigatório",
+              })}
               className={errors.nome ? "border-red-500" : ""}
             />
-            {errors.nome && <p className="text-sm text-red-500">{errors.nome.message}</p>}
+            {errors.nome && (
+              <p className="text-sm text-red-500">{errors.nome.message}</p>
+            )}
           </div>
         </div>
 
@@ -92,7 +110,9 @@ export default function FormularioArea() {
               ))}
             </SelectContent>
           </Select>
-          {errors.id_planta && <p className="text-sm text-red-500">{errors.id_planta.message}</p>}
+          {errors.id_planta && (
+            <p className="text-sm text-red-500">{errors.id_planta.message}</p>
+          )}
         </div>
       </div>
 
