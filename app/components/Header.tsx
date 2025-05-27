@@ -15,7 +15,7 @@ export default function Header() {
     setHasToken(!!token);
   }, []);
 
-  const hiddenRoutes = ["/login", "/"];
+  const hiddenRoutes = ["/login"];
   const isHiddenRoute = hiddenRoutes.includes(pathname);
 
   // Se estiver numa rota oculta E não tiver token → não renderiza header
