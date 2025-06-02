@@ -58,13 +58,8 @@ export default function Header() {
             </Link>
           </li>
           <li>
-<<<<<<< HEAD
             <Link href="/funcionarios" className="hover:underline">
               Funcionários
-=======
-            <Link href="/tecnico" className="hover:underline">
-              Tecnico
->>>>>>> feat/pagina-tecnico
             </Link>
           </li>
           <li className="flex items-center">
