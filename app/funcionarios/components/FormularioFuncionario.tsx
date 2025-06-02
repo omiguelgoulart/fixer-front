@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -14,7 +15,7 @@ import { X } from "lucide-react"
 
 interface FormularioFuncionarioProps {
   funcionarioInicial: Funcionario | null
-  onSalvar: (funcionario: any) => void
+  onSalvar: (funcionario: Funcionario) => void
   onCancelar: () => void
 }
 
@@ -67,7 +68,7 @@ export default function FormularioFuncionario({
     }
   }, [funcionarioInicial])
 
-  const handleChange = (campo: string, valor: any) => {
+  const handleChange = (campo: string, valor: string | number | string[]) => {
     setFuncionario({ ...funcionario, [campo]: valor })
   }
 

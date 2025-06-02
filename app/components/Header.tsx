@@ -57,6 +57,11 @@ export default function Header() {
               Ativos
             </Link>
           </li>
+          <li>
+            <Link href="/funcionarios" className="hover:underline">
+              Funcionários
+            </Link>
+          </li>
           <li className="flex items-center">
             <AvatarLogout />
           </li>

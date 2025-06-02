@@ -65,3 +65,8 @@ export default function BarraFiltros() {
     </div>
   )
 }
+
+export type ContextoPlanejamentoProps = {
+  // outras propriedades
+  filtrarOrdens: (params: { busca: string }) => void
+}

@@ -38,7 +38,7 @@ export default function ListaFuncionarios({ funcionarios, onEditar, onExcluir }:
     try {
       const data = new Date(dataString)
       return format(data, "dd/MM/yyyy", { locale: ptBR })
-    } catch (error) {
+    } catch {
       return dataString
     }
   }
