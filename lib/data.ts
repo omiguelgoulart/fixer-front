@@ -1,34 +1,7 @@
-import { OrdemServicoItf } from "@/app/utils/types/planejamento"
-
-// Simulação de busca de dados do servidor
-export async function getAssetDetails(assetId: string) {
-    // Normalmente, isso seria uma chamada a uma API ou banco de dados
-    await new Promise((resolve) => setTimeout(resolve, 500)) // Simulando latência de rede
-  
-    // Dados mockados para o exemplo
-    return {
-      id: assetId,
-      name: "Motor Principal",
-      type: "Equipamento",
-      code: "AS-MP-001",
-      manufacturer: "Wärtsilä",
-      model: "WBL32",
-      serialNumber: "WRTSL123456",
-      installationDate: "2020-01-01",
-      lastMaintenanceDate: "2024-01-15",
-      nextMaintenanceDate: "2024-04-15",
-      criticality: "Nível A",
-      imageUrl: "/placeholder.svg?height=400&width=400",
-      manualFileName: "Motor.pdf",
-      manualUrl: "/documents/motor.pdf",
-    }
-  }
-  
-
-
+import type { OrdemServico } from "@/types/planejamento"
 
 // Esta função seria substituída por uma chamada de API real
-export async function getPlanejamento(): Promise<OrdemServicoItf[]> {
+export async function getPlanejamento(): Promise<OrdemServico[]> {
   // Simulando uma chamada de API com um pequeno delay
   await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -147,3 +120,184 @@ export async function getPlanejamento(): Promise<OrdemServicoItf[]> {
     },
   ]
 }
+
+// Array de ordens de serviço para uso direto nos componentes
+export const ordensServico: OrdemServico[] = [
+  {
+    id: 12345467,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Alta",
+    responsavelId: "ID",
+    responsavel: "Jefferson Wellington",
+    ativo: "Motor Honda v12",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "14/04/2025",
+    dataVencimento: "19/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 1, descricao: "Verificar nível de óleo" },
+      { id: 2, descricao: "Aplicar lubrificante nos pontos especificados" },
+      { id: 3, descricao: "Verificar funcionamento do motor" },
+      { id: 4, descricao: "Limpar área de trabalho" },
+    ],
+    insumos: [
+      { id: 1, nome: "Óleo lubrificante SAE 10W-40", codigo: "OL001", quantidade: "2L" },
+      { id: 2, nome: "Graxa multiuso", codigo: "GR002", quantidade: "500g" },
+    ],
+  },
+  {
+    id: 12345468,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Baixa",
+    responsavelId: "ID",
+    responsavel: "Maria Silva",
+    ativo: "Motor Yamaha x10",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "15/04/2025",
+    dataVencimento: "20/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 5, descricao: "Inspeção visual do equipamento" },
+      { id: 6, descricao: "Lubrificação dos rolamentos" },
+      { id: 7, descricao: "Teste de funcionamento" },
+    ],
+    insumos: [{ id: 3, nome: "Óleo lubrificante SAE 15W-40", codigo: "OL003", quantidade: "1L" }],
+  },
+  {
+    id: 12345469,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Média",
+    responsavelId: "ID",
+    responsavel: "Carlos Santos",
+    ativo: "Motor Suzuki k8",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "16/04/2025",
+    dataVencimento: "21/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 8, descricao: "Verificar tensão das correias" },
+      { id: 9, descricao: "Lubrificar pontos de articulação" },
+      { id: 10, descricao: "Verificar alinhamento" },
+    ],
+    insumos: [
+      { id: 4, nome: "Graxa para rolamentos", codigo: "GR004", quantidade: "300g" },
+      { id: 5, nome: "Spray lubrificante", codigo: "SP001", quantidade: "1 unidade" },
+    ],
+  },
+  {
+    id: 12345470,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Baixa",
+    responsavelId: "ID",
+    responsavel: "Ana Oliveira",
+    ativo: "Motor Kawasaki z900",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "17/04/2025",
+    dataVencimento: "22/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 11, descricao: "Limpeza geral do equipamento" },
+      { id: 12, descricao: "Aplicação de lubrificante" },
+      { id: 13, descricao: "Verificação de vazamentos" },
+    ],
+    insumos: [{ id: 6, nome: "Óleo hidráulico", codigo: "OH001", quantidade: "1.5L" }],
+  },
+  {
+    id: 12345471,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Média",
+    responsavelId: "ID",
+    responsavel: "Pedro Almeida",
+    ativo: "Motor Ducati v4",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "18/04/2025",
+    dataVencimento: "23/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 14, descricao: "Verificar sistema de refrigeração" },
+      { id: 15, descricao: "Lubrificar componentes móveis" },
+      { id: 16, descricao: "Teste de performance" },
+    ],
+    insumos: [
+      { id: 7, nome: "Fluido de arrefecimento", codigo: "FA001", quantidade: "2L" },
+      { id: 8, nome: "Óleo de motor", codigo: "OM001", quantidade: "1L" },
+    ],
+  },
+  {
+    id: 12345472,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Alta",
+    responsavelId: "ID",
+    responsavel: "Juliana Costa",
+    ativo: "Motor BMW r1250",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "19/04/2025",
+    dataVencimento: "24/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 17, descricao: "Inspeção completa do motor" },
+      { id: 18, descricao: "Troca de filtros" },
+      { id: 19, descricao: "Lubrificação completa" },
+      { id: 20, descricao: "Calibração de sistemas" },
+    ],
+    insumos: [
+      { id: 9, nome: "Filtro de óleo", codigo: "FO001", quantidade: "1 unidade" },
+      { id: 10, nome: "Óleo sintético", codigo: "OS001", quantidade: "3L" },
+    ],
+  },
+  {
+    id: 12345473,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Média",
+    responsavelId: "ID",
+    responsavel: "Roberto Ferreira",
+    ativo: "Motor Triumph t120",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "20/04/2025",
+    dataVencimento: "25/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 21, descricao: "Verificar sistema elétrico" },
+      { id: 22, descricao: "Lubrificar conexões" },
+      { id: 23, descricao: "Teste de funcionamento" },
+    ],
+    insumos: [{ id: 11, nome: "Spray contato elétrico", codigo: "SC001", quantidade: "1 unidade" }],
+  },
+  {
+    id: 12345474,
+    titulo: "Lubrificação preventiva",
+    status: "Em aberto",
+    prioridade: "Baixa",
+    responsavelId: "ID",
+    responsavel: "Fernanda Lima",
+    ativo: "Motor Harley Davidson",
+    localizacaoId: "ID",
+    localizacao: "Sala de máquinas",
+    dataInicioPlanejada: "21/04/2025",
+    dataVencimento: "26/04/2025",
+    tipoManutencao: "Preventiva",
+    tarefas: [
+      { id: 24, descricao: "Limpeza e inspeção" },
+      { id: 25, descricao: "Aplicação de lubrificantes" },
+      { id: 26, descricao: "Verificação final" },
+    ],
+    insumos: [
+      { id: 12, nome: "Kit de limpeza", codigo: "KL001", quantidade: "1 kit" },
+      { id: 13, nome: "Óleo premium", codigo: "OP001", quantidade: "2L" },
+    ],
+  },
+]

@@ -14,6 +14,8 @@ import { ordensServico } from "@/lib/data"
 import Link from "next/link"
 import type { OrdemServico } from "@/types/planejamento"
 
+
+
 export default function TecnicoPage() {
   const [busca, setBusca] = useState("")
   const [ordens, setOrdens] = useState(ordensServico)
