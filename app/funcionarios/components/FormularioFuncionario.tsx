@@ -1,21 +1,28 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { Funcionario } from "@/types/funcionarios"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Funcionario } from "@/app/utils/types/funcionarios";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 interface FormularioFuncionarioProps {
-  funcionarioInicial: Funcionario | null
-  onSalvar: (funcionario: any) => void
-  onCancelar: () => void
+  funcionarioInicial: Funcionario | null;
+  onSalvar: (funcionario: Funcionario) => void;
+  onCancelar: () => void;
 }
 
 export default function FormularioFuncionario({
@@ -42,13 +49,13 @@ export default function FormularioFuncionario({
     especialidades: [],
     certificacoes: [],
     ferramentasHabilitado: [],
-  })
+  });
 
-  const [novaEquipe, setNovaEquipe] = useState("")
-  const [novaArea, setNovaArea] = useState("")
-  const [novaEspecialidade, setNovaEspecialidade] = useState("")
-  const [novaCertificacao, setNovaCertificacao] = useState("")
-  const [novaFerramenta, setNovaFerramenta] = useState("")
+  const [novaEquipe, setNovaEquipe] = useState("");
+  const [novaArea, setNovaArea] = useState("");
+  const [novaEspecialidade, setNovaEspecialidade] = useState("");
+  const [novaCertificacao, setNovaCertificacao] = useState("");
+  const [novaFerramenta, setNovaFerramenta] = useState("");
 
   // Carregar dados do funcionário para edição
   useEffect(() => {
@@ -63,101 +70,129 @@ export default function FormularioFuncionario({
         especialidades: funcionarioInicial.especialidades || [],
         certificacoes: funcionarioInicial.certificacoes || [],
         ferramentasHabilitado: funcionarioInicial.ferramentasHabilitado || [],
-      })
+      });
     }
-  }, [funcionarioInicial])
+  }, [funcionarioInicial]);
 
-  const handleChange = (campo: string, valor: any) => {
-    setFuncionario({ ...funcionario, [campo]: valor })
-  }
+  const handleChange = (campo: string, valor: string | number | string[]) => {
+    setFuncionario({ ...funcionario, [campo]: valor });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSalvar(funcionario)
-  }
+    e.preventDefault();
+    onSalvar(funcionario);
+  };
 
   // Funções para adicionar itens às listas
   const adicionarEquipe = () => {
     if (novaEquipe && !funcionario.equipes.includes(novaEquipe)) {
-      handleChange("equipes", [...funcionario.equipes, novaEquipe])
-      setNovaEquipe("")
+      handleChange("equipes", [...funcionario.equipes, novaEquipe]);
+      setNovaEquipe("");
     }
-  }
+  };
 
   const removerEquipe = (equipe: string) => {
     handleChange(
       "equipes",
-      funcionario.equipes.filter((e: string) => e !== equipe),
-    )
-  }
+      funcionario.equipes.filter((e: string) => e !== equipe)
+    );
+  };
 
   const adicionarArea = () => {
     if (novaArea && !funcionario.areasResponsavel.includes(novaArea)) {
-      handleChange("areasResponsavel", [...funcionario.areasResponsavel, novaArea])
-      setNovaArea("")
+      handleChange("areasResponsavel", [
+        ...funcionario.areasResponsavel,
+        novaArea,
+      ]);
+      setNovaArea("");
     }
-  }
+  };
 
   const removerArea = (area: string) => {
     handleChange(
       "areasResponsavel",
-      funcionario.areasResponsavel.filter((a: string) => a !== area),
-    )
-  }
+      funcionario.areasResponsavel.filter((a: string) => a !== area)
+    );
+  };
 
   const adicionarEspecialidade = () => {
-    if (novaEspecialidade && !funcionario.especialidades.includes(novaEspecialidade)) {
-      handleChange("especialidades", [...funcionario.especialidades, novaEspecialidade])
-      setNovaEspecialidade("")
+    if (
+      novaEspecialidade &&
+      !funcionario.especialidades.includes(novaEspecialidade)
+    ) {
+      handleChange("especialidades", [
+        ...funcionario.especialidades,
+        novaEspecialidade,
+      ]);
+      setNovaEspecialidade("");
     }
-  }
+  };
 
   const removerEspecialidade = (especialidade: string) => {
     handleChange(
       "especialidades",
-      funcionario.especialidades.filter((e: string) => e !== especialidade),
-    )
-  }
+      funcionario.especialidades.filter((e: string) => e !== especialidade)
+    );
+  };
 
   const adicionarCertificacao = () => {
-    if (novaCertificacao && !funcionario.certificacoes.includes(novaCertificacao)) {
-      handleChange("certificacoes", [...funcionario.certificacoes, novaCertificacao])
-      setNovaCertificacao("")
+    if (
+      novaCertificacao &&
+      !funcionario.certificacoes.includes(novaCertificacao)
+    ) {
+      handleChange("certificacoes", [
+        ...funcionario.certificacoes,
+        novaCertificacao,
+      ]);
+      setNovaCertificacao("");
     }
-  }
+  };
 
   const removerCertificacao = (certificacao: string) => {
     handleChange(
       "certificacoes",
-      funcionario.certificacoes.filter((c: string) => c !== certificacao),
-    )
-  }
+      funcionario.certificacoes.filter((c: string) => c !== certificacao)
+    );
+  };
 
   const adicionarFerramenta = () => {
-    if (novaFerramenta && !funcionario.ferramentasHabilitado.includes(novaFerramenta)) {
-      handleChange("ferramentasHabilitado", [...funcionario.ferramentasHabilitado, novaFerramenta])
-      setNovaFerramenta("")
+    if (
+      novaFerramenta &&
+      !funcionario.ferramentasHabilitado.includes(novaFerramenta)
+    ) {
+      handleChange("ferramentasHabilitado", [
+        ...funcionario.ferramentasHabilitado,
+        novaFerramenta,
+      ]);
+      setNovaFerramenta("");
     }
-  }
+  };
 
   const removerFerramenta = (ferramenta: string) => {
     handleChange(
       "ferramentasHabilitado",
-      funcionario.ferramentasHabilitado.filter((f: string) => f !== ferramenta),
-    )
-  }
+      funcionario.ferramentasHabilitado.filter((f: string) => f !== ferramenta)
+    );
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-xl font-bold mb-4">
-        {funcionarioInicial ? "Editar Funcionário" : "Cadastrar Novo Funcionário"}
+        {funcionarioInicial
+          ? "Editar Funcionário"
+          : "Cadastrar Novo Funcionário"}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div>
             <Label htmlFor="nome">Nome Completo</Label>
-            <Input id="nome" value={funcionario.nome} onChange={(e) => handleChange("nome", e.target.value)} required />
+            <Input
+              id="nome"
+              value={funcionario.nome}
+              onChange={(e) => handleChange("nome", e.target.value)}
+              required
+            />
           </div>
 
           <div>
@@ -183,7 +218,11 @@ export default function FormularioFuncionario({
 
           <div>
             <Label htmlFor="tipo">Tipo de Funcionário</Label>
-            <Select value={funcionario.tipo} onValueChange={(value) => handleChange("tipo", value)} required>
+            <Select
+              value={funcionario.tipo}
+              onValueChange={(value) => handleChange("tipo", value)}
+              required
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
@@ -230,7 +269,11 @@ export default function FormularioFuncionario({
 
           <div>
             <Label htmlFor="status">Status</Label>
-            <Select value={funcionario.status} onValueChange={(value) => handleChange("status", value)} required>
+            <Select
+              value={funcionario.status}
+              onValueChange={(value) => handleChange("status", value)}
+              required
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o status" />
               </SelectTrigger>
@@ -275,15 +318,26 @@ export default function FormularioFuncionario({
                 onChange={(e) => setNovaEquipe(e.target.value)}
                 placeholder="Adicionar equipe"
               />
-              <Button type="button" onClick={adicionarEquipe} variant="secondary">
+              <Button
+                type="button"
+                onClick={adicionarEquipe}
+                variant="secondary"
+              >
                 Adicionar
               </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {funcionario.equipes.map((equipe: string, index: number) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="flex items-center gap-1"
+                >
                   {equipe}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => removerEquipe(equipe)} />
+                  <X
+                    className="h-3 w-3 cursor-pointer"
+                    onClick={() => removerEquipe(equipe)}
+                  />
                 </Badge>
               ))}
             </div>
@@ -309,12 +363,21 @@ export default function FormularioFuncionario({
               </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {funcionario.areasResponsavel.map((area: string, index: number) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {area}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => removerArea(area)} />
-                </Badge>
-              ))}
+              {funcionario.areasResponsavel.map(
+                (area: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    {area}
+                    <X
+                      className="h-3 w-3 cursor-pointer"
+                      onClick={() => removerArea(area)}
+                    />
+                  </Badge>
+                )
+              )}
             </div>
           </div>
 
@@ -344,17 +407,30 @@ export default function FormularioFuncionario({
                 onChange={(e) => setNovaEspecialidade(e.target.value)}
                 placeholder="Adicionar especialidade"
               />
-              <Button type="button" onClick={adicionarEspecialidade} variant="secondary">
+              <Button
+                type="button"
+                onClick={adicionarEspecialidade}
+                variant="secondary"
+              >
                 Adicionar
               </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {funcionario.especialidades.map((especialidade: string, index: number) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {especialidade}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => removerEspecialidade(especialidade)} />
-                </Badge>
-              ))}
+              {funcionario.especialidades.map(
+                (especialidade: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    {especialidade}
+                    <X
+                      className="h-3 w-3 cursor-pointer"
+                      onClick={() => removerEspecialidade(especialidade)}
+                    />
+                  </Badge>
+                )
+              )}
             </div>
           </div>
 
@@ -367,22 +443,37 @@ export default function FormularioFuncionario({
                 onChange={(e) => setNovaCertificacao(e.target.value)}
                 placeholder="Adicionar certificação"
               />
-              <Button type="button" onClick={adicionarCertificacao} variant="secondary">
+              <Button
+                type="button"
+                onClick={adicionarCertificacao}
+                variant="secondary"
+              >
                 Adicionar
               </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {funcionario.certificacoes.map((certificacao: string, index: number) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {certificacao}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => removerCertificacao(certificacao)} />
-                </Badge>
-              ))}
+              {funcionario.certificacoes.map(
+                (certificacao: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    {certificacao}
+                    <X
+                      className="h-3 w-3 cursor-pointer"
+                      onClick={() => removerCertificacao(certificacao)}
+                    />
+                  </Badge>
+                )
+              )}
             </div>
           </div>
 
           <div>
-            <Label htmlFor="ferramentasHabilitado">Ferramentas Habilitado</Label>
+            <Label htmlFor="ferramentasHabilitado">
+              Ferramentas Habilitado
+            </Label>
             <div className="flex gap-2 mb-2">
               <Input
                 id="ferramentasHabilitado"
@@ -390,17 +481,30 @@ export default function FormularioFuncionario({
                 onChange={(e) => setNovaFerramenta(e.target.value)}
                 placeholder="Adicionar ferramenta"
               />
-              <Button type="button" onClick={adicionarFerramenta} variant="secondary">
+              <Button
+                type="button"
+                onClick={adicionarFerramenta}
+                variant="secondary"
+              >
                 Adicionar
               </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {funcionario.ferramentasHabilitado.map((ferramenta: string, index: number) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {ferramenta}
-                  <X className="h-3 w-3 cursor-pointer" onClick={() => removerFerramenta(ferramenta)} />
-                </Badge>
-              ))}
+              {funcionario.ferramentasHabilitado.map(
+                (ferramenta: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    {ferramenta}
+                    <X
+                      className="h-3 w-3 cursor-pointer"
+                      onClick={() => removerFerramenta(ferramenta)}
+                    />
+                  </Badge>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -410,10 +514,13 @@ export default function FormularioFuncionario({
         <Button type="button" variant="outline" onClick={onCancelar}>
           Cancelar
         </Button>
-        <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
+        <Button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-600 text-white"
+        >
           {funcionarioInicial ? "Atualizar" : "Cadastrar"}
         </Button>
       </div>
     </form>
-  )
+  );
 }

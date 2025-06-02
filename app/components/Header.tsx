@@ -15,7 +15,7 @@ export default function Header() {
     setHasToken(!!token);
   }, []);
 
-  const hiddenRoutes = ["/login", "/"];
+  const hiddenRoutes = ["/login"];
   const isHiddenRoute = hiddenRoutes.includes(pathname);
 
   // Se estiver numa rota oculta E não tiver token → não renderiza header
@@ -55,6 +55,11 @@ export default function Header() {
           <li>
             <Link href="/ativos" className="hover:underline">
               Ativos
+            </Link>
+          </li>
+          <li>
+            <Link href="/funcionarios" className="hover:underline">
+              Funcionários
             </Link>
           </li>
           <li className="flex items-center">

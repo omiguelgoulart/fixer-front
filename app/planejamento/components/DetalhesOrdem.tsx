@@ -25,7 +25,7 @@ export default function DetalhesOrdem({ ordem }: Props) {
     <div>
       <div className="p-4 border-b flex justify-between items-center">
         <div>
-          <span className="text-gray-500 text-sm">#{ordem.id}</span>
+          <span className="text-gray-500 text-sm">#{ordem.codigo}</span>
           <h2 className="font-medium">{ordem.titulo}</h2>
         </div>
 
