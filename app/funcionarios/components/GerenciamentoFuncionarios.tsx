@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, UserPlus, Search, Filter } from "lucide-react";
+import { Users, UserPlus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,7 +89,6 @@ export default function GerenciamentoFuncionarios() {
     useState<Funcionario | null>(null);
   const [termoBusca, setTermoBusca] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todos");
-  const [filtroDepartamento, setFiltroDepartamento] = useState<string>("todos");
   const [visualizacao, setVisualizacao] = useState<"lista" | "cadastro">(
     "lista"
   );
@@ -101,11 +100,9 @@ export default function GerenciamentoFuncionarios() {
       funcionario.email.toLowerCase().includes(termoBusca.toLowerCase());
 
     const matchTipo = filtroTipo === "todos" || funcionario.tipo === filtroTipo;
-    const matchDepartamento =
-      filtroDepartamento === "todos" ||
-      funcionario.departamento === filtroDepartamento;
+  
 
-    return matchBusca && matchTipo && matchDepartamento;
+    return matchBusca && matchTipo;
   });
 
   // Adicionar novo funcionário
@@ -184,25 +181,6 @@ export default function GerenciamentoFuncionarios() {
                     </SelectContent>
                   </Select>
 
-                  <Select
-                    value={filtroDepartamento}
-                    onValueChange={setFiltroDepartamento}
-                  >
-                    <SelectTrigger className="w-[140px]">
-                      <SelectValue placeholder="Departamento" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todos">Todos</SelectItem>
-                      <SelectItem value="Manutenção">Manutenção</SelectItem>
-                      <SelectItem value="Produção">Produção</SelectItem>
-                      <SelectItem value="Logística">Logística</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
-                    <span>Mais Filtros</span>
-                  </Button>
 
                   <Button
                     className="bg-blue-500 hover:bg-blue-600 text-white"
