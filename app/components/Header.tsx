@@ -57,6 +57,11 @@ export default function Header() {
               Ativos
             </Link>
           </li>
+          <li>
+            <Link href="/tecnico" className="hover:underline">
+              Tecnico
+            </Link>
+          </li>
           <li className="flex items-center">
             <AvatarLogout />
           </li>
