@@ -1,15 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
-import { Users, UserPlus, Search, Filter } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import ListaFuncionarios from "./ListaFuncionarios"
-import FormularioFuncionario from "./FormularioFuncionario"
-import type { Funcionario } from "@/types/funcionarios"
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Users, UserPlus, Search, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import ListaFuncionarios from "./ListaFuncionarios";
+import FormularioFuncionario from "./FormularioFuncionario";
+import type { Funcionario } from "@/app/utils/types/funcionarios";
 // Dados iniciais para demonstração
 const funcionariosIniciais: Funcionario[] = [
   {
@@ -74,60 +80,71 @@ const funcionariosIniciais: Funcionario[] = [
     areasResponsavel: ["Expedição", "Recebimento"],
     metasDesempenho: "Otimização do fluxo de materiais para manutenção",
   },
-]
+];
 
 export default function GerenciamentoFuncionarios() {
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>(funcionariosIniciais)
-  const [funcionarioEmEdicao, setFuncionarioEmEdicao] = useState<Funcionario | null>(null)
-  const [termoBusca, setTermoBusca] = useState("")
-  const [filtroTipo, setFiltroTipo] = useState<string>("todos")
-  const [filtroDepartamento, setFiltroDepartamento] = useState<string>("todos")
-  const [visualizacao, setVisualizacao] = useState<"lista" | "cadastro">("lista")
+  const [funcionarios, setFuncionarios] =
+    useState<Funcionario[]>(funcionariosIniciais);
+  const [funcionarioEmEdicao, setFuncionarioEmEdicao] =
+    useState<Funcionario | null>(null);
+  const [termoBusca, setTermoBusca] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+  const [filtroDepartamento, setFiltroDepartamento] = useState<string>("todos");
+  const [visualizacao, setVisualizacao] = useState<"lista" | "cadastro">(
+    "lista"
+  );
 
   // Filtrar funcionários
   const funcionariosFiltrados = funcionarios.filter((funcionario) => {
     const matchBusca =
       funcionario.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      funcionario.email.toLowerCase().includes(termoBusca.toLowerCase())
+      funcionario.email.toLowerCase().includes(termoBusca.toLowerCase());
 
-    const matchTipo = filtroTipo === "todos" || funcionario.tipo === filtroTipo
-    const matchDepartamento = filtroDepartamento === "todos" || funcionario.departamento === filtroDepartamento
+    const matchTipo = filtroTipo === "todos" || funcionario.tipo === filtroTipo;
+    const matchDepartamento =
+      filtroDepartamento === "todos" ||
+      funcionario.departamento === filtroDepartamento;
 
-    return matchBusca && matchTipo && matchDepartamento
-  })
+    return matchBusca && matchTipo && matchDepartamento;
+  });
 
   // Adicionar novo funcionário
   const adicionarFuncionario = (funcionario: Omit<Funcionario, "id">) => {
-    const novoId = Math.max(...funcionarios.map((f) => f.id)) + 1
-    const novoFuncionario = { ...funcionario, id: novoId }
-    setFuncionarios([...funcionarios, novoFuncionario])
-    setVisualizacao("lista")
-  }
+    const novoId = Math.max(...funcionarios.map((f) => f.id)) + 1;
+    const novoFuncionario = { ...funcionario, id: novoId };
+    setFuncionarios([...funcionarios, novoFuncionario]);
+    setVisualizacao("lista");
+  };
 
   // Atualizar funcionário existente
   const atualizarFuncionario = (funcionario: Funcionario) => {
-    setFuncionarios(funcionarios.map((f) => (f.id === funcionario.id ? funcionario : f)))
-    setFuncionarioEmEdicao(null)
-    setVisualizacao("lista")
-  }
+    setFuncionarios(
+      funcionarios.map((f) => (f.id === funcionario.id ? funcionario : f))
+    );
+    setFuncionarioEmEdicao(null);
+    setVisualizacao("lista");
+  };
 
   // Excluir funcionário
   const excluirFuncionario = (id: number) => {
-    setFuncionarios(funcionarios.filter((f) => f.id !== id))
-  }
+    setFuncionarios(funcionarios.filter((f) => f.id !== id));
+  };
 
   // Iniciar edição de funcionário
   const editarFuncionario = (id: number) => {
-    const funcionario = funcionarios.find((f) => f.id === id)
+    const funcionario = funcionarios.find((f) => f.id === id);
     if (funcionario) {
-      setFuncionarioEmEdicao(funcionario)
-      setVisualizacao("cadastro")
+      setFuncionarioEmEdicao(funcionario);
+      setVisualizacao("cadastro");
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
-      <Tabs value={visualizacao} onValueChange={(v) => setVisualizacao(v as "lista" | "cadastro")}>
+      <Tabs
+        value={visualizacao}
+        onValueChange={(v) => setVisualizacao(v as "lista" | "cadastro")}
+      >
         <div className="flex justify-between items-center">
           <TabsList>
             <TabsTrigger value="lista" className="flex items-center gap-2">
@@ -167,7 +184,10 @@ export default function GerenciamentoFuncionarios() {
                     </SelectContent>
                   </Select>
 
-                  <Select value={filtroDepartamento} onValueChange={setFiltroDepartamento}>
+                  <Select
+                    value={filtroDepartamento}
+                    onValueChange={setFiltroDepartamento}
+                  >
                     <SelectTrigger className="w-[140px]">
                       <SelectValue placeholder="Departamento" />
                     </SelectTrigger>
@@ -187,8 +207,8 @@ export default function GerenciamentoFuncionarios() {
                   <Button
                     className="bg-blue-500 hover:bg-blue-600 text-white"
                     onClick={() => {
-                      setFuncionarioEmEdicao(null)
-                      setVisualizacao("cadastro")
+                      setFuncionarioEmEdicao(null);
+                      setVisualizacao("cadastro");
                     }}
                   >
                     <UserPlus className="h-4 w-4 mr-2" />
@@ -211,7 +231,11 @@ export default function GerenciamentoFuncionarios() {
             <CardContent className="pt-6">
               <FormularioFuncionario
                 funcionarioInicial={funcionarioEmEdicao}
-                onSalvar={funcionarioEmEdicao ? atualizarFuncionario : adicionarFuncionario}
+                onSalvar={
+                  funcionarioEmEdicao
+                    ? atualizarFuncionario
+                    : adicionarFuncionario
+                }
                 onCancelar={() => setVisualizacao("lista")}
               />
             </CardContent>
@@ -219,5 +243,5 @@ export default function GerenciamentoFuncionarios() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

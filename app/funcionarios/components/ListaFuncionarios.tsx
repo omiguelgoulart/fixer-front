@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, Eye } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash2, Eye } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,37 +11,43 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { useState } from "react"
-import type { Funcionario } from "@/types/funcionarios"
-import { Badge } from "@/components/ui/badge"
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
+import type { Funcionario } from "@/app/utils/types/funcionarios";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface ListaFuncionariosProps {
-  funcionarios: Funcionario[]
-  onEditar: (id: number) => void
-  onExcluir: (id: number) => void
+  funcionarios: Funcionario[];
+  onEditar: (id: number) => void;
+  onExcluir: (id: number) => void;
 }
 
-export default function ListaFuncionarios({ funcionarios, onEditar, onExcluir }: ListaFuncionariosProps) {
-  const [funcionarioParaExcluir, setFuncionarioParaExcluir] = useState<number | null>(null)
+export default function ListaFuncionarios({
+  funcionarios,
+  onEditar,
+  onExcluir,
+}: ListaFuncionariosProps) {
+  const [funcionarioParaExcluir, setFuncionarioParaExcluir] = useState<
+    number | null
+  >(null);
 
   const confirmarExclusao = () => {
     if (funcionarioParaExcluir !== null) {
-      onExcluir(funcionarioParaExcluir)
-      setFuncionarioParaExcluir(null)
+      onExcluir(funcionarioParaExcluir);
+      setFuncionarioParaExcluir(null);
     }
-  }
+  };
 
   const formatarData = (dataString: string) => {
     try {
-      const data = new Date(dataString)
-      return format(data, "dd/MM/yyyy", { locale: ptBR })
+      const data = new Date(dataString);
+      return format(data, "dd/MM/yyyy", { locale: ptBR });
     } catch {
-      return dataString
+      return dataString;
     }
-  }
+  };
 
   return (
     <>
@@ -54,7 +60,9 @@ export default function ListaFuncionarios({ funcionarios, onEditar, onExcluir }:
               <th className="text-left py-3 px-4 font-medium">Departamento</th>
               <th className="text-left py-3 px-4 font-medium">Email</th>
               <th className="text-left py-3 px-4 font-medium">Telefone</th>
-              <th className="text-left py-3 px-4 font-medium">Data de Contratação</th>
+              <th className="text-left py-3 px-4 font-medium">
+                Data de Contratação
+              </th>
               <th className="text-left py-3 px-4 font-medium">Status</th>
               <th className="text-left py-3 px-4 font-medium">Ações</th>
             </tr>
@@ -77,25 +85,29 @@ export default function ListaFuncionarios({ funcionarios, onEditar, onExcluir }:
                         funcionario.tipo === "gestor"
                           ? "border-blue-500 text-blue-700 bg-blue-50"
                           : funcionario.tipo === "gerente"
-                            ? "border-purple-500 text-purple-700 bg-purple-50"
-                            : "border-green-500 text-green-700 bg-green-50"
+                          ? "border-purple-500 text-purple-700 bg-purple-50"
+                          : "border-green-500 text-green-700 bg-green-50"
                       }`}
                     >
                       {funcionario.tipo === "gestor"
                         ? "Gestor"
                         : funcionario.tipo === "gerente"
-                          ? "Gerente"
-                          : "Técnico"}
+                        ? "Gerente"
+                        : "Técnico"}
                     </Badge>
                   </td>
                   <td className="py-3 px-4">{funcionario.departamento}</td>
                   <td className="py-3 px-4">{funcionario.email}</td>
                   <td className="py-3 px-4">{funcionario.telefone}</td>
-                  <td className="py-3 px-4">{formatarData(funcionario.dataContratacao)}</td>
+                  <td className="py-3 px-4">
+                    {formatarData(funcionario.dataContratacao)}
+                  </td>
                   <td className="py-3 px-4">
                     <Badge
                       className={`${
-                        funcionario.status === "ativo" ? "bg-green-500" : "bg-red-500"
+                        funcionario.status === "ativo"
+                          ? "bg-green-500"
+                          : "bg-red-500"
                       } text-white hover:bg-opacity-80`}
                     >
                       {funcionario.status === "ativo" ? "Ativo" : "Inativo"}
@@ -106,14 +118,21 @@ export default function ListaFuncionarios({ funcionarios, onEditar, onExcluir }:
                       <Button variant="ghost" size="icon" title="Ver detalhes">
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" title="Editar" onClick={() => onEditar(funcionario.id)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Editar"
+                        onClick={() => onEditar(funcionario.id)}
+                      >
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         title="Excluir"
-                        onClick={() => setFuncionarioParaExcluir(funcionario.id)}
+                        onClick={() =>
+                          setFuncionarioParaExcluir(funcionario.id)
+                        }
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -126,22 +145,29 @@ export default function ListaFuncionarios({ funcionarios, onEditar, onExcluir }:
         </table>
       </div>
 
-      <AlertDialog open={funcionarioParaExcluir !== null} onOpenChange={() => setFuncionarioParaExcluir(null)}>
+      <AlertDialog
+        open={funcionarioParaExcluir !== null}
+        onOpenChange={() => setFuncionarioParaExcluir(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este funcionário? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir este funcionário? Esta ação não
+              pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmarExclusao} className="bg-red-500 hover:bg-red-600">
+            <AlertDialogAction
+              onClick={confirmarExclusao}
+              className="bg-red-500 hover:bg-red-600"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }
