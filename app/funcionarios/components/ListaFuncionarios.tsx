@@ -57,7 +57,6 @@ export default function ListaFuncionarios({
             <tr className="border-b">
               <th className="text-left py-3 px-4 font-medium">Nome</th>
               <th className="text-left py-3 px-4 font-medium">Tipo</th>
-              <th className="text-left py-3 px-4 font-medium">Departamento</th>
               <th className="text-left py-3 px-4 font-medium">Email</th>
               <th className="text-left py-3 px-4 font-medium">Telefone</th>
               <th className="text-left py-3 px-4 font-medium">
@@ -96,7 +95,6 @@ export default function ListaFuncionarios({
                         : "Técnico"}
                     </Badge>
                   </td>
-                  <td className="py-3 px-4">{funcionario.departamento}</td>
                   <td className="py-3 px-4">{funcionario.email}</td>
                   <td className="py-3 px-4">{funcionario.telefone}</td>
                   <td className="py-3 px-4">

@@ -1,15 +1,17 @@
+// src/app/utils/types/planejamento/index.ts (or planejamento.ts)
 
 import { AtivoItf } from "../ativo/AtivoITF"
 import { InsumoItf } from "./insumoItf"
 import { TarefaItf } from "./tarefaItf"
 import { UsuarioItf } from "../usuarioItf"
+import { ReactNode } from "react"
 
-export type StatusOrdem = "EM_ABERTO" | "CONCLUIDA" // baseado no payload
+export type StatusOrdem = "EM_ABERTO" | "CONCLUIDA"
 export type PrioridadeOrdem = "ALTA" | "MEDIA" | "BAIXA"
-
 export type TipoManutencao = "CORRETIVA" | "PREVENTIVA" | "PREDITIVA"
 
 export interface OrdemServicoItf {
+  localizacao: ReactNode
   id: number
   titulo: string
   codigo: string
@@ -31,4 +33,5 @@ export interface OrdemServicoItf {
 
   tarefas: TarefaItf[]
   insumos: InsumoItf[]
+  procedimentos?: string[]
 }
