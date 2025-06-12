@@ -3,21 +3,15 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Calendar, List, Kanban, Plus } from "lucide-react"
+import { Calendar, List, Kanban } from "lucide-react"
 import { PageListas } from "./components/PageListas"
 import CalendarioManutencoes from "./components/PageCalendario"
 import { Button } from "@/components/ui/button"
-<<<<<<< HEAD
-import { ModalNovaOrdem } from "./components/ModalNovaOrdem"
-=======
 import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf" // Use a sua interface
->>>>>>> feat/pagina-planejamento
 
 export default function PagePlanejamento() {
   const [visualizacao, setVisualizacao] = useState<"lista" | "calendario" | "kanban">("lista")
   
-<<<<<<< HEAD
-=======
   // 1. Adicionado estado para armazenar as ordens de serviço
   const [ordensDeServico, setOrdensDeServico] = useState<OrdemServicoItf[]>([])
 
@@ -60,7 +54,6 @@ export default function PagePlanejamento() {
     
     return grouped;
   }, [ordensDeServico]); // Recalcula apenas se a lista de ordens mudar
->>>>>>> feat/pagina-planejamento
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -84,14 +77,9 @@ export default function PagePlanejamento() {
               </TabsList>
             </Tabs>
           </div>
-
-          {/* Aqui o botão azul passa a ser o DialogTrigger do modal */}
-          <ModalNovaOrdem >
-            <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
-              <Plus className="h-4 w-4 mr-2" />
-              Adicionar OS
-            </Button>
-          </ModalNovaOrdem>
+          <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
+            <span className="text-sm">Adicionar OS</span>
+          </Button>
         </div>
 
         {/* Note que o 'value' do Tabs aqui não precisa mais de um onValueChange,

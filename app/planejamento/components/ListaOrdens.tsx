@@ -16,44 +16,9 @@ export default function ListaOrdens({ ordensDeServico, onSelect, ordemSelecionad
   // 3. REMOVEMOS a busca de dados e os estados internos 'useState' para ordens e carregando.
   //    O componente agora é mais simples e apenas renderiza o que recebe.
 
-<<<<<<< HEAD
-  // Carrega as ordens de serviço ao montar o componente
-  // e armazena no estado ordensServico
-  useEffect(() => {
-    async function fetchOrdemServico() {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico`)
-        const dados = await response.json()
-        setOrdensServico(dados)
-      } catch {
-        console.error("Erro ao carregar OrdemServico")
-      } finally {
-        setCarregando(false)
-      }
-    }
-    fetchOrdemServico()
- }, []);
-
-  // Função para selecionar uma ordem e carregar seus detalhes
-  // e chamar a função onSelect com os dados da ordem
-  async function selecionarOrdem(id: number) {
-    setOrdemSelecionadaId(id)
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico/${id}/os`)
-      const dados = await response.json()
-      onSelect(dados)
-    } catch (error) {
-      console.error("Erro ao carregar detalhes da ordem", error)
-    }
-  }
-
-  if (carregando) {
-    return <div className="p-4 text-gray-500">Carregando ordens...</div>
-=======
   // Adicionamos um estado para o caso de a lista de ordens estar vazia
   if (ordensDeServico.length === 0) {
     return <div className="p-4 text-center text-sm text-gray-500">Nenhuma ordem de serviço encontrada.</div>
->>>>>>> feat/pagina-planejamento
   }
 
   return (
