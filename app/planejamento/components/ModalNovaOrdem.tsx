@@ -14,10 +14,13 @@ import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
 import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
 import { UsuarioItf } from "@/app/utils/types/usuarioItf";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type ModalNovaOrdemProps = {
   children: ReactNode;
+  onSuccess?: () => void; // 👈 ADICIONA ISSO
 };
+
 
 type FormData = {
   titulo: string;
@@ -41,6 +44,8 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
   const [ativos, setAtivos] = useState<AtivoItf[]>([]);
   const [usuarios, setUsuarios] = useState<UsuarioItf[]>([]);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<FormData>({
     defaultValues: {
@@ -175,6 +180,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
       }
       toast.success("Ordem de Serviço cadastrada com sucesso!");
       console.log("Ordem de Serviço cadastrada com sucesso!");
+      router.refresh(); // força reload da página atual
       // Limpa os campos do formulário
       reset();
       setOpen(false);

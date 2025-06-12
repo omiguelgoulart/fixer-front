@@ -13,6 +13,8 @@ export default function ListaOrdens({ onSelect }: Props) {
   const [carregando, setCarregando] = useState(true)
   const [ordemSelecionadaId, setOrdemSelecionadaId] = useState<number | null>(null)
 
+  // Carrega as ordens de serviço ao montar o componente
+  // e armazena no estado ordensServico
   useEffect(() => {
     async function fetchOrdemServico() {
       try {
@@ -26,8 +28,10 @@ export default function ListaOrdens({ onSelect }: Props) {
       }
     }
     fetchOrdemServico()
-  }, [])
+ }, []);
 
+  // Função para selecionar uma ordem e carregar seus detalhes
+  // e chamar a função onSelect com os dados da ordem
   async function selecionarOrdem(id: number) {
     setOrdemSelecionadaId(id)
     try {

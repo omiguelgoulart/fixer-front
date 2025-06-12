@@ -10,6 +10,7 @@ import { ModalNovaOrdem } from "./components/ModalNovaOrdem"
 
 export default function PagePlanejamento() {
   const [visualizacao, setVisualizacao] = useState<"lista" | "calendario" | "kanban">("lista")
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -35,7 +36,7 @@ export default function PagePlanejamento() {
           </div>
 
           {/* Aqui o botão azul passa a ser o DialogTrigger do modal */}
-          <ModalNovaOrdem>
+          <ModalNovaOrdem >
             <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
               <Plus className="h-4 w-4 mr-2" />
               Adicionar OS
