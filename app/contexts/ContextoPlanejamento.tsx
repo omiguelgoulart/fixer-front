@@ -15,7 +15,7 @@ const ContextoPlanejamento = createContext<ContextoPlanejamentoProps>({
 
 export function ProvedorPlanejamento({
   children,
-  dadosIniciais
+  // dadosIniciais
 }: {
   children: React.ReactNode
   dadosIniciais: OrdemServicoItf[]
