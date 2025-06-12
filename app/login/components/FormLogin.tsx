@@ -26,7 +26,6 @@ export function FormLogin() {
   const router = useRouter();
 
   async function handleLogin(data: LoginItf) {
-    // console.log(`${data.email} ${data.senha}`)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/login`, {
         method: "POST",
