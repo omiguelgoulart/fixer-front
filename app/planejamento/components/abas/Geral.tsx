@@ -71,7 +71,16 @@ export default function AbaGeral({ ordem }: Props) {
 
         <div>
           <h3 className="font-medium mb-2">Data de Início Planejada</h3>
-          <p>{ordem.dataInicioPlanejada}</p>
+          <p>{ordem.dataInicioPlanejada
+            ? new Date(ordem.dataInicioPlanejada).toLocaleString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : ""}
+            </p>
 
           <h3 className="font-medium mt-4 mb-2">Data de Vencimento</h3>
           <p>
