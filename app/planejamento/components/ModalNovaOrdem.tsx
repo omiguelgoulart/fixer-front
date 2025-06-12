@@ -149,6 +149,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
       });
   }, [id_sistema]);
 
+  //função post das ordens de serviço
   async function onSubmit(data: FormData) {
     console.log("Dados do formulário:", data);
     try {
@@ -194,6 +195,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-3xl">
+        {/*titulos*/}
         <DialogHeader>
           <DialogTitle>Cadastro de Ordem de Serviço</DialogTitle>
           <DialogDescription>
@@ -379,9 +381,8 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
               <Input type="date" {...register("dataVencimento")} />
             </div>
           </div>
-
           {apiError && <p className="text-sm text-red-500">{apiError}</p>}
-
+          {/*Botões de ação*/}
           <DialogFooter className="mt-4 flex justify-between">
            <Button
               type="button"
