@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Calendar, List, Kanban } from "lucide-react"
+import { Calendar, List, Kanban, Plus } from "lucide-react"
 import { PageListas } from "./components/PageListas"
 import CalendarioManutencoes from "./components/PageCalendario"
 import { Button } from "@/components/ui/button"
+import { ModalNovaOrdem } from "./components/ModalNovaOrdem"
 
 export default function PagePlanejamento() {
   const [visualizacao, setVisualizacao] = useState<"lista" | "calendario" | "kanban">("lista")
@@ -32,9 +33,14 @@ export default function PagePlanejamento() {
               </TabsList>
             </Tabs>
           </div>
-          <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
-            <span className="text-sm">Adicionar OS</span>
-          </Button>
+
+          {/* Aqui o botão azul passa a ser o DialogTrigger do modal */}
+          <ModalNovaOrdem>
+            <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600">
+              <Plus className="h-4 w-4 mr-2" />
+              Adicionar OS
+            </Button>
+          </ModalNovaOrdem>
         </div>
 
         <Tabs value={visualizacao} onValueChange={(v: string) => setVisualizacao(v as "lista" | "calendario" | "kanban")}>
