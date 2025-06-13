@@ -13,7 +13,7 @@ export default function PagePlanejamento() {
   
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-full bg-gray-50">
       <main className="flex-1 container mx-auto p-4 space-y-4">
         <div className="flex items-center gap-2">
           <div className="flex-1 flex justify-center">
