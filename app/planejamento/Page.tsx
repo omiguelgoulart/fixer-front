@@ -52,7 +52,7 @@ export default function PagePlanejamento() {
             <CalendarioManutencoes />
           </TabsContent>
           <TabsContent value="kanban">
-            <div className="p-4 text-gray-500 text-sm">Kanban ainda não implementado.</div>
+           <Kanban />
           </TabsContent>
         </Tabs>
       </main>

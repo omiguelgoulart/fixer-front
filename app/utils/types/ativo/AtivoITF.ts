@@ -1,7 +1,7 @@
 import { SubAtivoItf } from './SubAtivoItf';
 
 export interface AtivoItf {
-  name: any;
+  name: string;
   id: number;
   nome: string;
   fabricante: string;
@@ -9,7 +9,7 @@ export interface AtivoItf {
   data_aquisicao: string;
   localizacao_interna: string;
   lastMaintenanceDate: string;
-  tipo_ativo: 'MECANICO' | 'ELETRICO' | 'ELETRONICO' | 'HIDRAULICO' | 'OUTRO';
+  tipo_ativo: 'MECANICO' | 'ELETRICO' | 'ELETRONICO' | 'HIDRAULICO' | 'PNEUMATICO'| 'OUTRO';
   situacao: 'ATIVO' | 'INATIVO' | 'MANUTENCAO' | 'DESCARTADO';
   criticidade: 'ALTA' | 'MEDIA' | 'BAIXA';
   id_sistema: number;

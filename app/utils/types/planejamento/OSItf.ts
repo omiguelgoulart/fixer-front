@@ -1,4 +1,3 @@
-// src/app/utils/types/planejamento/index.ts (or planejamento.ts)
 
 import { AtivoItf } from "../ativo/AtivoITF"
 import { InsumoItf } from "./insumoItf"
