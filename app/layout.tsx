@@ -42,7 +42,7 @@ export default function RootLayout({
       >
         <ClientLayout>
           <Header />
-          <main className="flex-1 overflow-y-auto px-4 pt-4">
+          <main className="flex-1 overflow-y-auto">
             {children}
           </main>
           <Toaster />

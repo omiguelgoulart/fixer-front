@@ -52,7 +52,7 @@ export default function ListaOrdens({ onSelect }: Props) {
       {ordensServico.map((ordem) => (
       <li
         key={ordem.id}
-        className={cn("p-4 cursor-pointer hover:bg-gray-50", ordemSelecionadaId === ordem.id && "bg-blue-50")}
+        className={cn("p-4 cursor-pointer hover:bg-gray-50", ordemSelecionadaId === ordem.id && "bg-blue-100")}
         onClick={() => selecionarOrdem(ordem.id)}
       >
         <div className="font-medium text-sm flex items-center gap-2">
