@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import ListaFuncionarios from "./ListaFuncionarios";
 import FormularioFuncionario from "./FormularioFuncionario";
-import type { Funcionario } from "@/app/utils/types/funcionarios";
+import type { Funcionario } from "@/app/utils/types/FuncionarioItf";
 // Dados iniciais para demonstração
 const funcionariosIniciais: Funcionario[] = [
   {
@@ -100,7 +100,6 @@ export default function GerenciamentoFuncionarios() {
       funcionario.email.toLowerCase().includes(termoBusca.toLowerCase());
 
     const matchTipo = filtroTipo === "todos" || funcionario.tipo === filtroTipo;
-  
 
     return matchBusca && matchTipo;
   });
@@ -180,7 +179,6 @@ export default function GerenciamentoFuncionarios() {
                       <SelectItem value="tecnico">Técnico</SelectItem>
                     </SelectContent>
                   </Select>
-
 
                   <Button
                     className="bg-blue-500 hover:bg-blue-600 text-white"

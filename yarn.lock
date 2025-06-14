@@ -1563,6 +1563,11 @@ bytes@3.1.2, bytes@^3.1.2:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
 
+calendar@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/calendar/-/calendar-0.1.1.tgz#4678dbf192c516690f6cde20bb476140fd817463"
+  integrity sha512-CExn+MxSU1pCsjYiS+Cx8d1MtIZqezxRhpIu8odr1oqvYG/0C1m8lvehHxTl1FslgKbOD7Z5QuEcyk8sGgpZLQ==
+
 call-bind-apply-helpers@^1.0.0, call-bind-apply-helpers@^1.0.1, call-bind-apply-helpers@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind-apply-helpers/-/call-bind-apply-helpers-1.0.2.tgz#4b5428c222be985d79c3d82657479dbe0b59b2d6"
@@ -2455,6 +2460,11 @@ fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-2.0.0.tgz#8dd7df6a1b3a1b3a5cf186c05a5dd267622635a4"
   integrity sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==
+
+full@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/full/-/full-1.0.1.tgz#1ba4ec60317f2e4b8fe717c990b716ae787f9e60"
+  integrity sha512-47NhzP8m8Fs2nEgI4sAeKUyM3ezxEnvnMOR8NxOUG8Z7qzo5J+sLqcTRxL79UNiRaGVY86ESiRC/9rS5oYUNbg==
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -4297,3 +4307,8 @@ zod@^3.23.8, zod@^3.24.2:
   version "3.24.4"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.4.tgz#e2e2cca5faaa012d76e527d0d36622e0a90c315f"
   integrity sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==
+
+zustand@^5.0.5:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-5.0.5.tgz#3e236f6a953142d975336d179bc735d97db17e84"
+  integrity sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg==

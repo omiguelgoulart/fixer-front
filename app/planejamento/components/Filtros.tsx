@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useContextoPlanejamento } from "@/app/contexts/ContextoPlanejamento"
 
+export type ContextoPlanejamentoProps = {
+  filtrarOrdens: (params: { busca: string }) => void
+  // outras propriedades
+}
 
 export default function BarraFiltros() {
   const [termoBusca, setTermoBusca] = useState("")
@@ -64,9 +68,4 @@ export default function BarraFiltros() {
       </Tabs>
     </div>
   )
-}
-
-export type ContextoPlanejamentoProps = {
-  // outras propriedades
-  filtrarOrdens: (params: { busca: string }) => void
 }

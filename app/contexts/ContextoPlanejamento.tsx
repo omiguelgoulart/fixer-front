@@ -6,24 +6,29 @@ import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
 interface ContextoPlanejamentoProps {
   ordemSelecionada: OrdemServicoItf | null
   setOrdemSelecionada: (ordem: OrdemServicoItf) => void
+  filtrarOrdens: (params: { busca: string }) => void
 }
 
 const ContextoPlanejamento = createContext<ContextoPlanejamentoProps>({
   ordemSelecionada: null,
-  setOrdemSelecionada: () => {}
+  setOrdemSelecionada: () => {},
+  filtrarOrdens: () => {} // valor padrão para evitar erro
 })
 
 export function ProvedorPlanejamento({
-  children,
-  // dadosIniciais
+  children
 }: {
   children: React.ReactNode
-  dadosIniciais: OrdemServicoItf[]
 }) {
   const [ordemSelecionada, setOrdemSelecionada] = useState<OrdemServicoItf | null>(null)
 
+  const filtrarOrdens = ({ busca }: { busca: string }) => {
+    console.log("🔍 Buscando por:", busca)
+    // Aqui você pode implementar a lógica real de filtragem
+  }
+
   return (
-    <ContextoPlanejamento.Provider value={{ ordemSelecionada, setOrdemSelecionada }}>
+    <ContextoPlanejamento.Provider value={{ ordemSelecionada, setOrdemSelecionada, filtrarOrdens }}>
       {children}
     </ContextoPlanejamento.Provider>
   )

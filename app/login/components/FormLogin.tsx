@@ -9,6 +9,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useUsuario } from "@/app/contexts/UsuarioContex";
 
 type LoginItf = {
   email: string;
@@ -24,6 +25,7 @@ export function FormLogin() {
   } = useForm<LoginItf>();
 
   const router = useRouter();
+  const { logarUsuario } = useUsuario(); // <- usa a função do contexto
 
   async function handleLogin(data: LoginItf) {
     try {
@@ -33,28 +35,19 @@ export function FormLogin() {
         body: JSON.stringify({ email: data.email, senha: data.senha }),
       });
 
-      if (response.status == 200) {
-        const dados = await response.json();
-        console.log(dados);
+      const dados = await response.json();
+
+      if (response.status === 200) {
         localStorage.setItem("token", dados.token);
+        logarUsuario(dados.usuario); // <- grava o usuário no contexto
         toast.success("Login realizado!");
         router.push("/dashboard");
-        return;
-      } else if (response.status == 401) {
-        const dados = await response.json();
-        console.log(dados);
+      } else if (response.status === 401) {
         toast.error("Email ou senha inválidos");
-        return;
-      } else if (response.status == 500) {
-        const dados = await response.json();
-        console.log(dados);
+      } else if (response.status === 500) {
         toast.error("Erro interno do servidor");
-        return;
-      }
-      if (!response.ok) {
-        const error = await response.json();
-        toast.error(error.message);
-        return;
+      } else if (!response.ok) {
+        toast.error(dados.message || "Erro ao fazer login");
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
@@ -71,10 +64,7 @@ export function FormLogin() {
 
         <form className="space-y-5" onSubmit={handleSubmit(handleLogin)}>
           <div>
-            <Label
-              htmlFor="email"
-              className="text-sm font-medium text-gray-700 block mb-1.5"
-            >
+            <Label htmlFor="email" className="text-sm font-medium text-gray-700 block mb-1.5">
               Email
             </Label>
             <Input
@@ -93,16 +83,10 @@ export function FormLogin() {
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <Label
-                htmlFor="senha"
-                className="text-sm font-medium text-gray-700"
-              >
+              <Label htmlFor="senha" className="text-sm font-medium text-gray-700">
                 Senha
               </Label>
-              <Link
-                href="/esqueci-senha"
-                className="text-sm text-blue-500 hover:underline"
-              >
+              <Link href="/esqueci-senha" className="text-sm text-blue-500 hover:underline">
                 Esqueceu a Senha?
               </Link>
             </div>
