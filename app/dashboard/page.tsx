@@ -5,8 +5,9 @@ import DashboardLoader from "@/app/dashboard/components/DashboardLoader"; // <--
 // Função para buscar os dados no servidor (continua a mesma)
 async function getDashboardData() {
   try {
-    const apiBaseUrl = process.env.BACKEND_API_URL || "http://localhost:3001";
-    const response = await fetch(`${apiBaseUrl}/dashboard/stats`, { cache: 'no-store' }); 
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/dashboard/stats`, {
+      cache: "no-store", // Garantimos que sempre busque os dados mais recentes
+    });
     if (!response.ok) {
       throw new Error(`Falha ao buscar dados: ${response.statusText}`);
     }
@@ -24,7 +25,7 @@ export default async function PaginaDashboard() {
     <main className="flex-1 p-4 md:p-8">
       <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">Dashboard</h1>
       
-      <Suspense fallback={<div className="text-center p-8">Carregando dados...</div>}>
+      <Suspense fallback={<div className="text-center p-4">Carregando...</div>}>
         {/* Agora renderizamos o DashboardLoader, que cuidará do carregamento dinâmico no cliente */}
         <DashboardLoader initialData={data} />
       </Suspense>
