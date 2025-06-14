@@ -10,7 +10,7 @@ export function PageListas() {
   const [ordemSelecionada, setOrdemSelecionada] = useState<OrdemServicoItf | null>(null)
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-180px)]">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* Lista de ordens */}
       <div className="md:col-span-1 bg-white rounded-md shadow flex flex-col overflow-hidden">
         <BarraFiltros />

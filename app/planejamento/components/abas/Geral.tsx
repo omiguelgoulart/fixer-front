@@ -41,7 +41,6 @@ export default function AbaGeral({ ordem }: Props) {
             <p className="text-sm">
               #{ordem.responsavelId} — {ordem.responsavel?.nome ?? "Sem nome"}
             </p>
-            <span>{ordem.responsavelId}</span>
             <Button variant="ghost" size="icon" className="ml-1">
               <User className="h-4 w-4" />
             </Button>
