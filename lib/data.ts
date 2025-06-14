@@ -8,6 +8,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
   return [
     {
       id: 12345467,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Alta",
@@ -22,6 +23,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345468,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Baixa",
@@ -36,6 +38,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345469,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Média",
@@ -50,6 +53,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345470,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Baixa",
@@ -64,6 +68,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345471,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Média",
@@ -78,6 +83,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345472,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Alta",
@@ -92,6 +98,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345473,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Média",
@@ -106,6 +113,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
     },
     {
       id: 12345474,
+      codigo: "12345468",
       titulo: "Lubrificação preventiva",
       status: "Em aberto",
       prioridade: "Baixa",
@@ -125,6 +133,7 @@ export async function getPlanejamento(): Promise<OrdemServico[]> {
 export const ordensServico: OrdemServico[] = [
   {
     id: 12345467,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Alta",
@@ -149,6 +158,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345468,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Baixa",
@@ -169,6 +179,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345469,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Média",
@@ -192,6 +203,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345470,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Baixa",
@@ -212,6 +224,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345471,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Média",
@@ -235,6 +248,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345472,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Alta",
@@ -259,6 +273,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345473,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Média",
@@ -279,6 +294,7 @@ export const ordensServico: OrdemServico[] = [
   },
   {
     id: 12345474,
+    codigo: "12345468",
     titulo: "Lubrificação preventiva",
     status: "Em aberto",
     prioridade: "Baixa",
