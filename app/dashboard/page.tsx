@@ -2,17 +2,6 @@ import { Suspense } from "react";
 // O import 'dynamic' e a definição de 'DashboardPrincipal' foram REMOVIDOS daqui
 import DashboardLoader from "@/app/dashboard/components/DashboardLoader"; // <-- Importamos nosso novo componente
 
-<<<<<<< HEAD
-import Estatisticas from "./components/Estatisticas";
-
-export default function Dashboard() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-full">
-      <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
-      <Estatisticas />
-    </div>
-  );
-=======
 // Função para buscar os dados no servidor (continua a mesma)
 async function getDashboardData() {
   try {
@@ -27,7 +16,6 @@ async function getDashboardData() {
     console.error("Erro no fetch do dashboard:", error);
     return null;
   }
->>>>>>> feat/dashboard
 }
 
 export default async function PaginaDashboard() {
