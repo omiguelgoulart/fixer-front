@@ -20,7 +20,7 @@ export default function CardPlanejamentoOrdem({ ordem, selecionada, onClick }: P
       )}
     >
       <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
-        <span className="text-xs text-gray-400">#{ordem.id}</span>
+        <span className="text-xs text-gray-400">{ordem.codigo}</span>
         <span>{ordem.titulo}</span>
       </div>
 

@@ -46,7 +46,7 @@ export default function ListaOrdens({ onSelect }: Props) {
   }
 
   return (
-  <ul className="space-y-3">
+  <ul className="">
       {ordensServico.map((ordem) => (
         <CardPlanejamentoOrdem
           key={ordem.id}

@@ -1,18 +1,20 @@
 
-import Link from "next/link";
-import type { OrdemServico } from "@/types/planejamento";
+
+import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 import CardOrdemServico from "./CardOrdemServico";
 
-export default function ListaOrdens({ ordens }: { ordens: OrdemServico[] }) {
+interface Props {
+  ordens: OrdemServicoItf[];
+  onSelect: (ordem: OrdemServicoItf) => void;
+}
 
-    
-
+export default function ListaOrdens({ ordens, onSelect }: Props) {
   return (
     <div className="space-y-4">
       {ordens.map((ordem) => (
-        <Link key={ordem.id} href={`/tecnico/ordem/${ordem.id}`}>
+        <div key={ordem.id} onClick={() => onSelect(ordem)}>
           <CardOrdemServico ordem={ordem} />
-        </Link>
+        </div>
       ))}
     </div>
   );
