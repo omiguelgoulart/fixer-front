@@ -25,7 +25,7 @@ export default async function PaginaDashboard() {
   const data = await getDashboardData();
 
   return (
-    <main className="flex-1 p-4 md:p-8">
+    <main className="flex-1 p-4 md:p-8 bg-blue-50 dark:bg-gray-900">
       <Suspense fallback={<div className="text-center p-4">Carregando...</div>}>
         {/* Agora renderizamos o DashboardLoader, que cuidará do carregamento dinâmico no cliente */}
         <DashboardLoader initialData={data} />

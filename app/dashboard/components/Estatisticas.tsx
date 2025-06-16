@@ -1,4 +1,5 @@
 'use client'
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { AlertTriangle, CheckCircle, Wrench, ArrowRight } from "lucide-react"
@@ -16,9 +17,13 @@ interface EstatisticasProps {
 }
 
 export default function Estatisticas({ kpis }: EstatisticasProps) {
+  const cardStyle = "rounded-md shadow-sm bg-white p-4 flex flex-col justify-between h-full";
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <Card>
+      
+      {/* Manutenções Pendentes */}
+      <Card className={`${cardStyle} border-l-4 border-blue-500`}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">Manutenções Pendentes</CardTitle>
         </CardHeader>
@@ -36,7 +41,9 @@ export default function Estatisticas({ kpis }: EstatisticasProps) {
           </div>
         </CardContent>
       </Card>
-      <Card>
+
+      {/* Manutenções Atrasadas */}
+      <Card className={`${cardStyle} border-l-4 border-red-500`}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">Manutenções Atrasadas</CardTitle>
         </CardHeader>
@@ -54,7 +61,9 @@ export default function Estatisticas({ kpis }: EstatisticasProps) {
           </div>
         </CardContent>
       </Card>
-      <Card>
+
+      {/* Ativos com Alertas */}
+      <Card className={`${cardStyle} border-l-4 border-yellow-500`}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">Ativos com Alertas</CardTitle>
         </CardHeader>
@@ -72,7 +81,9 @@ export default function Estatisticas({ kpis }: EstatisticasProps) {
           </div>
         </CardContent>
       </Card>
-      <Card>
+
+      {/* Disponibilidade Geral */}
+      <Card className={`${cardStyle} border-l-4 border-green-500`}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">Disponibilidade Geral</CardTitle>
         </CardHeader>
