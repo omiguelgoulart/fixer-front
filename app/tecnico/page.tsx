@@ -37,7 +37,7 @@ export default function TecnicoPage() {
     (o) =>
       o.titulo.toLowerCase().includes(busca.toLowerCase()) ||
       o.ativo.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      o.ativo.localizacao_interna.toLowerCase().includes(busca.toLowerCase())
+      o.ativo.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
   );
 
   return (

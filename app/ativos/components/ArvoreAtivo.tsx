@@ -23,12 +23,8 @@ export default function ArvoreAtivos({
   useEffect(() => {
     async function fetchPlantas() {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/planta`
-        );
-        if (!response.ok) {
-          throw new Error("Erro ao carregar dados");
-        }
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`);
+        if (!response.ok) throw new Error("Erro ao carregar dados");
         const dados = await response.json();
         setPlantas(dados);
       } catch {
@@ -87,11 +83,15 @@ export default function ArvoreAtivos({
                 )}
               </span>
               <Building2 className="h-4 w-4 text-red-600" />
-              <span className="ml-2 text-sm font-medium">{planta.nome}</span>
-              <span className="ml-2 text-xs text-gray-500">
-                {planta.codigo}
-              </span>
+              <div className="ml-2 text-sm font-medium">
+                <span>{planta.nome}</span>
+                <span className="ml-2 text-xs text-gray-500">({planta.codigo})</span>
+                <span className="ml-2 text-xs italic text-gray-400">
+                  - {planta.localizacao}
+                </span>
+              </div>
             </div>
+
             {estaExpandido("planta", planta.id) && (
               <ul className="ml-6 mt-1 space-y-1">
                 {planta.area.map((area) => (
@@ -113,15 +113,14 @@ export default function ArvoreAtivos({
                         {area.codigo}
                       </span>
                     </div>
+
                     {estaExpandido("area", area.id) && (
                       <ul className="ml-6 mt-1 space-y-1">
                         {area.sistema.map((sistema) => (
                           <li key={`sistema-${sistema.id}`} className="py-1">
                             <div
                               className="flex items-center cursor-pointer hover:bg-blue-100 rounded-md px-2 py-1"
-                              onClick={() =>
-                                alternarExpansao("sistema", sistema.id)
-                              }
+                              onClick={() => alternarExpansao("sistema", sistema.id)}
                             >
                               <span className="mr-1">
                                 {estaExpandido("sistema", sistema.id) ? (
@@ -131,60 +130,47 @@ export default function ArvoreAtivos({
                                 )}
                               </span>
                               <Cog className="h-4 w-4 text-blue-600" />
-                              <span className="ml-2 text-sm">
-                                {sistema.nome}
-                              </span>
+                              <span className="ml-2 text-sm">{sistema.nome}</span>
                               <span className="ml-2 text-xs text-gray-500">
                                 {sistema.codigo}
                               </span>
                             </div>
+
                             {estaExpandido("sistema", sistema.id) && (
                               <ul className="ml-6 mt-1 space-y-1">
                                 {sistema.ativo.map((ativo) => (
-                                  <li
-                                    key={`ativo-${ativo.id}`}
-                                    className="py-1"
-                                  >
+                                  <li key={`ativo-${ativo.id}`} className="py-1">
                                     <div
                                       className="flex items-center cursor-pointer hover:bg-blue-100 rounded-md px-2 py-1"
-                                      onClick={() =>
-                                        selecionarDetalhes("ativo", ativo.id)
-                                      }
+                                      onClick={() => selecionarDetalhes("ativo", ativo.id)}
                                     >
                                       <Cog className="h-4 w-4 text-green-600" />
-                                      <span className="ml-2 text-sm">
-                                        {ativo.nome}
-                                      </span>
+                                      <span className="ml-2 text-sm">{ativo.nome}</span>
                                       <span className="ml-2 text-xs text-gray-500">
                                         {ativo.codigo}
                                       </span>
                                     </div>
+
                                     {estaExpandido("ativo", ativo.id) &&
                                       ativo.subativos &&
                                       ativo.subativos.length > 0 && (
                                         <ul className="ml-6 mt-1 space-y-1">
-                                          {ativo.subativos.map(
-                                            (subativo: {
-                                              id: number;
-                                              nome: string;
-                                              codigo: string;
-                                            }) => (
-                                              <li
-                                                key={`subativo-${subativo.id}`}
-                                                className="py-1"
-                                              >
-                                                <div className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1">
-                                                  <CircleDot className="h-4 w-4 text-purple-600" />
-                                                  <span className="ml-2 text-sm">
-                                                    {subativo.nome}
-                                                  </span>
-                                                  <span className="ml-2 text-xs text-gray-500">
-                                                    {subativo.codigo}
-                                                  </span>
-                                                </div>
-                                              </li>
-                                            )
-                                          )}
+                                          {ativo.subativos.map((subativo) => (
+                                            <li
+                                              key={`subativo-${subativo.id}`}
+                                              className="py-1"
+                                            >
+                                              <div className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1">
+                                                <CircleDot className="h-4 w-4 text-purple-600" />
+                                                <span className="ml-2 text-sm">
+                                                  {subativo.nome}
+                                                </span>
+                                                <span className="ml-2 text-xs text-gray-500">
+                                                  {subativo.codigo}
+                                                </span>
+                                              </div>
+                                            </li>
+                                          ))}
                                         </ul>
                                       )}
                                   </li>

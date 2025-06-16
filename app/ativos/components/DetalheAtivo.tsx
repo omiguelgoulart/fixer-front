@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ModalEditarAtivo from "./ModalEditarAtivo";
@@ -12,8 +13,14 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Pencil, Trash2, X } from "lucide-react";
-import {  Tooltip,  TooltipContent,  TooltipProvider,  TooltipTrigger,} from "@/components/ui/tooltip";
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { SubAtivoItf } from "@/app/utils/types/ativo/SubAtivoItf";
+import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
 
 interface DetalhesAtivoProps {
   ativoId: number;
@@ -29,7 +36,7 @@ export default function DetalhesAtivo({
   const [modalAberto, setModalAberto] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
 
-  async function fetchAtivo() {
+  const fetchAtivo = useCallback(async () => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`
@@ -42,7 +49,7 @@ export default function DetalhesAtivo({
     } finally {
       setCarregando(false);
     }
-  }
+  }, [ativoId]);
 
   async function excluirAtivo() {
     try {
@@ -64,7 +71,7 @@ export default function DetalhesAtivo({
 
   useEffect(() => {
     fetchAtivo();
-  }, [ativoId]);
+  }, [fetchAtivo]);
 
   if (carregando) {
     return (
@@ -162,11 +169,11 @@ export default function DetalhesAtivo({
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="flex justify-center">
           <div className="relative w-full max-w-md aspect-square">
-            <img
+            <Image
               src={ativo.foto || "/placeholder.png"}
               alt={ativo.nome}
+              fill
               className="object-contain rounded-md border border-gray-200"
-              style={{ width: "100%", height: "100%" }}
             />
           </div>
         </div>
@@ -201,17 +208,17 @@ export default function DetalhesAtivo({
 
           <div>
             <p className="font-semibold mb-2">Subativos:</p>
-            {ativo.subativos?.length > 0 ? (
-              <ul className="list-disc pl-5 space-y-1">
-                {ativo.subativos.map((sub) => (
+            {ativo.subativos?.length ? (
+                <ul className="list-disc pl-5 space-y-1">
+                {ativo.subativos.map((sub: SubAtivoItf) => (
                   <li key={sub.id}>
-                    {sub.nome}
-                    <span className="text-xs text-gray-500 ml-2">
-                      ({sub.codigo})
-                    </span>
+                  {sub.nome}
+                  <span className="text-xs text-gray-500 ml-2">
+                    ({sub.codigo})
+                  </span>
                   </li>
                 ))}
-              </ul>
+                </ul>
             ) : (
               <p className="text-gray-500">Nenhum subativo cadastrado.</p>
             )}

@@ -2,9 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-   images: {
-    domains: ["static.weg.net", "www.atlascopco.com"], // adicione aqui os domínios permitidos
-  },
+  images: {
+  remotePatterns: [
+    {
+      protocol: "https",
+      hostname: "exemplo.com",
+    },
+  ],
+}
 };
 
 export default nextConfig;

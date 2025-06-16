@@ -1,4 +1,4 @@
-import { AtivoItf } from "../ativo/AtivoItf";
+import { AtivoItf } from "../ativo/Ativo";
 import { InsumoItf } from "./insumoItf";
 import { TarefaItf } from "./tarefaItf";
 import { UsuarioItf } from "../usuarioItf";

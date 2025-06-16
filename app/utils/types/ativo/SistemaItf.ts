@@ -1,4 +1,4 @@
-import { AtivoItf } from "./AtivoItf";
+import { AtivoItf } from "./Ativo";
 
 export interface SistemaItf {
   id: number;

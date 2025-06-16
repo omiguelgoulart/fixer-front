@@ -25,7 +25,7 @@ import { ReactNode, useState } from "react";
 import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
 import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
 import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
+import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
 import { UsuarioItf } from "@/app/utils/types/usuarioItf";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

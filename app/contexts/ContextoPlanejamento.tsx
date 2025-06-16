@@ -22,7 +22,7 @@ export function ContextoPlanejamentoProvider({ children, ordens }: { children: R
       resultado = resultado.filter(o =>
         o.titulo.toLowerCase().includes(termo) ||
         o.ativo.nome.toLowerCase().includes(termo) ||
-        o.ativo.localizacao_interna.toLowerCase().includes(termo)
+        o.ativo.localizacao_interna?.toLowerCase().includes(termo)
       )
     }
 
