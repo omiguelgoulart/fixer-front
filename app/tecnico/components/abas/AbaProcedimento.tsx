@@ -1,7 +1,8 @@
 // AbaProcedimentos.tsx
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-export default function AbaProcedimentos() {
+export function Procedimentos() {
+
   return (
     <Card>
       <CardHeader><CardTitle className="text-lg">Procedimentos</CardTitle></CardHeader>

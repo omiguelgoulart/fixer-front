@@ -32,25 +32,44 @@ export default function FormItens({ ordemServicoId, onSuccess }: Props) {
     }
   })
 
-  async function onSubmit(data: FormData) {
-    console.log("Enviando dados:", data)
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/insumo`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
+async function onSubmit(data: FormData) {
+  // Converte para garantir número
+  const payload = {
+    nome: data.nome,
+    quantidade: Number(data.quantidade),
+    ordemServicoId: Number(data.ordemServicoId),
+  };
 
-      if (!response.ok) throw new Error("Erro ao enviar formulário")
+  console.log("🛠 Payload enviado:", payload);
 
-      toast.success("Item adicionado com sucesso!")
-      reset({ nome: "", quantidade: 1, ordemServicoId }) // mantém o ID
-      onSuccess?.()
-    } catch (error) {
-      console.error("Erro ao enviar dados:", error)
-      toast.error("Erro ao adicionar item. Tente novamente.")
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/insumo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      console.error("❌ Erro do backend:", json);
+      throw new Error(json.error?._errors?.join(", ") || "Erro desconhecido");
+    }
+
+    toast.success("Item adicionado com sucesso!");
+    reset({ nome: "", quantidade: 1, ordemServicoId: payload.ordemServicoId });
+    onSuccess?.();
+
+  } catch (err: unknown) {
+    console.error("🚨 Falha ao cadastrar insumo:", err);
+    if (err instanceof Error) {
+      toast.error(err.message || "Erro ao adicionar item. Tente novamente.");
+    } else {
+      toast.error("Erro ao adicionar item. Tente novamente.");
     }
   }
+}
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4 rounded-md bg-white mt-4">

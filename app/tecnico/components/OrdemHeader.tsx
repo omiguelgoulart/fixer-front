@@ -1,4 +1,5 @@
 // components/OrdemHeader.tsx
+import { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,9 +9,10 @@ import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 interface Props {
   ordem: OrdemServicoItf;
   onVoltar: () => void;
+   customActions?: ReactNode;
 }
 
-export default function OrdemHeader({ ordem, onVoltar }: Props) {
+export default function OrdemHeader({ ordem, onVoltar, customActions  }: Props) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Em aberto":
@@ -50,6 +52,12 @@ export default function OrdemHeader({ ordem, onVoltar }: Props) {
           <h1 className="font-semibold text-gray-900 truncate">{ordem.titulo}</h1>
         </div>
       </div>
+
+      {customActions && (
+        <div className="mt-2 flex items-center gap-2">
+          {customActions}
+        </div>
+      )}
     </div>
   );
 }

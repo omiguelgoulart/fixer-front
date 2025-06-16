@@ -52,6 +52,7 @@ export default function OrdemDetalhesPage() {
           toggleTarefa={toggleTarefa}
           novoApontamento={novoApontamento}
           setNovoApontamento={setNovoApontamento}
+          onUpdateOrdem={setOrdem}
         />
         <OrdemFooterActions />
       </div>

@@ -5,7 +5,6 @@ import Header from "./components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import ClientLayout from "./components/ClientLayout";
 import { UsuarioProvider } from "./contexts/UsuarioContex";
-import { ProvedorPlanejamento } from "./contexts/ContextoPlanejamento";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +42,6 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <UsuarioProvider>
-          <ProvedorPlanejamento>
             <ClientLayout>
               <Header />
               <main className="flex-1 overflow-y-auto">
@@ -51,7 +49,6 @@ export default function RootLayout({
               </main>
               <Toaster />
             </ClientLayout>
-          </ProvedorPlanejamento>
         </UsuarioProvider>
       </body>
     </html>

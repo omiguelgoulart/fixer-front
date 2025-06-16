@@ -3,7 +3,7 @@
 import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import AbaGeral from "./abas/Geral"
+import OrdemInfo from "@/app/tecnico/components/OrdemInfo"
 
 interface ModalDetalheProps {
   ordem: OrdemServicoItf | null
@@ -24,7 +24,7 @@ export default function ModalDetalhe({ ordem, open, onClose }: ModalDetalheProps
 
         {ordem && (
           <div className="max-h-[70vh] overflow-y-auto">
-            <AbaGeral ordem={ordem} />
+            <OrdemInfo ordem={ordem} />
           </div>
         )}
 

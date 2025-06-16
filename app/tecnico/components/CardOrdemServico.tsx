@@ -8,9 +8,7 @@ type Props = {
   ordem: OrdemServicoItf;
 };
 
-
 export default function CardOrdemServico({ ordem }: Props) {
-  
   return (
     <Card className="hover:shadow-md transition-shadow cursor-pointer">
       <CardHeader className="pb-3">
@@ -18,10 +16,16 @@ export default function CardOrdemServico({ ordem }: Props) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-sm text-gray-500">{ordem.codigo}</span>
-                <Badge className={getStatusColor(ordem.status)}>{ordem.status.replace('_', ' ').toUpperCase()}</Badge>
-              <Badge className={getPrioridadeColor(ordem.prioridade)}>{ordem.prioridade}</Badge>
+              <Badge className={getStatusColor(ordem.status)}>
+                {ordem.status.replace("_", " ").toUpperCase()}
+              </Badge>
+              <Badge className={getPrioridadeColor(ordem.prioridade)}>
+                {ordem.prioridade}
+              </Badge>
             </div>
-            <CardTitle className="text-lg leading-tight">{ordem.titulo}</CardTitle>
+            <CardTitle className="text-lg leading-tight">
+              {ordem.titulo}
+            </CardTitle>
           </div>
         </div>
       </CardHeader>
@@ -40,7 +44,8 @@ export default function CardOrdemServico({ ordem }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4" />
-          Vencimento: {new Date(ordem.dataVencimento).toLocaleDateString("pt-BR")}
+          Vencimento:{" "}
+          {new Date(ordem.dataVencimento).toLocaleDateString("pt-BR")}
         </div>
         <Badge variant="outline" className="text-xs mt-2">
           {ordem.tipoManutencao.charAt(0) +

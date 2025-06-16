@@ -4,6 +4,7 @@ import { InsumoItf } from "./insumoItf"
 import { TarefaItf } from "./tarefaItf"
 import { UsuarioItf } from "../usuarioItf"
 import { ReactNode } from "react"
+import { ObservacaoItf } from "./ObservacaoItf"
 
 export type StatusOrdem = "EM_ABERTO" | "CONCLUIDA"
 export type PrioridadeOrdem = "ALTA" | "MEDIA" | "BAIXA"
@@ -33,4 +34,5 @@ export interface OrdemServicoItf {
   tarefas: TarefaItf[]
   insumos: InsumoItf[]
   procedimentos?: string[]
+  observacoes: ObservacaoItf[]
 }

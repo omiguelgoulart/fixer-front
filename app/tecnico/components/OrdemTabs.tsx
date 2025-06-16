@@ -1,11 +1,13 @@
-// components/ordem/OrdemTabs.tsx
+"use client";
+
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle2, FileText, Package, Settings } from "lucide-react";
-import AbaTarefas from "./abas/AbaTarefas";
-import AbaItens from "./abas/AbaItens";
-import AbaProcedimentos from "./abas/AbaProcedimentos";
-import AbaApontamentos from "./abas/AbaApontamentos";
 import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
+import AbaTarefas from "@/app/tecnico/components/abas/AbaTarefas";
+import AbaItens from "@/app/tecnico/components/abas/AbaItens";
+import { Procedimentos } from "@/app/tecnico/components/abas/AbaProcedimento";
+import AbaApontamentos from "@/app/tecnico/components/abas/AbaApontamentos";
 
 interface Props {
   ordem: OrdemServicoItf;
@@ -13,9 +15,18 @@ interface Props {
   toggleTarefa: (id: number) => void;
   novoApontamento: string;
   setNovoApontamento: (v: string) => void;
+  onUpdateOrdem: (novaOrdem: OrdemServicoItf) => void;  // precisa existir
 }
 
-export default function OrdemTabs({ ordem, tarefasConcluidas, toggleTarefa, novoApontamento, setNovoApontamento }: Props) {
+export default function OrdemTabs({
+  ordem,
+  tarefasConcluidas,
+  toggleTarefa,
+  onUpdateOrdem,
+}: Props) {
+  const [ordemDados, setOrdemDados] = useState<OrdemServicoItf>(ordem);
+
+
   return (
     <Tabs defaultValue="tarefas" className="space-y-4">
       <TabsList className="grid w-full grid-cols-4">
@@ -34,16 +45,29 @@ export default function OrdemTabs({ ordem, tarefasConcluidas, toggleTarefa, novo
       </TabsList>
 
       <TabsContent value="tarefas">
-        <AbaTarefas ordem={ordem} tarefasConcluidas={tarefasConcluidas} toggleTarefa={toggleTarefa} />
+
+        <AbaTarefas
+          ordem={ordemDados}
+          tarefasConcluidas={tarefasConcluidas}
+          toggleTarefa={toggleTarefa}
+          onUpdate={setOrdemDados}
+        />
+
       </TabsContent>
+
       <TabsContent value="itens">
-        <AbaItens ordem={ordem} />
+        <AbaItens ordem={ordem} onUpdate={onUpdateOrdem} />
       </TabsContent>
+
       <TabsContent value="procedimentos">
-        <AbaProcedimentos />
+        <Procedimentos />
       </TabsContent>
+
       <TabsContent value="apontamentos">
-        <AbaApontamentos novoApontamento={novoApontamento} setNovoApontamento={setNovoApontamento} />
+        <AbaApontamentos
+          ordem={ordem}
+          onUpdate={onUpdateOrdem}
+        />
       </TabsContent>
     </Tabs>
   );

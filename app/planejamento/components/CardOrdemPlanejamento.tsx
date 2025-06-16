@@ -1,18 +1,20 @@
-"use client"
+"use client";
 
-import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
-import { cn } from "@/lib/utils"
-import { MapPin, User, Clock } from "lucide-react"
+import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
+import { cn } from "@/lib/utils";
+import { MapPin, User, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { getPrioridadeColor, getStatusColor } from "@/app/tecnico/components/utils";
 
 interface Props {
-  ordem: OrdemServicoItf
-  selecionada?: boolean
-  onClick?: () => void
+  ordem: OrdemServicoItf;
+  selecionada?: boolean;
+  onClick?: () => void;
 }
 
 export default function CardPlanejamentoOrdem({ ordem, selecionada, onClick }: Props) {
   return (
-    <li
+    <div
       onClick={onClick}
       className={cn(
         "border border-gray-200 bg-white p-4 shadow-sm hover:shadow transition cursor-pointer",
@@ -25,22 +27,17 @@ export default function CardPlanejamentoOrdem({ ordem, selecionada, onClick }: P
       </div>
 
       <div className="mt-2 flex gap-2 text-xs">
-        <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 capitalize">
-          {ordem.status.replace("_", " ").toLowerCase()}
-        </span>
-        <span
-          className={cn(
-            "px-2 py-0.5 rounded text-white",
-            ordem.prioridade === "ALTA" && "bg-red-500",
-            ordem.prioridade === "MEDIA" && "bg-yellow-500 text-gray-800",
-            ordem.prioridade === "BAIXA" && "bg-green-500"
-          )}
-        >
-          {ordem.prioridade}
-        </span>
-        <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100">
-          {ordem.tipoManutencao.charAt(0) + ordem.tipoManutencao.slice(1).toLowerCase()}
-        </span>
+        <Badge className={getStatusColor(ordem.status)}>
+          {ordem.status === "EM_ABERTO" ? "Em aberto" : "Concluída"}
+        </Badge>
+        <Badge className={getPrioridadeColor(ordem.prioridade)}>
+          {ordem.prioridade.charAt(0) +
+            ordem.prioridade.slice(1).toLowerCase()}
+        </Badge>
+        <Badge className="bg-blue-50 text-blue-700 border border-blue-100">
+          {ordem.tipoManutencao.charAt(0) +
+            ordem.tipoManutencao.slice(1).toLowerCase()}
+        </Badge>
       </div>
 
       <div className="mt-3 space-y-1 text-xs text-gray-600">
@@ -58,9 +55,10 @@ export default function CardPlanejamentoOrdem({ ordem, selecionada, onClick }: P
         </div>
         <div className="flex items-center gap-2">
           <Clock className="h-3 w-3 text-gray-400" />
-          Vencimento: {new Date(ordem.dataVencimento).toLocaleDateString("pt-BR")}
+          Vencimento:{" "}
+          {new Date(ordem.dataVencimento).toLocaleDateString("pt-BR")}
         </div>
       </div>
-    </li>
-  )
+    </div>
+  );
 }
