@@ -2,16 +2,30 @@
 
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import {  Dialog,  DialogTrigger,  DialogContent,  DialogHeader,  DialogTitle,  DialogDescription,  DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {  Select,  SelectContent,  SelectItem,  SelectTrigger,  SelectValue } from "@/components/ui/select";
-import { ReactNode,  useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ReactNode, useState } from "react";
 import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
 import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
 import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
 import { UsuarioItf } from "@/app/utils/types/usuarioItf";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -20,7 +34,6 @@ type ModalNovaOrdemProps = {
   children: ReactNode;
   onSuccess?: () => void; // 👈 ADICIONA ISSO
 };
-
 
 type FormData = {
   titulo: string;
@@ -72,7 +85,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
           `${process.env.NEXT_PUBLIC_URL_API}/usuario/tecnico`
         );
         const data = await response.json();
-        setUsuarios(data)
+        setUsuarios(data);
       } catch (error) {
         console.error("Erro ao carregar usuários:", error);
         setApiError(
@@ -83,7 +96,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
     carregarUsuarios();
   }, []);
 
-    // Carrega todas as plantas
+  // Carrega todas as plantas
   useEffect(() => {
     async function carregarPlantas() {
       try {
@@ -187,7 +200,9 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
       setOpen(false);
     } catch (error) {
       console.error("Erro ao cadastrar OS:", error);
-      toast.error((error as Error).message || "Erro ao cadastrar Ordem de Serviço");
+      toast.error(
+        (error as Error).message || "Erro ao cadastrar Ordem de Serviço"
+      );
     }
   }
 
@@ -384,7 +399,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
           {apiError && <p className="text-sm text-red-500">{apiError}</p>}
           {/*Botões de ação*/}
           <DialogFooter className="mt-4 flex justify-between">
-           <Button
+            <Button
               type="button"
               variant="outline"
               onClick={() => {
@@ -392,9 +407,9 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
                 setAreas([]);
                 setSistemas([]);
                 setAtivos([]);
-                }}
-              >
-                Limpar
+              }}
+            >
+              Limpar
             </Button>
             <Button type="submit">Cadastrar OS</Button>
           </DialogFooter>

@@ -1,64 +1,75 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Badge } from "@/components/ui/badge"
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF"
-import { Button } from "@/components/ui/button"
-import ModalEditarAtivo from "./ModalEditarAtivo"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { toast } from "sonner"
-import { Pencil, Trash2, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
+import { Button } from "@/components/ui/button";
+import ModalEditarAtivo from "./ModalEditarAtivo";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Pencil, Trash2, X } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-
-
+} from "@/components/ui/tooltip";
 
 interface DetalhesAtivoProps {
-  ativoId: number
-  onVoltar: () => void
+  ativoId: number;
+  onVoltar: () => void;
 }
 
-export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps) {
-  const [ativo, setAtivo] = useState<AtivoItf | null>(null)
-  const [carregando, setCarregando] = useState(true)
-  const [modalAberto, setModalAberto] = useState(false)
-  const [confirmarExclusao, setConfirmarExclusao] = useState(false)
+export default function DetalhesAtivo({
+  ativoId,
+  onVoltar,
+}: DetalhesAtivoProps) {
+  const [ativo, setAtivo] = useState<AtivoItf | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [confirmarExclusao, setConfirmarExclusao] = useState(false);
 
   async function fetchAtivo() {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`)
-      if (!response.ok) throw new Error("Erro ao carregar dados")
-      const dados = await response.json()
-      setAtivo(dados)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`
+      );
+      if (!response.ok) throw new Error("Erro ao carregar dados");
+      const dados = await response.json();
+      setAtivo(dados);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setCarregando(false)
+      setCarregando(false);
     }
   }
 
   async function excluirAtivo() {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`, {
-        method: "DELETE"
-      })
-      if (!response.ok) throw new Error("Erro ao excluir ativo")
-      toast.success("Ativo excluído com sucesso")
-      setConfirmarExclusao(false)
-      onVoltar()
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) throw new Error("Erro ao excluir ativo");
+      toast.success("Ativo excluído com sucesso");
+      setConfirmarExclusao(false);
+      onVoltar();
     } catch (error) {
-      console.error(error)
-      toast.error("Erro ao excluir ativo")
+      console.error(error);
+      toast.error("Erro ao excluir ativo");
     }
   }
 
   useEffect(() => {
-    fetchAtivo()
-  }, [ativoId])
+    fetchAtivo();
+  }, [ativoId]);
 
   if (carregando) {
     return (
@@ -67,36 +78,36 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
         <div className="h-5 bg-gray-200 rounded w-1/2"></div>
         <div className="h-5 bg-gray-200 rounded w-2/3"></div>
       </div>
-    )
+    );
   }
 
-  if (!ativo) return <p className="text-gray-500">Ativo não encontrado.</p>
+  if (!ativo) return <p className="text-gray-500">Ativo não encontrado.</p>;
 
   const obterCorCriticidade = (criticidade: string) => {
     switch (criticidade.toUpperCase()) {
       case "ALTA":
-        return "bg-red-500"
+        return "bg-red-500";
       case "MEDIA":
-        return "bg-yellow-500"
+        return "bg-yellow-500";
       case "BAIXA":
-        return "bg-green-500"
+        return "bg-green-500";
       default:
-        return "bg-gray-500"
+        return "bg-gray-500";
     }
-  }
+  };
 
   const obterCorSituacao = (situacao: string) => {
     switch (situacao.toUpperCase()) {
       case "ATIVO":
-        return "bg-green-500"
+        return "bg-green-500";
       case "INATIVO":
-        return "bg-gray-500"
+        return "bg-gray-500";
       case "MANUTENCAO":
-        return "bg-yellow-500"
+        return "bg-yellow-500";
       default:
-        return "bg-blue-500"
+        return "bg-blue-500";
     }
-  }
+  };
 
   return (
     <div className="border border-gray-300 rounded-lg overflow-hidden">
@@ -104,43 +115,53 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
         <div className="flex items-center">
           <h2 className="text-xl font-bold mr-4">{ativo.nome}</h2>
           <div className="flex gap-2">
-            <Badge className={obterCorSituacao(ativo.situacao)}>{ativo.situacao}</Badge>
-            <Badge className={obterCorCriticidade(ativo.criticidade)}>Criticidade: {ativo.criticidade}</Badge>
+            <Badge className={obterCorSituacao(ativo.situacao)}>
+              {ativo.situacao}
+            </Badge>
+            <Badge className={obterCorCriticidade(ativo.criticidade)}>
+              Criticidade: {ativo.criticidade}
+            </Badge>
           </div>
         </div>
 
-<TooltipProvider>
-  <div className="flex gap-3">
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="default" size="icon" onClick={() => setModalAberto(true)}>
-          <Pencil className="w-4 h-4" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>Editar</TooltipContent>
-    </Tooltip>
+        <TooltipProvider>
+          <div className="flex gap-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="default"
+                  size="icon"
+                  onClick={() => setModalAberto(true)}
+                >
+                  <Pencil className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Editar</TooltipContent>
+            </Tooltip>
 
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="destructive" size="icon" onClick={() => setConfirmarExclusao(true)}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>Excluir</TooltipContent>
-    </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => setConfirmarExclusao(true)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Excluir</TooltipContent>
+            </Tooltip>
 
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline" size="icon" onClick={onVoltar}>
-          <X className="w-4 h-4" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>Fechar</TooltipContent>
-    </Tooltip>
-  </div>
-</TooltipProvider>
-
-
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={onVoltar}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Fechar</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -190,7 +211,9 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
                 {ativo.subativos.map((sub) => (
                   <li key={sub.id}>
                     {sub.nome}
-                    <span className="text-xs text-gray-500 ml-2">({sub.codigo})</span>
+                    <span className="text-xs text-gray-500 ml-2">
+                      ({sub.codigo})
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -200,8 +223,12 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
           </div>
 
           <div className="mt-6">
-            <p className="font-semibold text-gray-700">📜 Histórico de Falhas:</p>
-            <p className="text-sm text-gray-400">Em breve você poderá consultar falhas registradas deste ativo.</p>
+            <p className="font-semibold text-gray-700">
+              📜 Histórico de Falhas:
+            </p>
+            <p className="text-sm text-gray-400">
+              Em breve você poderá consultar falhas registradas deste ativo.
+            </p>
           </div>
         </div>
       </div>
@@ -219,14 +246,23 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Deseja realmente excluir este ativo?</DialogTitle>
-            <p className="text-sm text-gray-500">Essa ação não poderá ser desfeita.</p>
+            <p className="text-sm text-gray-500">
+              Essa ação não poderá ser desfeita.
+            </p>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>Cancelar</Button>
-            <Button variant="destructive" onClick={excluirAtivo}>Confirmar exclusão</Button>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmarExclusao(false)}
+            >
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={excluirAtivo}>
+              Confirmar exclusão
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

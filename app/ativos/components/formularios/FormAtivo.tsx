@@ -15,7 +15,7 @@ import {
 import type { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
 import type { AreaItf } from "@/app/utils/types/ativo/AreaItf";
 import type { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
 import { toast } from "sonner";
 
 export default function FormularioAtivo() {

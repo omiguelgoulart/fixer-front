@@ -15,7 +15,7 @@ import {
 import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
 import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
 import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoITF";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
 import { SubAtivoItf } from "@/app/utils/types/ativo/SubAtivoItf";
 import { toast } from "sonner";
 
