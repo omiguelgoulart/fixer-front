@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import BarraFiltros from "./Filtros";
-import type { AbaType } from "./Filtros";
+import type { AbaType, CriticidadeType, TipoManutencaoType } from "./Filtros";
 import ListaOrdens from "./ListaOrdens";
 import DetalhesOrdem from "./DetalhesOrdem";
 import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
@@ -11,6 +11,8 @@ export function PageListas() {
   const [ordens, setOrdens] = useState<OrdemServicoItf[]>([]);
   const [busca, setBusca] = useState("");
   const [aba, setAba] = useState<AbaType>("TODAS");
+  const [criticidade, setCriticidade] = useState<CriticidadeType>("TODAS");
+  const [tipoManutencao, setTipoManutencao] = useState<TipoManutencaoType>("TODAS");
   const [ordemSelecionada, setOrdemSelecionada] = useState<OrdemServicoItf | null>(null);
 
   useEffect(() => {
@@ -22,23 +24,35 @@ export function PageListas() {
     loadOrdens();
   }, []);
 
-  const ordensFiltradas = useMemo(() => {
-    const term = busca.toLowerCase();
-    return ordens.filter(o => {
-      const okStatus = aba === "TODAS" || o.status === aba;
-      const okBusca =
-        o.titulo.toLowerCase().includes(term) ||
-        o.ativo.nome.toLowerCase().includes(term) ||
-        o.ativo.localizacao_interna?.toLowerCase().includes(term);
-      return okStatus && okBusca;
-    });
-  }, [ordens, busca, aba]);
+const ordensFiltradas = useMemo(() => {
+  const term = busca.toLowerCase();
+  return ordens.filter((o) => {
+    const okStatus = aba === "TODAS" || o.status === aba;
+    const okCrit = criticidade === "TODAS" || o.ativo.criticidade === criticidade;
+    const okBusca =
+      o.titulo.toLowerCase().includes(term) ||
+      o.ativo.nome.toLowerCase().includes(term) ||
+      o.ativo.localizacao_interna?.toLowerCase().includes(term);
+    return okStatus && okCrit && okBusca;
+  });
+}, [ordens, busca, aba, criticidade]);
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-7rem)]">
       {/* coluna de filtro + lista */}
       <div className="md:col-span-1 bg-white rounded-md shadow flex flex-col overflow-hidden">
-        <BarraFiltros busca={busca} onBusca={setBusca} aba={aba} onAba={setAba} />
+        <BarraFiltros
+          busca={busca}
+          onBusca={setBusca}
+          aba={aba}
+          onAba={setAba}
+          criticidade={criticidade}
+          onCriticidade={setCriticidade}
+          tipoManutencao={tipoManutencao}
+          onTipoManutencao={setTipoManutencao}
+        />
+
         <div className="flex-1 overflow-y-auto">
           <ListaOrdens ordens={ordensFiltradas} onSelect={setOrdemSelecionada} />
         </div>
