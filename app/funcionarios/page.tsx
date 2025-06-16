@@ -4,7 +4,7 @@ import GerenciamentoFuncionarios from "./components/GerenciamentoFuncionarios"
 
 export default async function PaginaFuncionarios() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-full">
       <main className="flex-1 container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Gerenciamento de Funcionários</h1>
 

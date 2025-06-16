@@ -69,7 +69,7 @@ export function ModalNovaOrdem({ children }: ModalNovaOrdemProps) {
     async function carregarUsuarios() {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/usuario`
+          `${process.env.NEXT_PUBLIC_URL_API}/usuario/tecnico`
         );
         const data = await response.json();
         setUsuarios(data)

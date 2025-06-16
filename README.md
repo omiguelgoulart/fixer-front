@@ -115,6 +115,7 @@ git commit -m ":sparkles: Adiciona tela de cadastro de ativos"
 | ✅    | `:white_check_mark:` | Testes             | Adiciona ou ajusta testes                        |
 | 📦    | `:package:`       | Dependências          | Instala ou remove pacotes                        |
 | 🔧    | `:wrench:`        | Configurações         | Altera arquivos de configuração                  |
+| 🔐    | `:lock:`           | Segurança             | Implementa ou corrige questões de segurança      |
 
 ---
 

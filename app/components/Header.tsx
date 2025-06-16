@@ -15,13 +15,13 @@ export default function Header() {
     setHasToken(!!token);
   }, []);
 
-  const hiddenRoutes = ["/login"];
+  const hiddenRoutes = ["/login", "/"];
   const isHiddenRoute = hiddenRoutes.includes(pathname);
 
-  // Se estiver numa rota oculta E não tiver token → não renderiza header
-  if (hasToken === false && isHiddenRoute) return null;
+  // Se for uma rota oculta → não renderiza header
+  if (isHiddenRoute) return null;
 
-  // Espera carregar o token do localStorage (evita piscar)
+  // Espera carregar o token do localStorage (opcional)
   if (hasToken === null) return null;
 
   return (

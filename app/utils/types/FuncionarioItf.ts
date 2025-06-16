@@ -2,7 +2,7 @@ export type TipoFuncionario = "gestor" | "gerente" | "tecnico"
 export type StatusFuncionario = "ativo" | "inativo"
 export type NivelAcesso = "basico" | "intermediario" | "administrador"
 
-export interface Funcionario {
+export interface FuncionarioItf {
   id: number
   nome: string
   email: string

@@ -1,87 +1,90 @@
 'use client'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { AlertTriangle, CheckCircle, Wrench, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
-import { BarChart3, Wrench, Clock, AlertTriangle } from "lucide-react";
-import { useEffect, useState } from "react";
-// Função para buscar estatísticas do sistema
+interface Kpis {
+  manutencoesPendentes: number;
+  manutencoesAtrasadas: number;
+  ativosComAlertas: number;
+  disponibilidadeGeral: number;
+}
 
+interface EstatisticasProps {
+  kpis: Kpis;
+}
 
-export default function Estatisticas() {
-    // const [carregando, setCarregando] = useState(true);
-    const [estatisticas, setEstatisticas] = useState({
-        totalAtivos: 0,
-        emManutencao: 0,
-        manutencoesProgramadas: 0,
-        alertasCriticos: 0,
-        ultimosAtivos: [] as string[],
-    });
-
-    useEffect(() => {
-        // Função temporária para simular a busca de dados
-        const fetchEstatisticas = () => {
-            setTimeout(() => {
-                setEstatisticas({
-                    totalAtivos: 120,
-                    emManutencao: 15,
-                    manutencoesProgramadas: 8,
-                    alertasCriticos: 3,
-                    ultimosAtivos: ["Ativo 1", "Ativo 2", "Ativo 3"],
-                });
-            }, 1000); // Simula um atraso de 1 segundo
-        };
-
-        fetchEstatisticas();
-    }, []);
-
-
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <p className="text-sm text-gray-500">Total de Ativos</p>
-                        <p className="text-2xl font-bold">{estatisticas.totalAtivos}</p>
-                    </div>
-                    <div className="bg-blue-100 p-3 rounded-full">
-                        <BarChart3 className="h-6 w-6 text-blue-500" />
-                    </div>
-                </div>
+export default function Estatisticas({ kpis }: EstatisticasProps) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Manutenções Pendentes</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Wrench className="h-5 w-5 text-blue-500 mr-2" />
+              <span className="text-2xl font-bold">{kpis.manutencoesPendentes}</span>
             </div>
-
-            <div className="bg-white rounded-lg shadow p-4 border-l-4 border-yellow-500">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <p className="text-sm text-gray-500">Em Manutenção</p>
-                        <p className="text-2xl font-bold">{estatisticas.emManutencao}</p>
-                    </div>
-                    <div className="bg-yellow-100 p-3 rounded-full">
-                        <Wrench className="h-6 w-6 text-yellow-500" />
-                    </div>
-                </div>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/planejamento" className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700">
+                Ver <ArrowRight className="h-3 w-3" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Manutenções Atrasadas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+              <span className="text-2xl font-bold">{kpis.manutencoesAtrasadas}</span>
             </div>
-
-            <div className="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <p className="text-sm text-gray-500">Manutenções Programadas</p>
-                        <p className="text-2xl font-bold">{estatisticas.manutencoesProgramadas}</p>
-                    </div>
-                    <div className="bg-green-100 p-3 rounded-full">
-                        <Clock className="h-6 w-6 text-green-500" />
-                    </div>
-                </div>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/planejamento?filtro=atrasadas" className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700">
+                Resolver <ArrowRight className="h-3 w-3" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Ativos com Alertas</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <AlertTriangle className="h-5 w-5 text-yellow-500 mr-2" />
+              <span className="text-2xl font-bold">{kpis.ativosComAlertas}</span>
             </div>
-
-            <div className="bg-white rounded-lg shadow p-4 border-l-4 border-red-500">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <p className="text-sm text-gray-500">Alertas Críticos</p>
-                        <p className="text-2xl font-bold">{estatisticas.alertasCriticos}</p>
-                    </div>
-                    <div className="bg-red-100 p-3 rounded-full">
-                        <AlertTriangle className="h-6 w-6 text-red-500" />
-                    </div>
-                </div>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/ativos?filtro=alertas" className="flex items-center gap-1 text-xs text-yellow-500 hover:text-yellow-700">
+                Verificar <ArrowRight className="h-3 w-3" />
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Disponibilidade Geral</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+              <span className="text-2xl font-bold">{kpis.disponibilidadeGeral}%</span>
             </div>
-        </div>
-    );
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
