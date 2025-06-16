@@ -12,6 +12,7 @@ export interface Insumo {
 
 export interface OrdemServico {
   id: number
+  codigo: string
   titulo: string
   status: string
   prioridade: string

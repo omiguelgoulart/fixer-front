@@ -216,6 +216,7 @@ export default function FormularioAtivo() {
                     | "ELETRICO"
                     | "ELETRONICO"
                     | "HIDRAULICO"
+                    | "PNEUMATICO"
                     | "OUTRO"
                 )
               }
@@ -226,8 +227,9 @@ export default function FormularioAtivo() {
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ELETRICO">Elétrico</SelectItem>
                 <SelectItem value="MECANICO">Mecânico</SelectItem>
+                <SelectItem value="ELETRICO">Elétrico</SelectItem>
+                <SelectItem value="ELETRONICO">Eletrônico</SelectItem>
                 <SelectItem value="HIDRAULICO">Hidráulico</SelectItem>
                 <SelectItem value="PNEUMATICO">Pneumático</SelectItem>
                 <SelectItem value="OUTRO">Outro</SelectItem>

@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Funcionario } from "@/app/utils/types/funcionarios";
+import type { Funcionario } from "@/app/utils/types/FuncionarioItf";
 
 interface FormularioFuncionarioProps {
   funcionarioInicial: Funcionario | null;
@@ -25,17 +25,19 @@ export default function FormularioFuncionario({
   onSalvar,
   onCancelar,
 }: FormularioFuncionarioProps) {
-  const [funcionario, setFuncionario] = useState<Funcionario>(() =>
-    funcionarioInicial ?? {
-      nome: "",
-      email: "",
-      telefone: "",
-      tipo: "tecnico",
-      dataContratacao: "",
-      status: "ativo",
-      // Adicione aqui quaisquer outros campos obrigatórios do tipo Funcionario
-      // Exemplo: id: "", departamento: "", etc.
-    } as Funcionario
+  const [funcionario, setFuncionario] = useState<Funcionario>(
+    () =>
+      funcionarioInicial ??
+      ({
+        nome: "",
+        email: "",
+        telefone: "",
+        tipo: "tecnico",
+        dataContratacao: "",
+        status: "ativo",
+        // Adicione aqui quaisquer outros campos obrigatórios do tipo Funcionario
+        // Exemplo: id: "", departamento: "", etc.
+      } as Funcionario)
   );
 
   useEffect(() => {
@@ -44,7 +46,10 @@ export default function FormularioFuncionario({
     }
   }, [funcionarioInicial]);
 
-  function handleChange<K extends keyof Funcionario>(key: K, value: Funcionario[K]) {
+  function handleChange<K extends keyof Funcionario>(
+    key: K,
+    value: Funcionario[K]
+  ) {
     setFuncionario((prev) => ({
       ...prev,
       [key]: value,
@@ -101,7 +106,9 @@ export default function FormularioFuncionario({
             <Label htmlFor="tipo">Tipo de Funcionário</Label>
             <Select
               value={funcionario.tipo}
-              onValueChange={(value) => handleChange("tipo", value as Funcionario["tipo"])}
+              onValueChange={(value) =>
+                handleChange("tipo", value as Funcionario["tipo"])
+              }
               required
             >
               <SelectTrigger>
@@ -133,7 +140,9 @@ export default function FormularioFuncionario({
           <Label htmlFor="status">Status</Label>
           <Select
             value={funcionario.status}
-            onValueChange={(value) => handleChange("status", value as Funcionario["status"])}
+            onValueChange={(value) =>
+              handleChange("status", value as Funcionario["status"])
+            }
             required
           >
             <SelectTrigger>

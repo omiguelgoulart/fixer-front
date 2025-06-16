@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import type { Funcionario } from "@/app/utils/types/funcionarios";
+import type { Funcionario } from "@/app/utils/types/FuncionarioItf";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";

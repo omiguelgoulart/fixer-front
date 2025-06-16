@@ -14,7 +14,7 @@ export default function PaginaAtivos() {
   const voltarInicio = () => setAtivoSelecionado(null)
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-full overflow-hidden">
       <div className="w-80 shrink-0 border-r border-gray-200 h-full overflow-y-auto">
         <Sidebar onSelecionarAtivo={irParaDetalhes} />
       </div>
