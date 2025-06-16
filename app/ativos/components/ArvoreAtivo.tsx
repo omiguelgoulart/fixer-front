@@ -163,22 +163,28 @@ export default function ArvoreAtivos({
                                       ativo.subativos &&
                                       ativo.subativos.length > 0 && (
                                         <ul className="ml-6 mt-1 space-y-1">
-                                          {ativo.subativos.map((subativo) => (
-                                            <li
-                                              key={`subativo-${subativo.id}`}
-                                              className="py-1"
-                                            >
-                                              <div className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1">
-                                                <CircleDot className="h-4 w-4 text-purple-600" />
-                                                <span className="ml-2 text-sm">
-                                                  {subativo.nome}
-                                                </span>
-                                                <span className="ml-2 text-xs text-gray-500">
-                                                  {subativo.codigo}
-                                                </span>
-                                              </div>
-                                            </li>
-                                          ))}
+                                          {ativo.subativos.map(
+                                            (subativo: {
+                                              id: number;
+                                              nome: string;
+                                              codigo: string;
+                                            }) => (
+                                              <li
+                                                key={`subativo-${subativo.id}`}
+                                                className="py-1"
+                                              >
+                                                <div className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1">
+                                                  <CircleDot className="h-4 w-4 text-purple-600" />
+                                                  <span className="ml-2 text-sm">
+                                                    {subativo.nome}
+                                                  </span>
+                                                  <span className="ml-2 text-xs text-gray-500">
+                                                    {subativo.codigo}
+                                                  </span>
+                                                </div>
+                                              </li>
+                                            )
+                                          )}
                                         </ul>
                                       )}
                                   </li>
