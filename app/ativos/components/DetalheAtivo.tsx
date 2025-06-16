@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
 import { Button } from "@/components/ui/button";
 import ModalEditarAtivo from "./ModalEditarAtivo";
 import {
@@ -19,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
 
 interface DetalhesAtivoProps {
   ativoId: number;
