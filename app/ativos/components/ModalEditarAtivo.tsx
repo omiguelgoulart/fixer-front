@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/dialog"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { AtivoItf } from "@/app/utils/types/AtivoITF"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf"
 
 interface ModalEditarAtivoProps {
     aberto: boolean
@@ -103,7 +103,7 @@ export default function ModalEditarAtivo({ aberto, aoFechar, ativo, aoAtualizar 
                             <Input
                                 id="imagem"
                                 placeholder="https://exemplo.com/imagem.jpg"
-                                {...register("imagem")}
+                                {...register("foto")}
                             />
                         </div>
                     </div>
