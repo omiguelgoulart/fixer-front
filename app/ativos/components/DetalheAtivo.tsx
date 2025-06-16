@@ -13,14 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Pencil, Trash2, X } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { SubAtivoItf } from "@/app/utils/types/ativo/SubAtivoItf";
 import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
+import HistoricoFalhas from "./HistoricoFalhas";
 
 interface DetalhesAtivoProps {
   ativoId: number;
@@ -111,128 +106,85 @@ export default function DetalhesAtivo({
     }
   };
 
-  return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden">
-      <div className="flex justify-between items-center p-4 border-b">
-        <div className="flex items-center">
-          <h2 className="text-xl font-bold mr-4">{ativo.nome}</h2>
-          <div className="flex gap-2">
-            <Badge className={obterCorSituacao(ativo.situacao)}>
-              {ativo.situacao}
-            </Badge>
-            <Badge className={obterCorCriticidade(ativo.criticidade)}>
-              Criticidade: {ativo.criticidade}
-            </Badge>
-          </div>
+ return (
+    <div className="bg-white rounded-md shadow-sm border overflow-hidden ">
+      <div className="flex justify-between items-start p-6 border-b">
+        <div>
+          <h2 className="text-2xl font-bold leading-snug">{ativo.nome}</h2>
+          <p className="text-sm text-gray-500">{ativo.tipo_ativo} • {ativo.modelo}</p>
         </div>
-
-        <TooltipProvider>
-          <div className="flex gap-3">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="default"
-                  size="icon"
-                  onClick={() => setModalAberto(true)}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Editar</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => setConfirmarExclusao(true)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Excluir</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" onClick={onVoltar}>
-                  <X className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Fechar</TooltipContent>
-            </Tooltip>
-          </div>
-        </TooltipProvider>
+        <div className="flex gap-2 items-center">
+          <Badge className={obterCorSituacao(ativo.situacao)}>{ativo.situacao}</Badge>
+          <Badge className={obterCorCriticidade(ativo.criticidade)}>
+            Criticidade: {ativo.criticidade}
+          </Badge>
+          <Button variant="outline" size="icon" onClick={onVoltar}><X className="w-4 h-4" /></Button>
+          <Button size="icon" onClick={() => setModalAberto(true)}><Pencil className="w-4 h-4" /></Button>
+          <Button variant="destructive" size="icon" onClick={() => setConfirmarExclusao(true)}><Trash2 className="w-4 h-4" /></Button>
+        </div>
       </div>
 
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-md aspect-square">
-            <Image
-              src={ativo.foto || "/placeholder.png"}
-              alt={ativo.nome}
-              fill
-              className="object-contain rounded-md border border-gray-200"
-            />
-          </div>
-        </div>
+<div className="flex flex-col md:flex-row gap-6 p-6">
+  {ativo.foto && (
+    <div className="md:basis-1/3 flex justify-center items-start">
+  <div className="relative w-full max-w-xs h-72 border rounded-md overflow-hidden">
+    <Image
+      src={ativo.foto}
+      alt={`Foto de ${ativo.nome}`}
+      fill
+      className="object-contain bg-white"
+    />
+  </div>
+</div>
 
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mt-6">
-            <div>
-              <p className="font-semibold">Código:</p>
-              <p>{ativo.codigo}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Fabricante:</p>
-              <p>{ativo.fabricante}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Modelo:</p>
-              <p>{ativo.modelo}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Tipo:</p>
-              <p>{ativo.tipo_ativo}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Data de Aquisição:</p>
-              <p>{ativo.data_aquisicao?.split("T")[0]}</p>
-            </div>
-            <div>
-              <p className="font-semibold">Localização Interna:</p>
-              <p>{ativo.localizacao_interna || "-"}</p>
-            </div>
-          </div>
+  )}
 
-          <div>
-            <p className="font-semibold mb-2">Subativos:</p>
-            {ativo.subativos?.length ? (
-                <ul className="list-disc pl-5 space-y-1">
-                {ativo.subativos.map((sub: SubAtivoItf) => (
-                  <li key={sub.id}>
-                  {sub.nome}
-                  <span className="text-xs text-gray-500 ml-2">
-                    ({sub.codigo})
-                  </span>
-                  </li>
-                ))}
-                </ul>
-            ) : (
-              <p className="text-gray-500">Nenhum subativo cadastrado.</p>
-            )}
-          </div>
+  <div className="md:basis-2/3 flex flex-col gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div>
+        <p className="text-sm text-gray-500 font-medium">Código</p>
+        <p>{ativo.codigo}</p>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500 font-medium">Fabricante</p>
+        <p>{ativo.fabricante}</p>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500 font-medium">Modelo</p>
+        <p>{ativo.modelo}</p>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500 font-medium">Data de Aquisição</p>
+        <p>{ativo.data_aquisicao?.split("T")[0]}</p>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500 font-medium">Localização Interna</p>
+        <p>{ativo.localizacao_interna || "-"}</p>
+      </div>
+    </div>
 
-          <div className="mt-6">
-            <p className="font-semibold text-gray-700">
-              📜 Histórico de Falhas:
-            </p>
-            <p className="text-sm text-gray-400">
-              Em breve você poderá consultar falhas registradas deste ativo.
-            </p>
-          </div>
-        </div>
+    <div>
+      <h3 className="font-semibold text-gray-700 mb-2">🔧 Subativos</h3>
+      {ativo.subativos?.length ? (
+        <ul className="list-disc pl-5 space-y-1 text-sm">
+          {ativo.subativos.map((sub: SubAtivoItf) => (
+            <li key={sub.id}>
+              {sub.nome}
+              <span className="text-gray-400 text-xs"> ({sub.codigo})</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-gray-500">Nenhum subativo cadastrado.</p>
+      )}
+    </div>
+  </div>
+</div>
+
+
+
+      <div className="p-6">
+        <HistoricoFalhas ativoId={ativo.id} />
       </div>
 
       {modalAberto && ativo && (
@@ -248,20 +200,11 @@ export default function DetalhesAtivo({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Deseja realmente excluir este ativo?</DialogTitle>
-            <p className="text-sm text-gray-500">
-              Essa ação não poderá ser desfeita.
-            </p>
+            <p className="text-sm text-gray-500">Essa ação não poderá ser desfeita.</p>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setConfirmarExclusao(false)}
-            >
-              Cancelar
-            </Button>
-            <Button variant="destructive" onClick={excluirAtivo}>
-              Confirmar exclusão
-            </Button>
+            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>Cancelar</Button>
+            <Button variant="destructive" onClick={excluirAtivo}>Confirmar exclusão</Button>
           </div>
         </DialogContent>
       </Dialog>

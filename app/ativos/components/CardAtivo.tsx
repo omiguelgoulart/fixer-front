@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { PlusCircle, Search, FileText, Settings } from "lucide-react"
 import Link from "next/link"
 
@@ -8,6 +9,19 @@ interface CardAtivoProps {
 }
 
 export default function CardAtivo({ onAbrirCadastro }: CardAtivoProps) {
+  const [dataAtual, setDataAtual] = useState("")
+
+  useEffect(() => {
+    const agora = new Date().toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    setDataAtual(agora)
+  }, [])
+
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-lg shadow p-4">
@@ -22,31 +36,21 @@ export default function CardAtivo({ onAbrirCadastro }: CardAtivoProps) {
             </div>
             <div>
               <p className="font-medium">Cadastrar Novo Ativo</p>
-              <p className="text-sm text-gray-500">
-                Adicione um novo equipamento ao sistema
-              </p>
+              <p className="text-sm text-gray-500">Adicione um novo equipamento ao sistema</p>
             </div>
           </div>
 
-          <Link
-            href="/ativos/busca"
-            className="flex items-center p-2 hover:bg-blue-50 rounded-md transition-colors"
-          >
+          <Link href="/ativos/busca" className="flex items-center p-2 hover:bg-blue-50 rounded-md transition-colors">
             <div className="bg-purple-100 p-2 rounded-md mr-2">
               <Search className="h-5 w-5 text-purple-600" />
             </div>
             <div>
               <p className="font-medium">Busca Avançada</p>
-              <p className="text-sm text-gray-500">
-                Encontre ativos com filtros específicos
-              </p>
+              <p className="text-sm text-gray-500">Encontre ativos com filtros específicos</p>
             </div>
           </Link>
 
-          <Link
-            href="/relatorios"
-            className="flex items-center p-2 hover:bg-blue-50 rounded-md transition-colors"
-          >
+          <Link href="/relatorios" className="flex items-center p-2 hover:bg-blue-50 rounded-md transition-colors">
             <div className="bg-green-100 p-2 rounded-md mr-2">
               <FileText className="h-5 w-5 text-green-600" />
             </div>
@@ -56,10 +60,7 @@ export default function CardAtivo({ onAbrirCadastro }: CardAtivoProps) {
             </div>
           </Link>
 
-          <Link
-            href="/configuracoes"
-            className="flex items-center p-2 hover:bg-blue-50 rounded-md transition-colors"
-          >
+          <Link href="/configuracoes" className="flex items-center p-2 hover:bg-blue-50 rounded-md transition-colors">
             <div className="bg-gray-100 p-2 rounded-md mr-2">
               <Settings className="h-5 w-5 text-gray-600" />
             </div>
@@ -83,14 +84,7 @@ export default function CardAtivo({ onAbrirCadastro }: CardAtivoProps) {
 
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-500">
-          Última atualização:{" "}
-          {new Date().toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          Última atualização: {dataAtual}
         </div>
       </div>
     </div>
