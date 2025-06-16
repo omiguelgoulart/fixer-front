@@ -151,28 +151,6 @@ export default function ArvoreAtivos({
                                         selecionarDetalhes("ativo", ativo.id)
                                       }
                                     >
-                                      <span className="mr-1">
-                                        {ativo.subativos &&
-                                          ativo.subativos.length > 0 && (
-                                            <span
-                                              onClick={() =>
-                                                alternarExpansao(
-                                                  "ativo",
-                                                  ativo.id
-                                                )
-                                              }
-                                            >
-                                              {estaExpandido(
-                                                "ativo",
-                                                ativo.id
-                                              ) ? (
-                                                <ChevronDown className="h-3 w-3 text-gray-500" />
-                                              ) : (
-                                                <ChevronRight className="h-3 w-3 text-gray-500" />
-                                              )}
-                                            </span>
-                                          )}
-                                      </span>
                                       <Cog className="h-4 w-4 text-green-600" />
                                       <span className="ml-2 text-sm">
                                         {ativo.nome}
