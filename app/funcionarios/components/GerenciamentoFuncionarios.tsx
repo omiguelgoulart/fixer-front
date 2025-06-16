@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/select";
 import ListaFuncionarios from "./ListaFuncionarios";
 import FormularioFuncionario from "./FormularioFuncionario";
-import type { Funcionario } from "@/app/utils/types/FuncionarioItf";
+import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
 // Dados iniciais para demonstração
-const funcionariosIniciais: Funcionario[] = [
+const funcionariosIniciais: FuncionarioItf[] = [
   {
     id: 1,
     nome: "Carlos Oliveira",
@@ -84,9 +84,9 @@ const funcionariosIniciais: Funcionario[] = [
 
 export default function GerenciamentoFuncionarios() {
   const [funcionarios, setFuncionarios] =
-    useState<Funcionario[]>(funcionariosIniciais);
+    useState<FuncionarioItf[]>(funcionariosIniciais);
   const [funcionarioEmEdicao, setFuncionarioEmEdicao] =
-    useState<Funcionario | null>(null);
+    useState<FuncionarioItf | null>(null);
   const [termoBusca, setTermoBusca] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todos");
   const [visualizacao, setVisualizacao] = useState<"lista" | "cadastro">(
@@ -105,7 +105,7 @@ export default function GerenciamentoFuncionarios() {
   });
 
   // Adicionar novo funcionário
-  const adicionarFuncionario = (funcionario: Omit<Funcionario, "id">) => {
+  const adicionarFuncionario = (funcionario: Omit<FuncionarioItf, "id">) => {
     const novoId = Math.max(...funcionarios.map((f) => f.id)) + 1;
     const novoFuncionario = { ...funcionario, id: novoId };
     setFuncionarios([...funcionarios, novoFuncionario]);
@@ -113,7 +113,7 @@ export default function GerenciamentoFuncionarios() {
   };
 
   // Atualizar funcionário existente
-  const atualizarFuncionario = (funcionario: Funcionario) => {
+  const atualizarFuncionario = (funcionario: FuncionarioItf) => {
     setFuncionarios(
       funcionarios.map((f) => (f.id === funcionario.id ? funcionario : f))
     );

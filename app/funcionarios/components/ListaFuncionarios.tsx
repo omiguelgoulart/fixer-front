@@ -13,13 +13,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import type { Funcionario } from "@/app/utils/types/FuncionarioItf";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
 
 interface ListaFuncionariosProps {
-  funcionarios: Funcionario[];
+  funcionarios: FuncionarioItf[];
   onEditar: (id: number) => void;
   onExcluir: (id: number) => void;
 }
