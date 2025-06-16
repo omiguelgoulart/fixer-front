@@ -75,7 +75,7 @@ export default function DetalhesOrdem({ ordem }: Props) {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="p-4 border-b flex justify-between items-center flex-wrap gap-2 md:flex-nowrap">
 <div>
   <div className="flex items-center gap-2">

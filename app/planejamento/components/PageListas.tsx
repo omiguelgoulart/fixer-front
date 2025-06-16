@@ -13,7 +13,6 @@ export function PageListas() {
   const [aba, setAba] = useState<AbaType>("TODAS");
   const [ordemSelecionada, setOrdemSelecionada] = useState<OrdemServicoItf | null>(null);
 
-  // carrega ordens da API
   useEffect(() => {
     async function loadOrdens() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico`);
@@ -23,7 +22,6 @@ export function PageListas() {
     loadOrdens();
   }, []);
 
-  // aplica filtros e busca
   const ordensFiltradas = useMemo(() => {
     const term = busca.toLowerCase();
     return ordens.filter(o => {
@@ -37,14 +35,15 @@ export function PageListas() {
   }, [ordens, busca, aba]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-7rem)]">
       {/* coluna de filtro + lista */}
       <div className="md:col-span-1 bg-white rounded-md shadow flex flex-col overflow-hidden">
         <BarraFiltros busca={busca} onBusca={setBusca} aba={aba} onAba={setAba} />
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-y-auto">
           <ListaOrdens ordens={ordensFiltradas} onSelect={setOrdemSelecionada} />
         </div>
       </div>
+
       {/* painel de detalhes */}
       <div className="md:col-span-2 bg-white rounded-md shadow overflow-auto">
         <DetalhesOrdem ordem={ordemSelecionada} />
