@@ -12,11 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Funcionario } from "@/app/utils/types/FuncionarioItf";
+import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
 
 interface FormularioFuncionarioProps {
-  funcionarioInicial: Funcionario | null;
-  onSalvar: (funcionario: Funcionario) => void;
+  funcionarioInicial: FuncionarioItf | null;
+  onSalvar: (funcionario: FuncionarioItf) => void;
   onCancelar: () => void;
 }
 
@@ -25,7 +25,7 @@ export default function FormularioFuncionario({
   onSalvar,
   onCancelar,
 }: FormularioFuncionarioProps) {
-  const [funcionario, setFuncionario] = useState<Funcionario>(
+  const [funcionario, setFuncionario] = useState<FuncionarioItf>(
     () =>
       funcionarioInicial ??
       ({
@@ -37,7 +37,7 @@ export default function FormularioFuncionario({
         status: "ativo",
         // Adicione aqui quaisquer outros campos obrigatórios do tipo Funcionario
         // Exemplo: id: "", departamento: "", etc.
-      } as Funcionario)
+      } as FuncionarioItf)
   );
 
   useEffect(() => {
@@ -46,9 +46,9 @@ export default function FormularioFuncionario({
     }
   }, [funcionarioInicial]);
 
-  function handleChange<K extends keyof Funcionario>(
+  function handleChange<K extends keyof FuncionarioItf>(
     key: K,
-    value: Funcionario[K]
+    value: FuncionarioItf[K]
   ) {
     setFuncionario((prev) => ({
       ...prev,
@@ -107,7 +107,7 @@ export default function FormularioFuncionario({
             <Select
               value={funcionario.tipo}
               onValueChange={(value) =>
-                handleChange("tipo", value as Funcionario["tipo"])
+                handleChange("tipo", value as FuncionarioItf["tipo"])
               }
               required
             >
@@ -141,7 +141,7 @@ export default function FormularioFuncionario({
           <Select
             value={funcionario.status}
             onValueChange={(value) =>
-              handleChange("status", value as Funcionario["status"])
+              handleChange("status", value as FuncionarioItf["status"])
             }
             required
           >
