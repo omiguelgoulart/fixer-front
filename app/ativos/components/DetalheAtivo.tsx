@@ -12,12 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Pencil, Trash2, X } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import {  Tooltip,  TooltipContent,  TooltipProvider,  TooltipTrigger,} from "@/components/ui/tooltip";
 import { AtivoItf } from "@/app/utils/types/ativo/AtivoItf";
 
 interface DetalhesAtivoProps {
