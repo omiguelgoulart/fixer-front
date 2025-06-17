@@ -35,7 +35,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+    <header className="bg-blue-500 text-white p-4 flex justify-between items-center shadow-md">
       <div className="flex items-center">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="relative w-8 h-8">
