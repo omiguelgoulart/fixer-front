@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { getStatusColor } from "@/app/tecnico/components/utils";
 
 interface OrdemServico {
   id: number;
@@ -22,15 +23,21 @@ export default function HistoricoFalhas({ ativoId }: HistoricoFalhasProps) {
 
   useEffect(() => {
     async function fetchHistorico() {
-        console.log("Carregando histórico para o ativo:", ativoId);
+      setCarregando(true);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/ativos/${ativoId}/historico`
+          `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}/historico`
         );
         const data = await response.json();
-        setOrdens(data.ordensServico || []);
+
+        if (data && Array.isArray(data.ordensServico)) {
+          setOrdens(data.ordensServico);
+        } else {
+          setOrdens([]);
+        }
       } catch (error) {
         console.error("Erro ao carregar histórico:", error);
+        setOrdens([]);
       } finally {
         setCarregando(false);
       }
@@ -45,28 +52,47 @@ export default function HistoricoFalhas({ ativoId }: HistoricoFalhasProps) {
 
   return (
     <div className="mt-6">
-      <h3 className="font-semibold text-lg mb-3">📜 Histórico de Falhas</h3>
+      <h3 className="font-semibold text-lg mb-4">📜 Histórico de Falhas</h3>
+
       {ordens.length === 0 ? (
-        <p className="text-sm text-gray-500">Nenhuma ordem registrada para este ativo.</p>
+        <p className="text-sm text-gray-500">
+          Nenhuma ordem registrada para este ativo.
+        </p>
       ) : (
-        <ul className="space-y-3">
-          {ordens.map((ordem) => (
-            <li
-              key={ordem.id}
-              className="border rounded-lg p-3 shadow-sm bg-white hover:bg-gray-50 transition"
-            >
-              <p className="font-medium">{ordem.titulo}</p>
-              <div className="flex gap-2 text-xs mt-1 flex-wrap">
-                <Badge variant="outline">Manutenção: {ordem.tipoManutencao}</Badge>
-                <Badge variant="outline">Status: {ordem.status}</Badge>
-                <Badge variant="outline">Prioridade: {ordem.prioridade}</Badge>
-                <span className="text-gray-400 ml-auto">
-                  Criado em: {new Date(ordem.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-x-auto border rounded-lg bg-white">
+          <table className="min-w-full text-sm text-left">
+            <thead className="bg-gray-100 text-xs uppercase text-gray-600">
+              <tr>
+                <th className="px-4 py-2">Título</th>
+                <th className="px-4 py-2">Tipo</th>
+                <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2">Prioridade</th>
+                <th className="px-4 py-2">Criado em</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ordens.map((ordem) => (
+                <tr key={ordem.id} className="border-t hover:bg-gray-50">
+                  <td className="px-4 py-2 font-medium">{ordem.titulo}</td>
+                  <td className="px-4 py-2">
+                    <Badge variant="outline">{ordem.tipoManutencao}</Badge>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Badge className={getStatusColor(ordem.status)}>
+                      {ordem.status.replace("_", " ").toUpperCase()}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-2">
+                    <Badge variant="outline">{ordem.prioridade}</Badge>
+                  </td>
+                  <td className="px-4 py-2 text-gray-500">
+                    {new Date(ordem.createdAt).toLocaleDateString("pt-BR")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
