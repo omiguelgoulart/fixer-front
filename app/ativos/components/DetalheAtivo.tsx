@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ModalEditarAtivo from "./ModalEditarAtivo";
@@ -128,11 +127,12 @@ export default function DetalhesAtivo({
   {ativo.foto && (
     <div className="md:basis-1/3 flex justify-center items-start">
   <div className="relative w-full max-w-xs h-72 border rounded-md overflow-hidden">
-    <Image
+    <img
       src={ativo.foto}
       alt={`Foto de ${ativo.nome}`}
-      fill
       className="object-contain bg-white"
+      width={300}
+      height={288}
     />
   </div>
 </div>
