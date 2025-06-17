@@ -78,9 +78,7 @@ export default function HistoricoFalhas({ ativoId }: HistoricoFalhasProps) {
                     <Badge variant="outline">{ordem.tipoManutencao}</Badge>
                   </td>
                   <td className="px-4 py-2">
-                    <Badge className={getStatusColor(ordem.status)}>
-                      {ordem.status.replace("_", " ").toUpperCase()}
-                    </Badge>
+                    <Badge variant="outline">{ordem.status.replace("_", " ").toUpperCase()}</Badge>
                   </td>
                   <td className="px-4 py-2">
                     <Badge variant="outline">{ordem.prioridade}</Badge>
