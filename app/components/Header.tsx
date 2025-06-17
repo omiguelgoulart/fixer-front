@@ -46,7 +46,7 @@ export default function Header() {
               className="object-contain"
             />
           </div>
-          <span className="font-bold text-2xl hidden sm:inline">FIXER</span>
+          <span className="font-bold text-xl hidden sm:inline">FIXER</span>
         </Link>
       </div>
 
