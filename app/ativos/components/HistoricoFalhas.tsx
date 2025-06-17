@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { getStatusColor } from "@/app/tecnico/components/utils";
 
 interface OrdemServico {
   id: number;
