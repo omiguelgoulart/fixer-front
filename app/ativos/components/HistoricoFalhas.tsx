@@ -25,7 +25,7 @@ export default function HistoricoFalhas({ ativoId }: HistoricoFalhasProps) {
         console.log("Carregando histórico para o ativo:", ativoId);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/ativos/${ativoId}/historico`
+          `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}/historico`
         );
         const data = await response.json();
         setOrdens(data.ordensServico || []);
