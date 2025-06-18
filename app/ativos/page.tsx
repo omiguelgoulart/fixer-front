@@ -14,31 +14,28 @@ export default function PaginaAtivos() {
   const voltarInicio = () => setAtivoSelecionado(null)
 
   return (
-    <div className="flex min-h-full bg-blue-50">
-      {/* Sidebar */}
-      <div className="w-full md:w-95 md:shrink-0 ">
-        <Sidebar onSelecionarAtivo={irParaDetalhes} />
-      </div>
+<div className="flex flex-col md:flex-row bg-blue-50 min-h-screen">
+  <div className="w-full md:w-96 shrink-0 border-b md:border-b-0  p-2 md:p-0 md:h-auto md:overflow-y-auto">
+    <Sidebar onSelecionarAtivo={irParaDetalhes} />
+  </div>
 
+  <main className="flex-1 p-4 overflow-y-auto">
+    <Suspense fallback={<div className="p-8">Carregando...</div>}>
+      {!ativoSelecionado && (
+        <CardAtivo onAbrirCadastro={() => setMostrarModalCadastro(true)} />
+      )}
+      {ativoSelecionado !== null && (
+        <DetalhesAtivo ativoId={ativoSelecionado} onVoltar={voltarInicio} />
+      )}
+    </Suspense>
+  </main>
 
-      {/* Conteúdo principal */}
-      <main className="flex-1 overflow-y-auto p-4">
-        <Suspense fallback={<div className="p-8">Carregando...</div>}>
-          {!ativoSelecionado && (
-            <CardAtivo onAbrirCadastro={() => setMostrarModalCadastro(true)} />
-          )}
-          {ativoSelecionado !== null && (
-            <DetalhesAtivo ativoId={ativoSelecionado} onVoltar={voltarInicio} />
-          )}
-        </Suspense>
-      </main>
+  <ModalCadastroEntidades
+    aberto={mostrarModalCadastro}
+    aoFechar={() => setMostrarModalCadastro(false)}
+  />
+</div>
 
-      {/* Modal de Cadastro */}
-      <ModalCadastroEntidades
-        aberto={mostrarModalCadastro}
-        aoFechar={() => setMostrarModalCadastro(false)}
-      />
-    </div>
     
   )
 }
