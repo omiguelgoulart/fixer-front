@@ -14,6 +14,7 @@ export default function PaginaAtivos() {
   const voltarInicio = () => setAtivoSelecionado(null)
 
   return (
+<<<<<<< HEAD
     <div className="flex min-h-full bg-blue-50">
       {/* Sidebar */}
       <div className="w-full md:w-95 md:shrink-0 ">
@@ -23,6 +24,17 @@ export default function PaginaAtivos() {
 
       {/* Conteúdo principal */}
       <main className="flex-1 overflow-y-auto p-4">
+=======
+    // ALTERAÇÃO 1: O padrão agora é flex-col (mobile), mudando para flex-row em telas médias (md) ou maiores
+    <div className="flex flex-col md:flex-row min-h-screen">
+      {/* ALTERAÇÃO 2: A sidebar ocupa a largura total em telas pequenas e a largura fixa em telas maiores */}
+      <div className="w-full md:w-80 shrink-0 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-800 p-2 md:p-0 md:h-auto md:overflow-y-auto">
+        <Sidebar onSelecionarAtivo={irParaDetalhes} />
+      </div>
+
+      {/* O conteúdo principal se adaptará automaticamente */}
+      <main className="flex-1 p-4 bg-gray-50 dark:bg-gray-900/50 overflow-y-auto">
+>>>>>>> 258ee87492a604acddadda57123384d4f4afb065
         <Suspense fallback={<div className="p-8">Carregando...</div>}>
           {!ativoSelecionado && (
             <CardAtivo onAbrirCadastro={() => setMostrarModalCadastro(true)} />
@@ -33,7 +45,11 @@ export default function PaginaAtivos() {
         </Suspense>
       </main>
 
+<<<<<<< HEAD
       {/* Modal de Cadastro */}
+=======
+      {/* O Modal não precisa de alterações */}
+>>>>>>> 258ee87492a604acddadda57123384d4f4afb065
       <ModalCadastroEntidades
         aberto={mostrarModalCadastro}
         aoFechar={() => setMostrarModalCadastro(false)}
