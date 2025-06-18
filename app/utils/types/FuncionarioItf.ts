@@ -1,28 +1,23 @@
-export type TipoFuncionario = "gestor" | "gerente" | "tecnico"
-export type StatusFuncionario = "ativo" | "inativo"
+import { OrdemServicoItf } from "./planejamento/OSItf"
+
+export type TipoFuncionario = "GESTOR" | "GERENTE" | "TECNICO"
 export type NivelAcesso = "basico" | "intermediario" | "administrador"
+
 
 export interface FuncionarioItf {
   id: number
   nome: string
   email: string
-  telefone: string
+  senha?: string
+  ativo: boolean
   tipo: TipoFuncionario
-  departamento: string
-  dataContratacao: string
-  status: StatusFuncionario
+  telefone?: string
+  dataContratacao?: string // Date do Prisma vira string no frontend
+  codRecuperaSenha?: string
+  codRecuperaSenhaExpiracao?: string
 
-  // Campos específicos para cada tipo
-  // Gestor
-  nivelAcesso?: NivelAcesso
-  equipes?: string[]
-
-  // Gerente
-  areasResponsavel?: string[]
-  metasDesempenho?: string
-
-  // Técnico
-  especialidades?: string[]
-  certificacoes?: string[]
-  ferramentasHabilitado?: string[]
+  // Relacionamentos (tipados corretamente)
+  observacoes?: string[]
+  ordensResponsavel?: OrdemServicoItf[]
+  ordensServico?: OrdemServicoItf[]
 }

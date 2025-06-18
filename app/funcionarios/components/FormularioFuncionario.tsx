@@ -1,158 +1,156 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
+} from "@/components/ui/select"
+import {
+  FuncionarioItf,
+  TipoFuncionario,
+} from "@/app/utils/types/FuncionarioItf"
 
-interface FormularioFuncionarioProps {
-  funcionarioInicial: FuncionarioItf | null;
-  onSalvar: (funcionario: FuncionarioItf) => void;
-  onCancelar: () => void;
+interface Props {
+  funcionarioInicial?: FuncionarioItf | null
+  onCriar: (data: Omit<FuncionarioItf, "id">) => void
+  onAtualizar: (data: FuncionarioItf) => void
+  onCancelar: () => void
 }
 
-export default function FormularioFuncionario({
-  funcionarioInicial,
-  onSalvar,
-  onCancelar,
-}: FormularioFuncionarioProps) {
-  const [funcionario, setFuncionario] = useState<FuncionarioItf>(
-    () =>
-      funcionarioInicial ??
-      ({
-        nome: "",
-        email: "",
-        telefone: "",
-        tipo: "tecnico",
-        dataContratacao: "",
-        status: "ativo",
-        // Adicione aqui quaisquer outros campos obrigatórios do tipo Funcionario
-        // Exemplo: id: "", departamento: "", etc.
-      } as FuncionarioItf)
-  );
+export default function FormularioFuncionario({  funcionarioInicial,  onCriar,  onAtualizar,  onCancelar,}: Props) {
+  const { register, handleSubmit, setValue, reset, formState: { errors }  } = useForm<Omit<FuncionarioItf, "id">>()
 
   useEffect(() => {
     if (funcionarioInicial) {
-      setFuncionario(funcionarioInicial);
+      reset({
+        nome: funcionarioInicial.nome,
+        email: funcionarioInicial.email,
+        telefone: funcionarioInicial.telefone,
+        tipo: funcionarioInicial.tipo,
+        dataContratacao: funcionarioInicial.dataContratacao,
+        ativo: funcionarioInicial.ativo,
+      })
+    } else {
+      reset()
     }
-  }, [funcionarioInicial]);
+  }, [funcionarioInicial, reset])
 
-  function handleChange<K extends keyof FuncionarioItf>(
-    key: K,
-    value: FuncionarioItf[K]
-  ) {
-    setFuncionario((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+function gerarSenhaPadrao(nome: string): string {
+  const nomeLimpo = nome.replace(/\s+/g, "")
+  const primeiraLetraMaiuscula =
+    nomeLimpo.charAt(0).toUpperCase() + nomeLimpo.slice(1).toLowerCase()
+  const anoAtual = new Date().getFullYear()
+  return `${primeiraLetraMaiuscula}${anoAtual}#`
+}
+
+
+
+
+const handleFormSubmit = (data: Omit<FuncionarioItf, "id">) => {
+  if (funcionarioInicial) {
+    console.log("Dados enviados para atualização:", { ...data, id: funcionarioInicial.id })
+    onAtualizar({ ...data, id: funcionarioInicial.id })
+  } else {
+    const senhaPadrao = gerarSenhaPadrao(data.nome)
+    console.log("Dados enviados para criação:", { ...data, senha: senhaPadrao })
+    onCriar({ ...data, senha: senhaPadrao })
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    onSalvar(funcionario);
-  }
+  reset()
+  onCancelar()
+}
+
+
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div className="text-xl font-bold mb-4">
-        {funcionarioInicial
-          ? "Editar Funcionário"
-          : "Cadastrar Novo Funcionário"}
+        {funcionarioInicial ? "Editar Funcionário" : "Cadastrar Novo Funcionário"}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div>
             <Label htmlFor="nome">Nome Completo</Label>
-            <Input
-              id="nome"
-              value={funcionario.nome}
-              onChange={(e) => handleChange("nome", e.target.value)}
-              required
-            />
+            <Input id="nome" {...register("nome", { required: true })} />
+            {errors.nome && <p className="text-red-500 text-sm">Nome é obrigatório</p>}
           </div>
 
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={funcionario.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-              required
-            />
+            <Input id="email" type="email" {...register("email", { required: true })} />
+            {errors.email && <p className="text-red-500 text-sm">Email é obrigatório</p>}
           </div>
 
           <div>
             <Label htmlFor="telefone">Telefone</Label>
-            <Input
-              id="telefone"
-              value={funcionario.telefone}
-              onChange={(e) => handleChange("telefone", e.target.value)}
-              required
-            />
+            <Input id="telefone" {...register("telefone", { required: true })} />
+            {errors.telefone && <p className="text-red-500 text-sm">Telefone é obrigatório</p>}
           </div>
 
           <div>
             <Label htmlFor="tipo">Tipo de Funcionário</Label>
             <Select
-              value={funcionario.tipo}
-              onValueChange={(value) =>
-                handleChange("tipo", value as FuncionarioItf["tipo"])
-              }
-              required
+              defaultValue={funcionarioInicial?.tipo}
+              onValueChange={(value) => setValue("tipo", value as TipoFuncionario)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gestor">Gestor</SelectItem>
-                <SelectItem value="gerente">Gerente</SelectItem>
-                <SelectItem value="tecnico">Técnico</SelectItem>
+                <SelectItem value="GESTOR">Gestor</SelectItem>
+                <SelectItem value="GERENTE">Gerente</SelectItem>
+                <SelectItem value="TECNICO">Técnico</SelectItem>
               </SelectContent>
             </Select>
+            {errors.tipo && <p className="text-red-500 text-sm">Tipo é obrigatório</p>}
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="dataContratacao">Data de Contratação</Label>
-          <Input
-            id="dataContratacao"
-            type="date"
-            value={funcionario.dataContratacao}
-            onChange={(e) => handleChange("dataContratacao", e.target.value)}
-            required
-          />
-        </div>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="dataContratacao">Data de Contratação</Label>
+            <Input
+              id="dataContratacao"
+              type="date"
+              {...register("dataContratacao", { required: true })}
+            />
+            {errors.dataContratacao && (
+              <p className="text-red-500 text-sm">Data é obrigatória</p>
+            )}
+          </div>
 
-        <div>
-          <Label htmlFor="status">Status</Label>
-          <Select
-            value={funcionario.status}
-            onValueChange={(value) =>
-              handleChange("status", value as FuncionarioItf["status"])
-            }
-            required
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ativo">Ativo</SelectItem>
-              <SelectItem value="inativo">Inativo</SelectItem>
-            </SelectContent>
-          </Select>
+          <div>
+            <Label htmlFor="ativo">Status</Label>
+            <Select
+              defaultValue={
+                funcionarioInicial
+                  ? funcionarioInicial.ativo
+                    ? "ativo"
+                    : "inativo"
+                  : undefined
+              }
+              onValueChange={(value) => setValue("ativo", value === "ativo")}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione o status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ativo">Ativo</SelectItem>
+                <SelectItem value="inativo">Inativo</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.ativo && (
+              <p className="text-red-500 text-sm">Status é obrigatório</p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -160,13 +158,10 @@ export default function FormularioFuncionario({
         <Button type="button" variant="outline" onClick={onCancelar}>
           Cancelar
         </Button>
-        <Button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white"
-        >
+        <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">
           {funcionarioInicial ? "Atualizar" : "Cadastrar"}
         </Button>
       </div>
     </form>
-  );
+  )
 }

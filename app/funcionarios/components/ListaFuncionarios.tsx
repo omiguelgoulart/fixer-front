@@ -1,42 +1,36 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Eye } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import {  AlertDialog,  AlertDialogAction,  AlertDialogCancel,  AlertDialogContent,  AlertDialogDescription,  AlertDialogFooter,  AlertDialogHeader,  AlertDialogTitle,} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useFuncionarios } from "./useFuncionarios";
 import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
+import ModalEditarFuncionario from "./ModalEditarFuncionario";
 
-interface ListaFuncionariosProps {
-  funcionarios: FuncionarioItf[];
-  onEditar: (id: number) => void;
-  onExcluir: (id: number) => void;
-}
 
-export default function ListaFuncionarios({
-  funcionarios,
-  onEditar,
-  onExcluir,
-}: ListaFuncionariosProps) {
-  const [funcionarioParaExcluir, setFuncionarioParaExcluir] = useState<
-    number | null
-  >(null);
 
-  const confirmarExclusao = () => {
+export default function ListaFuncionarios() {
+
+  const { funcionarios, listar, excluir, editar } = useFuncionarios();
+  const [funcionarioParaExcluir, setFuncionarioParaExcluir] = useState<number | null >(null);
+  const [funcionarioEmEdicao, setFuncionarioEmEdicao] = useState<FuncionarioItf | null>(null);
+
+  useEffect(() => {
+    listar();
+  }, [listar]);
+
+  const confirmarExclusao = async () => {
     if (funcionarioParaExcluir !== null) {
-      onExcluir(funcionarioParaExcluir);
-      setFuncionarioParaExcluir(null);
+      try {
+        await excluir(funcionarioParaExcluir);
+        setFuncionarioParaExcluir(null);
+      } catch (error) {
+        console.error("Erro ao excluir funcionário:", error);
+      }
     }
   };
 
@@ -48,6 +42,21 @@ export default function ListaFuncionarios({
       return dataString;
     }
   };
+
+    const salvarEdicao = async (dados: FuncionarioItf) => {
+    try {
+      await editar(dados.id, {
+        nome: dados.nome,
+        email: dados.email,
+        telefone: dados.telefone,
+        tipo: dados.tipo,
+        dataContratacao: dados.dataContratacao,
+        ativo: dados.ativo,
+      })
+    } catch (err) {
+      console.error("Erro ao editar:", err)
+    }
+  }
 
   return (
     <>
@@ -69,58 +78,51 @@ export default function ListaFuncionarios({
           <tbody>
             {funcionarios.length === 0 ? (
               <tr>
-                <td colSpan={8} className="py-4 text-center text-gray-500">
+                <td colSpan={7} className="py-4 text-center text-gray-500">
                   Nenhum funcionário encontrado
                 </td>
               </tr>
             ) : (
-              funcionarios.map((funcionario) => (
-                <tr key={funcionario.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4 font-medium">{funcionario.nome}</td>
+              funcionarios.map((f: FuncionarioItf) => (
+                <tr key={f.id} className="border-b hover:bg-gray-50">
+                  <td className="py-3 px-4 font-medium">{f.nome}</td>
                   <td className="py-3 px-4">
                     <Badge
                       variant="outline"
-                      className={`${
-                        funcionario.tipo === "gestor"
+                      className={
+                        f.tipo === "GESTOR"
                           ? "border-blue-500 text-blue-700 bg-blue-50"
-                          : funcionario.tipo === "gerente"
+                          : f.tipo === "GERENTE"
                           ? "border-purple-500 text-purple-700 bg-purple-50"
                           : "border-green-500 text-green-700 bg-green-50"
-                      }`}
+                      }
                     >
-                      {funcionario.tipo === "gestor"
-                        ? "Gestor"
-                        : funcionario.tipo === "gerente"
-                        ? "Gerente"
-                        : "Técnico"}
+                      {f.tipo === "GESTOR" && "Gestor"}
+                      {f.tipo === "GERENTE" && "Gerente"}
+                      {f.tipo === "TECNICO" && "Técnico"}
                     </Badge>
                   </td>
-                  <td className="py-3 px-4">{funcionario.email}</td>
-                  <td className="py-3 px-4">{funcionario.telefone}</td>
+                  <td className="py-3 px-4">{f.email}</td>
+                  <td className="py-3 px-4">{f.telefone}</td>
                   <td className="py-3 px-4">
-                    {formatarData(funcionario.dataContratacao)}
+                    {formatarData(f.dataContratacao ?? "")}
                   </td>
                   <td className="py-3 px-4">
                     <Badge
                       className={`${
-                        funcionario.status === "ativo"
-                          ? "bg-green-500"
-                          : "bg-red-500"
+                        f.ativo ? "bg-green-500" : "bg-red-500"
                       } text-white hover:bg-opacity-80`}
                     >
-                      {funcionario.status === "ativo" ? "Ativo" : "Inativo"}
+                      {f.ativo ? "Ativo" : "Inativo"}
                     </Badge>
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" title="Ver detalhes">
-                        <Eye className="h-4 w-4" />
-                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         title="Editar"
-                        onClick={() => onEditar(funcionario.id)}
+                        onClick={() => setFuncionarioEmEdicao(f)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -128,9 +130,7 @@ export default function ListaFuncionarios({
                         variant="ghost"
                         size="icon"
                         title="Excluir"
-                        onClick={() =>
-                          setFuncionarioParaExcluir(funcionario.id)
-                        }
+                        onClick={() => setFuncionarioParaExcluir(f.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -166,6 +166,16 @@ export default function ListaFuncionarios({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+
+      {/* Modal de edição */}
+      <ModalEditarFuncionario
+        aberto={!!funcionarioEmEdicao}
+        funcionario={funcionarioEmEdicao}
+        onFechar={() => setFuncionarioEmEdicao(null)}
+        onSalvar={salvarEdicao}
+      />
     </>
+
   );
 }
