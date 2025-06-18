@@ -16,127 +16,43 @@ import {
 import ListaFuncionarios from "./ListaFuncionarios";
 import FormularioFuncionario from "./FormularioFuncionario";
 import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
-// Dados iniciais para demonstração
-const funcionariosIniciais: FuncionarioItf[] = [
-  {
-    id: 1,
-    nome: "Carlos Oliveira",
-    email: "carlos.oliveira@eixeq.com",
-    telefone: "(11) 98765-4321",
-    tipo: "gestor",
-    departamento: "Manutenção",
-    dataContratacao: "2020-05-15",
-    status: "ativo",
-    nivelAcesso: "administrador",
-    equipes: ["Manutenção Preventiva", "Gestão de Ativos"],
-  },
-  {
-    id: 2,
-    nome: "Ana Silva",
-    email: "ana.silva@eixeq.com",
-    telefone: "(11) 91234-5678",
-    tipo: "gerente",
-    departamento: "Produção",
-    dataContratacao: "2019-03-10",
-    status: "ativo",
-    areasResponsavel: ["Linha de Produção A", "Linha de Produção B"],
-    metasDesempenho: "Redução de 5% no tempo de parada de máquinas",
-  },
-  {
-    id: 3,
-    nome: "Roberto Santos",
-    email: "roberto.santos@eixeq.com",
-    telefone: "(11) 97777-8888",
-    tipo: "tecnico",
-    departamento: "Manutenção",
-    dataContratacao: "2021-07-20",
-    status: "ativo",
-    especialidades: ["Elétrica", "Automação"],
-    certificacoes: ["NR-10", "SEP"],
-    ferramentasHabilitado: ["Multímetro", "Osciloscópio"],
-  },
-  {
-    id: 4,
-    nome: "Juliana Costa",
-    email: "juliana.costa@eixeq.com",
-    telefone: "(11) 96666-7777",
-    tipo: "tecnico",
-    departamento: "Manutenção",
-    dataContratacao: "2022-01-05",
-    status: "ativo",
-    especialidades: ["Mecânica", "Hidráulica"],
-    certificacoes: ["NR-12", "NR-13"],
-    ferramentasHabilitado: ["Torquímetro", "Paquímetro"],
-  },
-  {
-    id: 5,
-    nome: "Marcos Pereira",
-    email: "marcos.pereira@eixeq.com",
-    telefone: "(11) 95555-6666",
-    tipo: "gerente",
-    departamento: "Logística",
-    dataContratacao: "2018-11-12",
-    status: "ativo",
-    areasResponsavel: ["Expedição", "Recebimento"],
-    metasDesempenho: "Otimização do fluxo de materiais para manutenção",
-  },
-];
+import { useFuncionarios } from "./useFuncionarios";
+
+type TipoFuncionario = "todos" | "gestor" | "gerente" | "tecnico";
+
+export interface ListaFuncionariosProps {
+  funcionarios: FuncionarioItf[];
+  onEditar: (id: number) => void;
+}
 
 export default function GerenciamentoFuncionarios() {
-  const [funcionarios, setFuncionarios] =
-    useState<FuncionarioItf[]>(funcionariosIniciais);
-  const [funcionarioEmEdicao, setFuncionarioEmEdicao] =
-    useState<FuncionarioItf | null>(null);
+  const { criar, editar } = useFuncionarios();
+  const [funcionarioEmEdicao, setFuncionarioEmEdicao] = useState<FuncionarioItf | null>(null);
   const [termoBusca, setTermoBusca] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
-  const [visualizacao, setVisualizacao] = useState<"lista" | "cadastro">(
-    "lista"
-  );
+  const [filtroTipo, setFiltroTipo] = useState<"todos" | "gestor" | "gerente" | "tecnico">("todos");
+  const [visualizacao, setVisualizacao] = useState<"lista" | "cadastro">("lista");
 
-  // Filtrar funcionários
-  const funcionariosFiltrados = funcionarios.filter((funcionario) => {
-    const matchBusca =
-      funcionario.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      funcionario.email.toLowerCase().includes(termoBusca.toLowerCase());
 
-    const matchTipo = filtroTipo === "todos" || funcionario.tipo === filtroTipo;
 
-    return matchBusca && matchTipo;
-  });
-
-  // Adicionar novo funcionário
-  const adicionarFuncionario = (funcionario: Omit<FuncionarioItf, "id">) => {
-    const novoId = Math.max(...funcionarios.map((f) => f.id)) + 1;
-    const novoFuncionario = { ...funcionario, id: novoId };
-    setFuncionarios([...funcionarios, novoFuncionario]);
-    setVisualizacao("lista");
-  };
-
-  // Atualizar funcionário existente
-  const atualizarFuncionario = (funcionario: FuncionarioItf) => {
-    setFuncionarios(
-      funcionarios.map((f) => (f.id === funcionario.id ? funcionario : f))
-    );
+  const adicionarFuncionario = async (
+    funcionario: Omit<FuncionarioItf, "id">
+  ) => {
+    await criar(funcionario);
     setFuncionarioEmEdicao(null);
     setVisualizacao("lista");
   };
 
-  // Excluir funcionário
-  const excluirFuncionario = (id: number) => {
-    setFuncionarios(funcionarios.filter((f) => f.id !== id));
+
+  const atualizarFuncionarioFinal = async (funcionario: FuncionarioItf) => {
+    await editar(funcionario.id, funcionario);
+    setVisualizacao("lista");
   };
 
-  // Iniciar edição de funcionário
-  const editarFuncionario = (id: number) => {
-    const funcionario = funcionarios.find((f) => f.id === id);
-    if (funcionario) {
-      setFuncionarioEmEdicao(funcionario);
-      setVisualizacao("cadastro");
-    }
-  };
+
 
   return (
     <div className="space-y-6">
+
       <Tabs
         value={visualizacao}
         onValueChange={(v) => setVisualizacao(v as "lista" | "cadastro")}
@@ -168,7 +84,12 @@ export default function GerenciamentoFuncionarios() {
                   />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+                  <Select
+                    value={filtroTipo}
+                    onValueChange={(value: TipoFuncionario) =>
+                      setFiltroTipo(value)
+                    }
+                  >
                     <SelectTrigger className="w-[140px]">
                       <SelectValue placeholder="Tipo" />
                     </SelectTrigger>
@@ -193,11 +114,7 @@ export default function GerenciamentoFuncionarios() {
                 </div>
               </div>
 
-              <ListaFuncionarios
-                funcionarios={funcionariosFiltrados}
-                onEditar={editarFuncionario}
-                onExcluir={excluirFuncionario}
-              />
+              <ListaFuncionarios />
             </CardContent>
           </Card>
         </TabsContent>
@@ -207,12 +124,12 @@ export default function GerenciamentoFuncionarios() {
             <CardContent className="pt-6">
               <FormularioFuncionario
                 funcionarioInicial={funcionarioEmEdicao}
-                onSalvar={
-                  funcionarioEmEdicao
-                    ? atualizarFuncionario
-                    : adicionarFuncionario
-                }
-                onCancelar={() => setVisualizacao("lista")}
+                onCriar={adicionarFuncionario}
+                onAtualizar={atualizarFuncionarioFinal}
+                onCancelar={() => {
+                  setFuncionarioEmEdicao(null);
+                  setVisualizacao("lista");
+                }}
               />
             </CardContent>
           </Card>

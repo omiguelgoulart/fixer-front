@@ -64,15 +64,23 @@ export default function DetalhesAtivo({
   }
 
   useEffect(() => {
+    setCarregando(true); // mostra o loading ao trocar de ativo
     fetchAtivo();
-  }, [fetchAtivo]);
+  }, [ativoId, fetchAtivo]);
 
   if (carregando) {
     return (
-      <div className="py-4 px-2 animate-pulse space-y-2">
-        <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-5 bg-gray-200 rounded w-1/2"></div>
-        <div className="h-5 bg-gray-200 rounded w-2/3"></div>
+      <div className="p-6 animate-pulse space-y-4">
+        <div className="h-6 w-2/3 bg-gray-300 rounded" />
+        <div className="h-4 w-1/3 bg-gray-200 rounded" />
+        <div className="h-4 w-1/2 bg-gray-200 rounded" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+        </div>
+        <div className="h-40 bg-gray-100 rounded-md" />
       </div>
     );
   }
@@ -105,83 +113,104 @@ export default function DetalhesAtivo({
     }
   };
 
- return (
+  return (
     <div className="bg-white rounded-md shadow-sm border overflow-hidden ">
-      <div className="flex justify-between items-start p-6 border-b">
-        <div>
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-6 border-b">
+        <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold leading-snug">{ativo.nome}</h2>
-          <p className="text-sm text-gray-500">{ativo.tipo_ativo} • {ativo.modelo}</p>
+          <p className="text-sm text-gray-500">
+            {ativo.tipo_ativo} • {ativo.modelo}
+          </p>
         </div>
-        <div className="flex gap-2 items-center">
-          <Badge className={obterCorSituacao(ativo.situacao)}>{ativo.situacao}</Badge>
+
+        <div className="flex flex-wrap md:flex-row gap-2 items-center">
+          <Badge className={obterCorSituacao(ativo.situacao)}>
+            {ativo.situacao}
+          </Badge>
           <Badge className={obterCorCriticidade(ativo.criticidade)}>
             Criticidade: {ativo.criticidade}
           </Badge>
-          <Button variant="outline" size="icon" onClick={onVoltar}><X className="w-4 h-4" /></Button>
-          <Button size="icon" onClick={() => setModalAberto(true)}><Pencil className="w-4 h-4" /></Button>
-          <Button variant="destructive" size="icon" onClick={() => setConfirmarExclusao(true)}><Trash2 className="w-4 h-4" /></Button>
+          <Button variant="outline" size="icon" onClick={onVoltar}>
+            <X className="w-4 h-4" />
+          </Button>
+          <Button size="icon" onClick={() => setModalAberto(true)}>
+            <Pencil className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={() => setConfirmarExclusao(true)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
         </div>
       </div>
 
-<div className="flex flex-col md:flex-row gap-6 p-6">
-  {ativo.foto && (
-    <div className="md:basis-1/3 flex justify-center items-start">
-  <div className="relative w-full max-w-xs h-72 border rounded-md overflow-hidden">
-    <img
-      src={ativo.foto}
-      alt={`Foto de ${ativo.nome}`}
-      className="object-contain bg-white"
-      width={300}
-      height={288}
-    />
-  </div>
-</div>
+      <div className="flex flex-col md:flex-row gap-6 p-6">
+        {ativo.foto && (
+          <div className="md:basis-1/3 flex justify-center items-start">
+            <div className="relative w-full max-w-xs h-72 border rounded-md overflow-hidden">
+              <img
+                src={ativo.foto}
+                alt={`Foto de ${ativo.nome}`}
+                className="object-contain bg-white"
+                width={300}
+                height={288}
+              />
+            </div>
+          </div>
+        )}
 
-  )}
+        <div className="md:basis-2/3 flex flex-col gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Código</p>
+              <p>{ativo.codigo}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Fabricante</p>
+              <p>{ativo.fabricante}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Modelo</p>
+              <p>{ativo.modelo}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">
+                Data de Aquisição
+              </p>
+              <p>{ativo.data_aquisicao?.split("T")[0]}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">
+                Localização Interna
+              </p>
+              <p>{ativo.localizacao_interna || "-"}</p>
+            </div>
+          </div>
 
-  <div className="md:basis-2/3 flex flex-col gap-6">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-      <div>
-        <p className="text-sm text-gray-500 font-medium">Código</p>
-        <p>{ativo.codigo}</p>
+          <div>
+            <h3 className="font-semibold text-gray-700 mb-2">🔧 Subativos</h3>
+            {ativo.subativos?.length ? (
+              <ul className="list-disc pl-5 space-y-1 text-sm">
+                {ativo.subativos.map((sub: SubAtivoItf) => (
+                  <li key={sub.id}>
+                    {sub.nome}
+                    <span className="text-gray-400 text-xs">
+                      {" "}
+                      ({sub.codigo})
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Nenhum subativo cadastrado.
+              </p>
+            )}
+          </div>
+        </div>
       </div>
-      <div>
-        <p className="text-sm text-gray-500 font-medium">Fabricante</p>
-        <p>{ativo.fabricante}</p>
-      </div>
-      <div>
-        <p className="text-sm text-gray-500 font-medium">Modelo</p>
-        <p>{ativo.modelo}</p>
-      </div>
-      <div>
-        <p className="text-sm text-gray-500 font-medium">Data de Aquisição</p>
-        <p>{ativo.data_aquisicao?.split("T")[0]}</p>
-      </div>
-      <div>
-        <p className="text-sm text-gray-500 font-medium">Localização Interna</p>
-        <p>{ativo.localizacao_interna || "-"}</p>
-      </div>
-    </div>
-
-    <div>
-      <h3 className="font-semibold text-gray-700 mb-2">🔧 Subativos</h3>
-      {ativo.subativos?.length ? (
-        <ul className="list-disc pl-5 space-y-1 text-sm">
-          {ativo.subativos.map((sub: SubAtivoItf) => (
-            <li key={sub.id}>
-              {sub.nome}
-              <span className="text-gray-400 text-xs"> ({sub.codigo})</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-sm text-gray-500">Nenhum subativo cadastrado.</p>
-      )}
-    </div>
-  </div>
-</div>
-
-
 
       <div className="p-6">
         <HistoricoFalhas ativoId={ativo.id} />
@@ -200,11 +229,20 @@ export default function DetalhesAtivo({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Deseja realmente excluir este ativo?</DialogTitle>
-            <p className="text-sm text-gray-500">Essa ação não poderá ser desfeita.</p>
+            <p className="text-sm text-gray-500">
+              Essa ação não poderá ser desfeita.
+            </p>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>Cancelar</Button>
-            <Button variant="destructive" onClick={excluirAtivo}>Confirmar exclusão</Button>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmarExclusao(false)}
+            >
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={excluirAtivo}>
+              Confirmar exclusão
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
