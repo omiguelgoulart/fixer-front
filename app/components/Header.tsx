@@ -27,12 +27,19 @@ export default function Header() {
     setHasToken(!!token);
   }, []);
 
-  const hiddenRoutes = ["/login", "/", "/esqueci-senha", "/redefinir-senha"]; // Adicione outras rotas se necessário
-  const isHiddenRoute = hiddenRoutes.includes(pathname);
+const hiddenRoutes = [
+  "/login",
+  "/",
+  "/esqueci-senha",
+  "/redefinir-senha",
+  "/tecnico" // 👈 aqui está a rota que queremos esconder o header
+];
+const isHiddenRoute = hiddenRoutes.includes(pathname);
 
-  if (isHiddenRoute || hasToken === null) {
-    return null;
-  }
+if (isHiddenRoute || hasToken === null) {
+  return null;
+}
+
 
   return (
     <header className="bg-blue-500 text-white p-4 flex justify-between items-center shadow-md">
