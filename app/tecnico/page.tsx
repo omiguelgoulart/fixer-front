@@ -7,6 +7,7 @@ import EstatisticasOrdens from "./components/EstatisticasOrdens";
 import ListaOrdens from "./components/ListaOrdens"; // ou CardPlanejamentoOrdem adaptado
 import { useRouter } from "next/navigation";
 import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
+import { useUsuario } from "../contexts/UsuarioContex";
 
 export default function TecnicoPage() {
   const [busca, setBusca] = useState("");
@@ -14,22 +15,27 @@ export default function TecnicoPage() {
   const [carregando, setCarregando] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchOrdens() {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/ordemservico`
-        );
-        const dados: OrdemServicoItf[] = await res.json();
-        setOrdens(dados);
-      } catch {
-        console.error("Erro ao carregar ordens");
-      } finally {
-        setCarregando(false);
-      }
+  const { usuario } = useUsuario(); // 👈 pega o técnico logado
+
+useEffect(() => {
+  async function fetchOrdens() {
+    if (!usuario) return;
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tecnico/${usuario.id}/tec`);
+      if (!res.ok) throw new Error("Falha ao buscar ordens do técnico");
+
+      const dados: OrdemServicoItf[] = await res.json();
+      setOrdens(dados);
+    } catch (error) {
+      console.error("Erro ao carregar ordens do técnico:", error);
+    } finally {
+      setCarregando(false);
     }
-    fetchOrdens();
-  }, []);
+  }
+
+  fetchOrdens();
+}, [usuario]);
 
   if (carregando) return <p>Carregando...</p>;
 
