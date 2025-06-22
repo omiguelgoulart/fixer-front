@@ -39,21 +39,29 @@ export function FormLogin() {
 
       if (response.status === 200) {
         localStorage.setItem("token", dados.token);
-        logarUsuario(dados.usuario); // <- grava o usuário no contexto
-        toast.success("Login realizado!");
-        router.push("/dashboard");
-      } else if (response.status === 401) {
-        toast.error("Email ou senha inválidos");
-      } else if (response.status === 500) {
-        toast.error("Erro interno do servidor");
-      } else if (!response.ok) {
-        toast.error(dados.message || "Erro ao fazer login");
-      }
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      toast.error("Erro ao fazer login");
-    }
+              logarUsuario(dados.usuario); // grava no contexto
+      toast.success("Login realizado!");
+
+      // 👇 Redirecionamento baseado no cargo
+  if (dados.usuario.tipo === "TECNICO") {
+    router.push("/tecnico");
+  } else {
+    router.push("/dashboard");
   }
+
+
+    } else if (response.status === 401) {
+      toast.error("Email ou senha inválidos");
+    } else if (response.status === 500) {
+      toast.error("Erro interno do servidor");
+    } else if (!response.ok) {
+      toast.error(dados.message || "Erro ao fazer login");
+    }
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+    toast.error("Erro ao fazer login");
+  }
+}
 
   return (
     <div className="w-full md:w-1/2 bg-white flex justify-center items-center min-h-[50vh] md:min-h-screen p-8 sm:p-12">
