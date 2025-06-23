@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   OrdemServicoItf,
@@ -27,6 +27,11 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
+interface Usuario {
+  id: number;
+  nome: string;
+}
+
 interface ModalEditarOrdemProps {
   ordem: OrdemServicoItf | null;
   open: boolean;
@@ -40,6 +45,7 @@ type OrdemServicoForm = {
   tipoManutencao: TipoManutencao;
   dataInicioPlanejada: string;
   dataVencimento: string;
+  responsavelId: string;
 };
 
 export default function ModalEditarOrdem({
@@ -56,10 +62,30 @@ export default function ModalEditarOrdem({
         tipoManutencao: "PREVENTIVA",
         dataInicioPlanejada: "",
         dataVencimento: "",
+        responsavelId: "",
       },
     });
 
-  // Quando abrir o modal com uma ordem, preenche o form
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+
+  useEffect(() => {
+    async function carregarUsuarios() {
+      try {
+        const res = await fetch( `${process.env.NEXT_PUBLIC_URL_API}/usuario/tecnico`);
+        if (res.ok) {
+          const data = await res.json();
+          setUsuarios(data);
+        }
+      } catch (err) {
+        console.error("Erro ao carregar usuários:", err);
+      }
+    }
+
+    if (open) {
+      carregarUsuarios();
+    }
+  }, [open]);
+
   useEffect(() => {
     if (ordem) {
       reset({
@@ -69,6 +95,7 @@ export default function ModalEditarOrdem({
         tipoManutencao: ordem.tipoManutencao,
         dataInicioPlanejada: ordem.dataInicioPlanejada.slice(0, 16),
         dataVencimento: ordem.dataVencimento.slice(0, 16),
+        responsavelId: ordem.responsavelId?.toString() || "",
       });
     }
   }, [ordem, reset]);
@@ -86,9 +113,8 @@ export default function ModalEditarOrdem({
           },
           body: JSON.stringify({
             ...data,
-            dataInicioPlanejada: new Date(
-              data.dataInicioPlanejada
-            ).toISOString(),
+            responsavelId: parseInt(data.responsavelId, 10),
+            dataInicioPlanejada: new Date(data.dataInicioPlanejada).toISOString(),
             dataVencimento: new Date(data.dataVencimento).toISOString(),
           }),
         }
@@ -121,6 +147,26 @@ export default function ModalEditarOrdem({
               <Input {...register("titulo")} />
             </div>
 
+            {/* Responsável */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Responsável</label>
+              <Select
+                value={watch("responsavelId")}
+                onValueChange={(v) => setValue("responsavelId", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o responsável" />
+                </SelectTrigger>
+                <SelectContent>
+                  {usuarios.map((usuario) => (
+                    <SelectItem key={usuario.id} value={usuario.id.toString()}>
+                      {usuario.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Status */}
             <div>
               <label className="block text-sm font-medium mb-1">Status</label>
@@ -140,14 +186,10 @@ export default function ModalEditarOrdem({
 
             {/* Prioridade */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Prioridade
-              </label>
+              <label className="block text-sm font-medium mb-1">Prioridade</label>
               <Select
                 value={watch("prioridade")}
-                onValueChange={(v) =>
-                  setValue("prioridade", v as PrioridadeOrdem)
-                }
+                onValueChange={(v) => setValue("prioridade", v as PrioridadeOrdem)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -162,14 +204,10 @@ export default function ModalEditarOrdem({
 
             {/* Tipo de manutenção */}
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Tipo de Manutenção
-              </label>
+              <label className="block text-sm font-medium mb-1">Tipo de Manutenção</label>
               <Select
                 value={watch("tipoManutencao")}
-                onValueChange={(v) =>
-                  setValue("tipoManutencao", v as TipoManutencao)
-                }
+                onValueChange={(v) => setValue("tipoManutencao", v as TipoManutencao)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -182,18 +220,13 @@ export default function ModalEditarOrdem({
               </Select>
             </div>
 
-            {/* Data Início Planejada */}
+            {/* Datas */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 Data Início Planejada
               </label>
-              <Input
-                type="datetime-local"
-                {...register("dataInicioPlanejada")}
-              />
+              <Input type="datetime-local" {...register("dataInicioPlanejada")} />
             </div>
-
-            {/* Data de Vencimento */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 Data de Vencimento
