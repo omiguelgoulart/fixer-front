@@ -22,7 +22,7 @@ useEffect(() => {
     if (!usuario) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tecnico/${usuario.id}/tec`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuario/tecnico/${usuario.id}/tec`);
       if (!res.ok) throw new Error("Falha ao buscar ordens do técnico");
 
       const dados: OrdemServicoItf[] = await res.json();
