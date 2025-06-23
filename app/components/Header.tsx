@@ -62,7 +62,7 @@ export default function Header() {
         className="cursor-pointer flex items-center gap-2 w-fit"
       >
         <Image
-          src="/logo.png"
+          src="/logo_branco_2048.png"
           alt="Logo da aplicação"
           width={48}
           height={48}
