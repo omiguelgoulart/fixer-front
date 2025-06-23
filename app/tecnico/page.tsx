@@ -39,12 +39,13 @@ useEffect(() => {
 
   if (carregando) return <p>Carregando...</p>;
 
-  const filtradas = ordens.filter(
-    (o) =>
-      o.titulo.toLowerCase().includes(busca.toLowerCase()) ||
-      o.ativo.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      o.ativo.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
-  );
+const filtradas = ordens.filter(
+  (o) =>
+    o.titulo?.toLowerCase().includes(busca.toLowerCase()) ||
+    o.ativo?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+    o.ativo?.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
+);
+
 
   return (
     <div className="p-4">
