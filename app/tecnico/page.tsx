@@ -48,7 +48,7 @@ const filtradas = ordens.filter(
 
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-blue-50">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">Minhas Ordens de Serviço</h1>
         <p className="text-gray-600">
