@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu, UserCircle, LogOut } from "lucide-react";
+import { useUsuario } from "../contexts/UsuarioContex";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -26,6 +27,7 @@ const navItems = [
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const { deslogarUsuario } = useUsuario();
   const [hasToken, setHasToken] = useState<boolean | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -45,6 +47,12 @@ export default function Header() {
     if (pathname !== "/tecnicos") {
       router.push("/");
     }
+  };
+
+  const handleLogout = () => {
+    deslogarUsuario();
+    localStorage.removeItem("token");
+    router.push("/login");
   };
 
   return (
@@ -123,10 +131,7 @@ export default function Header() {
                 <SheetClose asChild>
                   <button
                     className="w-full flex items-center gap-3 p-3 rounded-md transition-colors hover:bg-blue-500 text-left"
-                    onClick={() => {
-                      console.log("Logout clicado");
-                      // Aqui você pode chamar sua função de logout real
-                    }}
+                    onClick={handleLogout}
                   >
                     <LogOut className="h-5 w-5" />
                     <span>Sair</span>
