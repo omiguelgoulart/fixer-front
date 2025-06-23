@@ -57,16 +57,20 @@ export default function Header() {
 
   return (
     <header className="bg-blue-500 text-white p-4 flex justify-between items-center shadow-md">
-      <div onClick={handleLogoClick} className="cursor-pointer w-fit">
-          <div className="relative w-8 h-8">
-            <Image
-              src="/logo_branco.png" // Certifique-se que este caminho em /public está correto
-              alt="FIXER Logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <span className="font-bold text-xl hidden sm:inline">FIXER</span>
+      <div
+        onClick={handleLogoClick}
+        className="cursor-pointer flex items-center gap-2 w-fit"
+      >
+        <Image
+          src="/logo.png"
+          alt="Logo da aplicação"
+          width={48}
+          height={48}
+          priority
+        />
+        <span className="hidden md:inline text-xl font-semibold text-white">
+          Fixer
+        </span>
       </div>
 
       {/* NAVEGAÇÃO DESKTOP */}
