@@ -1,5 +1,6 @@
 import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
 import { create } from "zustand";
+import { toast } from "sonner";
 
 type FuncionarioStore = {
   funcionarios: FuncionarioItf[];
@@ -24,8 +25,10 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
       const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuario`);
       const dados = await res.json();
       set({ funcionarios: dados });
+      toast.success("Funcionários listados com sucesso!");
     } catch (err) {
       console.error("Erro ao listar funcionários:", err);
+      toast.error("Erro ao listar funcionários.");
     } finally {
       set({ carregando: false });
     }
@@ -39,8 +42,10 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
       );
       const dados = await res.json();
       set({ funcionarioSelecionado: dados });
+      toast.success("Funcionário carregado com sucesso!");
     } catch (err) {
       console.error("Erro ao buscar funcionário:", err);
+      toast.error("Erro ao buscar funcionário.");
     } finally {
       set({ carregando: false });
     }
@@ -55,8 +60,10 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
       });
       const dados = await res.json();
       set((state) => ({ funcionarios: [...state.funcionarios, dados] }));
+      toast.success("Funcionário criado com sucesso!");
     } catch (err) {
       console.error("Erro ao criar funcionário:", err);
+      toast.error("Erro ao criar funcionário.");
     }
   },
 
@@ -74,6 +81,7 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
       if (!res.ok) {
         const erroTexto = await res.text();
         console.error("Erro da API:", erroTexto);
+        toast.error(`Erro ao editar funcionário: ${erroTexto}`);
         throw new Error(`Erro ${res.status}: ${erroTexto}`);
       }
 
@@ -85,8 +93,12 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
         ),
         funcionarioSelecionado: atualizado,
       }));
+      toast.success("Funcionário editado com sucesso!");
     } catch (err) {
       console.error("Erro ao editar funcionário:", err);
+      if (!(err instanceof Error) || !err.message?.includes("Erro ao editar funcionário:")) {
+        toast.error("Erro ao editar funcionário.");
+      }
     }
   },
 
@@ -99,8 +111,10 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
         funcionarios: state.funcionarios.filter((f) => f.id !== id),
         funcionarioSelecionado: null,
       }));
+      toast.success("Funcionário excluído com sucesso!");
     } catch (err) {
       console.error("Erro ao excluir funcionário:", err);
+      toast.error("Erro ao excluir funcionário.");
     }
   },
 
