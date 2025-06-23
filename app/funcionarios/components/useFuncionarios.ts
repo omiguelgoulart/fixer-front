@@ -69,7 +69,7 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
 
   editar: async (id, dados) => {
     try {
-      const url = `${process.env.NEXT_PUBLIC_URL_API}/usuario/${id}/`;
+      const url = `${process.env.NEXT_PUBLIC_URL_API}/usuario/${id}`;
       console.log("Chamando API PATCH:", url);
 
       const res = await fetch(url, {
