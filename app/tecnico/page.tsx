@@ -39,12 +39,22 @@ useEffect(() => {
 
   if (carregando) return <p>Carregando...</p>;
 
-  const filtradas = ordens.filter(
-    (o) =>
-      o.titulo.toLowerCase().includes(busca.toLowerCase()) ||
-      o.ativo.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      o.ativo.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
-  );
+const filtradas = ordens.filter(
+  (o) =>
+    o.titulo?.toLowerCase().includes(busca.toLowerCase()) ||
+    o.ativo?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+    o.ativo?.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
+);
+  if (filtradas.length === 0 && busca) {
+    return (
+      <div className="p-4">
+        <h2 className="text-xl font-semibold mb-4">Nenhuma ordem encontrada</h2>
+        <p className="text-gray-500">
+          Tente ajustar sua busca ou verifique se há ordens disponíveis.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
