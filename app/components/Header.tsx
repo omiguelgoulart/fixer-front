@@ -28,7 +28,7 @@ export default function Header() {
 
   const hiddenRoutes = ["/login", "/", "/esqueci-senha", "/redefinir-senha"];
   const isHiddenRoute = hiddenRoutes.includes(pathname);
-  const isTecnicoRoute = pathname === "/tecnico";
+  const isTecnicoRoute = pathname.startsWith("/tecnico");
 
   if (hasToken === null || isHiddenRoute) {
     return null;
