@@ -1,4 +1,4 @@
-import EsqueciSenhaForm from "@/components/ui/auth/EsqueciSenhaForm"; 
+import EsqueciSenhaForm from "@/app/login/components/EsqueciSenhaForm";
 
 export default function EsqueciSenhaPageContainer() {
   return (

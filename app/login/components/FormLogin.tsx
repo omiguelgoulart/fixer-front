@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { useUsuario } from "@/app/contexts/UsuarioContex";
+import { useLogin } from "../stores/useLogin";
 
 type LoginItf = {
   email: string;
@@ -18,50 +18,22 @@ type LoginItf = {
 
 export function FormLogin() {
   const [showPassword, setShowPassword] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginItf>();
-
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginItf>();
+  const { login } = useLogin();
+  const { logarUsuario } = useUsuario();
   const router = useRouter();
-  const { logarUsuario } = useUsuario(); // <- usa a função do contexto
 
   async function handleLogin(data: LoginItf) {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, senha: data.senha }),
-      });
+    const usuario = await login(data.email, data.senha, logarUsuario);
 
-      const dados = await response.json();
-
-      if (response.status === 200) {
-        localStorage.setItem("token", dados.token);
-              logarUsuario(dados.usuario); // grava no contexto
-      toast.success("Login realizado!");
-
-      // 👇 Redirecionamento baseado no cargo
-  if (dados.usuario.tipo === "TECNICO") {
-    router.push("/tecnico");
-  } else {
-    router.push("/dashboard");
-  }
-
-
-    } else if (response.status === 401) {
-      toast.error("Email ou senha inválidos");
-    } else if (response.status === 500) {
-      toast.error("Erro interno do servidor");
-    } else if (!response.ok) {
-      toast.error(dados.message || "Erro ao fazer login");
+    if (usuario) {
+      if (usuario.tipo === "TECNICO") {
+        router.push("/tecnico");
+      } else {
+        router.push("/dashboard");
+      }
     }
-  } catch (error) {
-    console.error("Erro ao fazer login:", error);
-    toast.error("Erro ao fazer login");
   }
-}
 
   return (
     <div className="w-full md:w-1/2 bg-white flex justify-center items-center min-h-[50vh] md:min-h-screen p-8 sm:p-12">
@@ -94,7 +66,7 @@ export function FormLogin() {
               <Label htmlFor="senha" className="text-sm font-medium text-gray-700">
                 Senha
               </Label>
-              <Link href="/esqueci-senha" className="text-sm text-blue-500 hover:underline">
+              <Link href="login/esqueci-senha" className="text-sm text-blue-500 hover:underline">
                 Esqueceu a Senha?
               </Link>
             </div>
@@ -110,7 +82,6 @@ export function FormLogin() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
               >
                 {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>

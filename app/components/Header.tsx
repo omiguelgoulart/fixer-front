@@ -26,7 +26,7 @@ export default function Header() {
     setHasToken(!!token);
   }, []);
 
-  const hiddenRoutes = ["/login", "/", "/esqueci-senha", "/redefinir-senha"];
+  const hiddenRoutes = ["/login", "/", "/login/esqueci-senha", "/login/redefinir-senha"];
   const isHiddenRoute = hiddenRoutes.includes(pathname);
   const isTecnicoRoute = pathname.startsWith("/tecnico");
 
@@ -73,7 +73,7 @@ export default function Header() {
                   <span className="sr-only">Abrir menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] bg-blue-600 text-white border-r-blue-500 p-0">
+              <SheetContent className="w-[280px] bg-blue-600 text-white border-r-blue-500 p-0">
                 <SheetHeader className="p-4 border-b border-blue-500">
                   <SheetTitle className="text-xl font-bold text-white text-left">Menu</SheetTitle>
                 </SheetHeader>
