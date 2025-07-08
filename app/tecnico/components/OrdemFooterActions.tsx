@@ -8,7 +8,7 @@ export default function OrdemFooterActions() {
         <Button variant="outline" className="flex-1 h-12">
           Pausar Ordem
         </Button>
-        <Button className="flex-1 h-12 bg-green-600 hover:bg-green-700">
+        <Button className="flex-1 h-12">
           Concluir Ordem
         </Button>
       </div>

@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useUsuario } from "@/app/contexts/UsuarioContex";
 import { useLogin } from "../stores/useLogin";
 
@@ -18,85 +19,73 @@ type LoginItf = {
 
 export function FormLogin() {
   const [showPassword, setShowPassword] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginItf>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginItf>();
   const { login } = useLogin();
   const { logarUsuario } = useUsuario();
   const router = useRouter();
 
   async function handleLogin(data: LoginItf) {
     const usuario = await login(data.email, data.senha, logarUsuario);
-
     if (usuario) {
-      if (usuario.tipo === "TECNICO") {
-        router.push("/tecnico");
-      } else {
-        router.push("/dashboard");
-      }
+      router.push(usuario.tipo === "TECNICO" ? "/tecnico" : "/dashboard");
     }
   }
 
   return (
     <div className="w-full md:w-1/2 bg-white flex justify-center items-center min-h-[50vh] md:min-h-screen p-8 sm:p-12">
       <div className="w-full max-w-md space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 text-center">
-          Login
-        </h2>
+        <h2 className="text-3xl font-semibold text-center text-primary">Login</h2>
 
-        <form className="space-y-5" onSubmit={handleSubmit(handleLogin)}>
-          <div>
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700 block mb-1.5">
-              Email
-            </Label>
+        <form onSubmit={handleSubmit(handleLogin)} className="space-y-5">
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Email</Label>
             <Input
-              type="email"
               id="email"
+              type="email"
               placeholder="seu@email.com"
               {...register("email", { required: "Email é obrigatório" })}
-              className="w-full"
             />
             {errors.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.email.message}
-              </p>
+              <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <Label htmlFor="senha" className="text-sm font-medium text-gray-700">
-                Senha
-              </Label>
-              <Link href="login/esqueci-senha" className="text-sm text-blue-500 hover:underline">
-                Esqueceu a Senha?
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="senha">Senha</Label>
+              <Link
+                href="/login/esqueci-senha"
+                className="text-sm text-muted-foreground hover:underline"
+              >
+                Esqueceu a senha?
               </Link>
             </div>
             <div className="relative">
               <Input
-                type={showPassword ? "text" : "password"}
                 id="senha"
-                placeholder="digite a sua senha"
+                type={showPassword ? "text" : "password"}
+                placeholder="Digite sua senha"
+                className="pr-10"
                 {...register("senha", { required: "Senha é obrigatória" })}
-                className="w-full pr-10"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-2.5 text-muted-foreground hover:text-primary"
               >
-                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
             {errors.senha && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.senha.message}
-              </p>
+              <p className="text-sm text-destructive">{errors.senha.message}</p>
             )}
           </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2.5 text-base font-medium"
-          >
+          <Button type="submit" className="w-full">
             Login
           </Button>
         </form>

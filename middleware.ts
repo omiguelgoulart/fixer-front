@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
 
       // Se for técnico, permite apenas a rota /tecnico
       if (
-        usuario.tipo === "tecnico" &&
+        usuario.tipo === "TECNICO" &&
         !path.startsWith("/tecnico")
       ) {
         return NextResponse.redirect(new URL("/tecnico", request.url));
@@ -30,7 +30,7 @@ export function middleware(request: NextRequest) {
 
       // Se for outro tipo de usuário e tentar acessar /tecnico, redireciona
       if (
-        usuario.tipo !== "tecnico" &&
+        usuario.tipo !== "TECNICO" &&
         path.startsWith("/tecnico")
       ) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
