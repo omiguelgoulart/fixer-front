@@ -1,4 +1,3 @@
-// ListaOrdens.tsx
 "use client";
 
 import React from "react";
@@ -7,17 +6,18 @@ import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 
 interface Props {
   ordens: OrdemServicoItf[];
+  ordemSelecionada: OrdemServicoItf | null;
   onSelect: (ordem: OrdemServicoItf) => void;
 }
 
-export default function ListaOrdens({ ordens, onSelect }: Props) {
+export default function ListaOrdens({ ordens, ordemSelecionada, onSelect }: Props) {
   return (
     <ul>
       {ordens.map((ordem) => (
         <li key={ordem.id}>
           <CardPlanejamentoOrdem
             ordem={ordem}
-            selecionada={false} // ou controle de seleção se quiser
+            selecionada={ordemSelecionada?.id === ordem.id}
             onClick={() => onSelect(ordem)}
           />
         </li>

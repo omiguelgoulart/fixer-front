@@ -63,7 +63,12 @@ export function PageListas() {
         />
 
         <div className="flex-1 overflow-y-auto">
-          <ListaOrdens ordens={ordensFiltradas} onSelect={setOrdemSelecionada} />
+          <ListaOrdens
+            ordens={ordensFiltradas}
+            ordemSelecionada={ordemSelecionada}
+            onSelect={setOrdemSelecionada}
+          />
+
         </div>
       </div>
 

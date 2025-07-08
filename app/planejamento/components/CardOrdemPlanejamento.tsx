@@ -17,11 +17,16 @@ export default function CardPlanejamentoOrdem({ ordem, selecionada, onClick }: P
     <div
       onClick={onClick}
       className={cn(
-        "border border-gray-200 bg-white p-4 shadow-sm hover:shadow transition cursor-pointer",
-        selecionada && "ring-2 ring-blue-400"
+        "border border-gray-200 p-4 shadow-sm hover:shadow transition cursor-pointer rounded-md",
+        selecionada
+          ? "ring-2 ring-blue-500 bg-blue-50"
+          : "bg-white"
       )}
     >
-      <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+      <div className={cn(
+        "flex items-center gap-2 text-sm text-gray-800",
+        selecionada && "font-semibold"
+      )}>
         <span className="text-xs text-gray-400">{ordem.codigo}</span>
         <span>{ordem.titulo}</span>
       </div>
