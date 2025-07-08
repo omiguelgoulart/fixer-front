@@ -1,10 +1,10 @@
-// FormTarefas.tsx
 "use client";
 
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { usePlanejamento } from "../stores/usePlanejamento";
 
 interface Props {
   ordemServicoId: number;
@@ -23,20 +23,17 @@ export default function FormTarefas({ ordemServicoId, onSuccess }: Props) {
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
 
+  const { criarTarefa } = usePlanejamento();
+
   async function onSubmit(data: FormData) {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/tarefa`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, ordemServicoId }),
+      await criarTarefa({
+        descricao: data.descricao,
+        ordemServicoId,
       });
-
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error?.message || "Erro ao criar tarefa");
 
       toast.success("Tarefa adicionada com sucesso!");
       reset();
-
       onSuccess?.();
     } catch (err: unknown) {
       console.error("Erro ao adicionar tarefa:", err);

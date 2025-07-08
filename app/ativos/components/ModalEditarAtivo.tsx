@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
+import { useAtivos } from "../stores/useAtivos";
 
 interface ModalEditarAtivoProps {
   aberto: boolean;
@@ -21,7 +22,12 @@ interface ModalEditarAtivoProps {
   ativo: AtivoItf;
 }
 
-export default function ModalEditarAtivo({ aberto, aoFechar, ativo, aoAtualizar }: ModalEditarAtivoProps) {
+export default function ModalEditarAtivo({
+  aberto,
+  aoFechar,
+  ativo,
+  aoAtualizar,
+}: ModalEditarAtivoProps) {
   const {
     register,
     handleSubmit,
@@ -29,35 +35,28 @@ export default function ModalEditarAtivo({ aberto, aoFechar, ativo, aoAtualizar 
     formState: { errors, isSubmitting },
   } = useForm<AtivoItf>();
 
-useEffect(() => {
-  for (const [chave, valor] of Object.entries(ativo)) {
-    if (chave === "data_aquisicao" && typeof valor === "string") {
-      const dataFormatada = valor.split("T")[0];
-      setValue(chave, dataFormatada);
-    } else {
-      // @ts-expect-error atribuição dinâmica permitida
-      setValue(chave, valor);
-    }
-  }
-}, [ativo, setValue]);
+  const { editarAtivo } = useAtivos();
 
+  useEffect(() => {
+    for (const [chave, valor] of Object.entries(ativo)) {
+      if (chave === "data_aquisicao" && typeof valor === "string") {
+        const dataFormatada = valor.split("T")[0];
+        setValue(chave, dataFormatada);
+      } else {
+        // @ts-expect-error atribuição dinâmica permitida
+        setValue(chave, valor);
+      }
+    }
+  }, [ativo, setValue]);
 
   async function onSubmit(data: AtivoItf) {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativo.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) throw new Error("Erro ao atualizar ativo");
-
-      toast.success("Ativo atualizado com sucesso");
+    const response = await editarAtivo(data);
+    if (response !== null && response !== undefined) {
+      toast.success("Ativo atualizado com sucesso!");
       aoAtualizar();
       aoFechar();
-    } catch (error) {
-      console.error("Erro ao atualizar ativo:", error);
-      toast.error("Erro ao atualizar o ativo");
+    } else {
+      toast.error("Erro ao atualizar o ativo. Tente novamente.");
     }
   }
 

@@ -33,6 +33,7 @@ interface AtivosState {
     excluirSubAtivo: (id: number) => Promise<void>;
     carregarSubAtivosPorAtivo: (id_ativo: number) => Promise<void>;
     atualizarAtivo: () => Promise<void>;
+    editarAtivo: (ativo: AtivoItf) => Promise<void>;
 
 error: string;
     limparErro: () => void;
@@ -252,6 +253,30 @@ atualizarAtivo: async () => {
         set({ error: "Erro ao atualizar ativo" });
     }
 },
+
+editarAtivo: async (ativo) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativo.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(ativo),
+        });
+        if (!response.ok) {
+            throw new Error("Erro ao editar ativo");
+        }
+        const updatedAtivo = await response.json();
+        set((state) => ({
+            ativos: state.ativos.map((a) => (a.id === updatedAtivo.id ? updatedAtivo : a)),
+            ativoSelecionado: updatedAtivo,
+        }));
+    } catch (error) {
+        console.error("Erro ao editar ativo:", error);
+        set({ error: "Erro ao editar ativo" });
+    }
+},
+
+
+
     carregando: false,
 
     error: "",

@@ -1,15 +1,17 @@
-'use client'
+'use client';
 
-import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Calendar, List, Kanban, Plus } from "lucide-react"
-import { PageListas } from "./components/PageListas"
-import CalendarioManutencoes from "./components/PageCalendario"
-import { Button } from "@/components/ui/button"
-import { ModalNovaOrdem } from "./components/ModalNovaOrdem"
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Calendar, List, Kanban } from "lucide-react";
+import { PageListas } from "./components/PageListas";
+import CalendarioManutencoes from "./components/PageCalendario";
+import { Button } from "@/components/ui/button";
+import ModalNovaOrdem from "./components/ModalNovaOrdem";
 
 export default function PagePlanejamento() {
-  const [visualizacao, setVisualizacao] = useState<"lista" | "calendario" | "kanban">("lista")
+  const [visualizacao, setVisualizacao] = useState<"lista" | "calendario" | "kanban">("lista");
+
+  const [novaOrdemAberta, setNovaOrdemAberta] = useState(false);
 
   return (
     <div className="flex flex-col min-h-full bg-blue-50">
@@ -35,13 +37,21 @@ export default function PagePlanejamento() {
             </TabsList>
           </Tabs>
 
-          {/* Botão adicionar OS */}
-          <ModalNovaOrdem>
-            <Button variant="outline" className="bg-blue-500 text-white hover:bg-blue-600 w-full md:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              Adicionar OS
-            </Button>
-          </ModalNovaOrdem>
+          {/* Botão para abrir modal */}
+          <Button
+            variant="outline"
+            className="bg-blue-500 text-white hover:bg-blue-600 w-full md:w-auto"
+            onClick={() => setNovaOrdemAberta(true)}
+          >
+            Adicionar OS
+          </Button>
+
+          {/* Modal aberto com clique no botão */}
+          <ModalNovaOrdem
+            open={novaOrdemAberta}
+            onClose={() => setNovaOrdemAberta(false)}
+            dataSelecionada={null}
+          />
         </div>
 
         <Tabs
@@ -60,5 +70,5 @@ export default function PagePlanejamento() {
         </Tabs>
       </main>
     </div>
-  )
+  );
 }

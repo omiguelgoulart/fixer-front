@@ -31,6 +31,13 @@ export default function OrdemInfo({ ordem }: { ordem: OrdemServicoItf }) {
 
           <div className="flex items-center gap-2">
             <div>
+              <p className="text-sm text-gray-500">Código</p>
+              <p className="font-medium">{ordem.ativo?.codigo}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div>
               <p className="text-sm text-gray-500">Responsável</p>
               <p className="font-medium">{ordem.responsavel?.nome}</p>
             </div>

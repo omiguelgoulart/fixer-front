@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   OrdemServicoItf,
@@ -26,11 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
-interface Usuario {
-  id: number;
-  nome: string;
-}
+import { usePlanejamento } from "../stores/usePlanejamento";
 
 interface ModalEditarOrdemProps {
   ordem: OrdemServicoItf | null;
@@ -53,38 +49,23 @@ export default function ModalEditarOrdem({
   open,
   onClose,
 }: ModalEditarOrdemProps) {
-  const { register, handleSubmit, setValue, watch, reset } =
-    useForm<OrdemServicoForm>({
-      defaultValues: {
-        titulo: "",
-        status: "EM_ABERTO",
-        prioridade: "MEDIA",
-        tipoManutencao: "PREVENTIVA",
-        dataInicioPlanejada: "",
-        dataVencimento: "",
-        responsavelId: "",
-      },
-    });
+  const { register, handleSubmit, setValue, watch, reset } = useForm<OrdemServicoForm>({
+    defaultValues: {
+      titulo: "",
+      status: "EM_ABERTO",
+      prioridade: "MEDIA",
+      tipoManutencao: "PREVENTIVA",
+      dataInicioPlanejada: "",
+      dataVencimento: "",
+      responsavelId: "",
+    },
+  });
 
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const { usuarios, carregarUsuarios, editarOrdem } = usePlanejamento();
 
   useEffect(() => {
-    async function carregarUsuarios() {
-      try {
-        const res = await fetch( `${process.env.NEXT_PUBLIC_URL_API}/usuario/tecnico`);
-        if (res.ok) {
-          const data = await res.json();
-          setUsuarios(data);
-        }
-      } catch (err) {
-        console.error("Erro ao carregar usuários:", err);
-      }
-    }
-
-    if (open) {
-      carregarUsuarios();
-    }
-  }, [open]);
+    if (open) carregarUsuarios();
+  }, [open, carregarUsuarios]);
 
   useEffect(() => {
     if (ordem) {
@@ -103,31 +84,19 @@ export default function ModalEditarOrdem({
   async function onSubmit(data: OrdemServicoForm) {
     if (!ordem) return;
 
+    const ordemEditada: OrdemServicoItf = {
+      ...ordem,
+      ...data,
+      responsavelId: parseInt(data.responsavelId, 10),
+      dataInicioPlanejada: new Date(data.dataInicioPlanejada).toISOString(),
+      dataVencimento: new Date(data.dataVencimento).toISOString(),
+    };
+
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/ordemServico/${ordem.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...data,
-            responsavelId: parseInt(data.responsavelId, 10),
-            dataInicioPlanejada: new Date(data.dataInicioPlanejada).toISOString(),
-            dataVencimento: new Date(data.dataVencimento).toISOString(),
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Erro ao atualizar a ordem de serviço");
-      }
-
+      await editarOrdem(ordemEditada);
       toast.success("Ordem de serviço atualizada com sucesso!");
       onClose();
-    } catch (error) {
-      console.error("Erro ao atualizar OS:", error);
+    } catch {
       toast.error("Erro ao atualizar a ordem de serviço.");
     }
   }
@@ -141,13 +110,11 @@ export default function ModalEditarOrdem({
 
         {ordem ? (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-            {/* Título */}
             <div>
               <label className="block text-sm font-medium mb-1">Título</label>
               <Input {...register("titulo")} />
             </div>
 
-            {/* Responsável */}
             <div>
               <label className="block text-sm font-medium mb-1">Responsável</label>
               <Select
@@ -167,7 +134,6 @@ export default function ModalEditarOrdem({
               </Select>
             </div>
 
-            {/* Status */}
             <div>
               <label className="block text-sm font-medium mb-1">Status</label>
               <Select
@@ -184,7 +150,6 @@ export default function ModalEditarOrdem({
               </Select>
             </div>
 
-            {/* Prioridade */}
             <div>
               <label className="block text-sm font-medium mb-1">Prioridade</label>
               <Select
@@ -202,7 +167,6 @@ export default function ModalEditarOrdem({
               </Select>
             </div>
 
-            {/* Tipo de manutenção */}
             <div>
               <label className="block text-sm font-medium mb-1">Tipo de Manutenção</label>
               <Select
@@ -220,13 +184,13 @@ export default function ModalEditarOrdem({
               </Select>
             </div>
 
-            {/* Datas */}
             <div>
               <label className="block text-sm font-medium mb-1">
                 Data Início Planejada
               </label>
               <Input type="datetime-local" {...register("dataInicioPlanejada")} />
             </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">
                 Data de Vencimento
@@ -244,9 +208,7 @@ export default function ModalEditarOrdem({
             </DialogFooter>
           </form>
         ) : (
-          <div className="text-center text-gray-500 py-8">
-            Nenhuma OS selecionada
-          </div>
+          <div className="text-center text-gray-500 py-8">Nenhuma OS selecionada</div>
         )}
       </DialogContent>
     </Dialog>

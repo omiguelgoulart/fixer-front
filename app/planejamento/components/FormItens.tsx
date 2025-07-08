@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
+import { usePlanejamento } from "../stores/usePlanejamento"
 
 interface Props {
   ordemServicoId: number
   onSuccess?: () => void
 }
 
-// ✅ Tipagem segura do formulário (sem 'id' e sem 'codigo', pois o backend gera)
 type FormData = {
   nome: string
   quantidade: number
@@ -32,49 +32,33 @@ export default function FormItens({ ordemServicoId, onSuccess }: Props) {
     }
   })
 
-async function onSubmit(data: FormData) {
-  // Converte para garantir número
-  const payload = {
-    nome: data.nome,
-    quantidade: Number(data.quantidade),
-    ordemServicoId: Number(data.ordemServicoId),
-  };
+  const { criarInsumo } = usePlanejamento()
 
-  console.log("🛠 Payload enviado:", payload);
-
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/insumo`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const json = await response.json();
-
-    if (!response.ok) {
-      console.error("❌ Erro do backend:", json);
-      throw new Error(json.error?._errors?.join(", ") || "Erro desconhecido");
+  async function onSubmit(data: FormData) {
+    const payload = {
+      nome: data.nome,
+      quantidade: Number(data.quantidade),
+      ordemServicoId: Number(data.ordemServicoId),
     }
 
-    toast.success("Item adicionado com sucesso!");
-    reset({ nome: "", quantidade: 1, ordemServicoId: payload.ordemServicoId });
-    onSuccess?.();
-
-  } catch (err: unknown) {
-    console.error("🚨 Falha ao cadastrar insumo:", err);
-    if (err instanceof Error) {
-      toast.error(err.message || "Erro ao adicionar item. Tente novamente.");
-    } else {
-      toast.error("Erro ao adicionar item. Tente novamente.");
+    try {
+      await criarInsumo(payload)
+      toast.success("Item adicionado com sucesso!")
+      reset({ nome: "", quantidade: 1, ordemServicoId: payload.ordemServicoId })
+      onSuccess?.()
+    } catch (err: unknown) {
+      console.error("🚨 Falha ao cadastrar insumo:", err)
+      if (err instanceof Error) {
+        toast.error(err.message || "Erro ao adicionar item. Tente novamente.")
+      } else {
+        toast.error("Erro ao adicionar item. Tente novamente.")
+      }
     }
   }
-}
-
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-4 rounded-md bg-white mt-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Nome */}
         <div>
           <Label htmlFor="nome">
             Nome do Insumo <span className="text-red-500">*</span>
@@ -90,7 +74,6 @@ async function onSubmit(data: FormData) {
           {errors.nome && <p className="text-sm text-red-500">{errors.nome.message}</p>}
         </div>
 
-        {/* Quantidade */}
         <div>
           <Label htmlFor="quantidade">
             Quantidade <span className="text-red-500">*</span>
@@ -114,7 +97,6 @@ async function onSubmit(data: FormData) {
         </div>
       </div>
 
-      {/* Botões */}
       <div className="flex justify-center space-x-4">
         <Button
           type="button"

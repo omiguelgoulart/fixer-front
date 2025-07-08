@@ -8,12 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 
 export type AbaType = "TODAS" | "EM_ABERTO" | "CONCLUIDA";
 export type CriticidadeType = "TODAS" | "ALTA" | "MEDIA" | "BAIXA";
 export type TipoManutencaoType = "TODAS" | "PREVENTIVA" | "CORRETIVA" | "PREDITIVA";
 
 type Props = {
+  ordens: OrdemServicoItf[];
   busca: string;
   onBusca: (s: string) => void;
   aba: AbaType;
@@ -36,7 +38,6 @@ export default function BarraFiltros({
 }: Props) {
   return (
     <div className="p-4 border-b space-y-4">
-      {/* Campo de busca */}
       <div className="relative">
         <input
           value={busca}
@@ -47,40 +48,36 @@ export default function BarraFiltros({
         <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
       </div>
 
-      {/* Filtros lado a lado */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        {/* Filtro Status */}
         <Select value={aba} onValueChange={(v) => onAba(v as AbaType)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="TODAS">Todas</SelectItem>
+            <SelectItem value="TODAS">Status</SelectItem>
             <SelectItem value="EM_ABERTO">Em aberto</SelectItem>
             <SelectItem value="CONCLUIDA">Concluídas</SelectItem>
           </SelectContent>
         </Select>
 
-        {/* Filtro Criticidade */}
         <Select value={criticidade} onValueChange={(v) => onCriticidade(v as CriticidadeType)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Criticidade" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="TODAS">Todas</SelectItem>
+            <SelectItem value="TODAS">Criticidade</SelectItem>
             <SelectItem value="ALTA">Alta</SelectItem>
             <SelectItem value="MEDIA">Média</SelectItem>
             <SelectItem value="BAIXA">Baixa</SelectItem>
           </SelectContent>
         </Select>
 
-        {/* Filtro Tipo de Manutenção */}
         <Select value={tipoManutencao} onValueChange={(v) => onTipoManutencao(v as TipoManutencaoType)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Tipo de Manutenção" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="TODAS">Todas</SelectItem>
+            <SelectItem value="TODAS">Tipo</SelectItem>
             <SelectItem value="PREVENTIVA">Preventiva</SelectItem>
             <SelectItem value="CORRETIVA">Corretiva</SelectItem>
             <SelectItem value="PREDITIVA">Preditiva</SelectItem>

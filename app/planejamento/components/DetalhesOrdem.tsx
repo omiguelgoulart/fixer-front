@@ -1,34 +1,45 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import {  AlertDialog,  AlertDialogTrigger,  AlertDialogContent,  AlertDialogHeader,  AlertDialogTitle,  AlertDialogFooter,  AlertDialogCancel,  AlertDialogAction, AlertDialogDescription, } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
-import OrdemTabs from "@/app/tecnico/components/OrdemTabs";
-import ModalEditarOrdem from "./ModalEditar";
-import { Pencil, Printer, Trash } from "lucide-react";
-import OrdemInfo from "@/app/tecnico/components/OrdemInfo";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogDescription,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf"
+import OrdemTabs from "@/app/tecnico/components/OrdemTabs"
+import ModalEditarOrdem from "./ModalEditar"
+import { Pencil, Printer, Trash } from "lucide-react"
+import OrdemInfo from "@/app/tecnico/components/OrdemInfo"
+import { Badge } from "@/components/ui/badge"
+import { usePlanejamento } from "../stores/usePlanejamento"
 
 interface Props {
-  ordem: OrdemServicoItf | null;
+  ordem: OrdemServicoItf | null
 }
 
 export default function DetalhesOrdem({ ordem }: Props) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [editarAberto, setEditarAberto] = useState(false);
-  const [tarefasConcluidas, setTarefasConcluidas] = useState<number[]>([]);
-  const [novoApontamento, setNovoApontamento] = useState<string>("");
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [editarAberto, setEditarAberto] = useState(false)
+  const [tarefasConcluidas, setTarefasConcluidas] = useState<number[]>([])
+  const [novoApontamento, setNovoApontamento] = useState<string>("")
+
+  const { deletarOrdem, editarOrdem } = usePlanejamento()
 
   function toggleTarefa(id: number) {
     setTarefasConcluidas((prev) =>
-      prev.includes(id)
-        ? prev.filter((t) => t !== id)
-        : [...prev, id]
-    );
+      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
+    )
   }
 
   if (!ordem) {
@@ -36,62 +47,53 @@ export default function DetalhesOrdem({ ordem }: Props) {
       <div className="p-8 text-center text-gray-500">
         Selecione uma ordem para visualizar os detalhes
       </div>
-    );
+    )
   }
 
   async function handleExcluir() {
-    if (!ordem) return;
-    setLoading(true);
+    if (!ordem) return
+    setLoading(true)
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico/${ordem.id}`, {
-        method: "DELETE",
-      });
-      toast.success("Ordem excluída!");
-      router.push("/planejamento");
+      await deletarOrdem(ordem.id)
+      toast.success("Ordem excluída!")
     } catch {
-      toast.error("Erro ao excluir.");
+      toast.error("Erro ao excluir.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   async function handleAlterarStatus(status: "EM_ABERTO" | "CONCLUIDA") {
-    if (!ordem) return;
-    setLoading(true);
+    if (!ordem) return
+    setLoading(true)
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico/${ordem.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      toast.success(`Status alterado para ${status === "EM_ABERTO" ? "Em Aberto" : "Concluída"}`);
+      await editarOrdem({ ...ordem, status })
+      toast.success(
+        `Status alterado para ${status === "EM_ABERTO" ? "Em Aberto" : "Concluída"}`
+      )
     } catch {
-      toast.error("Erro ao alterar status.");
+      toast.error("Erro ao alterar status.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
-
-
 
   return (
     <div className="min-h-screen bg-white">
       <div className="p-4 border-b flex justify-between items-center flex-wrap gap-2 md:flex-nowrap">
-<div>
-  <div className="flex items-center gap-2">
-    <span className="text-gray-500 text-sm">{ordem.codigo}</span>
-    <h2 className="font-medium text-gray-900">{ordem.titulo}</h2>
-  </div>
-  <div className="mt-1">
-        <Badge className="bg-blue-50 text-blue-700 border border-blue-100">
-          {ordem.tipoManutencao.charAt(0) +
-            ordem.tipoManutencao.slice(1).toLowerCase()}
-        </Badge>
-  </div>
-</div>
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500 text-sm">{ordem.codigo}</span>
+            <h2 className="font-medium text-gray-900">{ordem.titulo}</h2>
+          </div>
+          <div className="mt-1">
+            <Badge className="bg-blue-50 text-blue-700 border border-blue-100">
+              {ordem.tipoManutencao.charAt(0) + ordem.tipoManutencao.slice(1).toLowerCase()}
+            </Badge>
+          </div>
+        </div>
 
         <div className="flex flex-wrap justify-end gap-2">
-          {/* Botões de status */}
           {ordem.status !== "EM_ABERTO" && (
             <Button
               variant="secondary"
@@ -112,7 +114,6 @@ export default function DetalhesOrdem({ ordem }: Props) {
             </Button>
           )}
 
-          {/* Botões de ação */}
           <Button variant="ghost" size="icon">
             <Printer className="h-5 w-5" />
           </Button>
@@ -151,7 +152,7 @@ export default function DetalhesOrdem({ ordem }: Props) {
           </AlertDialog>
         </div>
       </div>
-      
+
       <OrdemInfo ordem={ordem} />
 
       <div className="p-4 max-w-4xl mx-auto">
@@ -165,7 +166,11 @@ export default function DetalhesOrdem({ ordem }: Props) {
         />
       </div>
 
-      <ModalEditarOrdem ordem={ordem} open={editarAberto} onClose={() => setEditarAberto(false)} />
+      <ModalEditarOrdem
+        ordem={ordem}
+        open={editarAberto}
+        onClose={() => setEditarAberto(false)}
+      />
     </div>
-  );
+  )
 }
