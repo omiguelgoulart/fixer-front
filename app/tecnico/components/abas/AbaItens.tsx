@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 import {
   Dialog,
@@ -12,8 +10,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 import FormItens from "@/app/planejamento/components/FormItens";
+import { useState } from "react";
+import { useTecnico } from "../../stores/useTecnico";
 
 interface Props {
   ordem: OrdemServicoItf;
@@ -22,14 +29,12 @@ interface Props {
 
 export default function AbaItens({ ordem, onUpdate }: Props) {
   const [open, setOpen] = useState(false);
+  const { buscarOrdemPorId } = useTecnico();
 
   async function handleSuccess() {
     setOpen(false);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico/${ordem.id}/os`);
-    if (res.ok) {
-      const dadosAtualizados: OrdemServicoItf = await res.json();
-      onUpdate(dadosAtualizados);
-    }
+    const atualizada = await buscarOrdemPorId(ordem.id);
+    if (atualizada) onUpdate(atualizada);
   }
 
   return (
@@ -39,7 +44,7 @@ export default function AbaItens({ ordem, onUpdate }: Props) {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-              <Plus className="h-4 w-4 mr-2" /> Adicionar item
+              Adicionar item
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
@@ -66,7 +71,7 @@ export default function AbaItens({ ordem, onUpdate }: Props) {
             </TableHeader>
             <TableBody>
               {ordem.insumos.length > 0 ? (
-                ordem.insumos.map(item => (
+                ordem.insumos.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.nome}</TableCell>
                     <TableCell>{item.codigo}</TableCell>
@@ -75,7 +80,10 @@ export default function AbaItens({ ordem, onUpdate }: Props) {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-sm text-gray-500 py-6">
+                  <TableCell
+                    colSpan={3}
+                    className="text-center text-sm text-gray-500 py-6"
+                  >
                     Nenhum item cadastrado.
                   </TableCell>
                 </TableRow>

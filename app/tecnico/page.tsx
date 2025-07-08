@@ -1,51 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import EstatisticasOrdens from "./components/EstatisticasOrdens";
-import ListaOrdens from "./components/ListaOrdens"; // ou CardPlanejamentoOrdem adaptado
+import ListaOrdens from "./components/ListaOrdens";
 import { useRouter } from "next/navigation";
-import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 import { useUsuario } from "../contexts/UsuarioContex";
+import { useTecnico } from "./stores/useTecnico";
 
 export default function TecnicoPage() {
   const [busca, setBusca] = useState("");
-  const [ordens, setOrdens] = useState<OrdemServicoItf[]>([]);
-  const [carregando, setCarregando] = useState(true);
   const router = useRouter();
+  const { usuario } = useUsuario();
 
-  const { usuario } = useUsuario(); // 👈 pega o técnico logado
+  const { ordens, carregando, buscarOrdens } = useTecnico();
 
-useEffect(() => {
-  async function fetchOrdens() {
-    if (!usuario) return;
-
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuario/tecnico/${usuario.id}/tec`);
-      if (!res.ok) throw new Error("Falha ao buscar ordens do técnico");
-
-      const dados: OrdemServicoItf[] = await res.json();
-      setOrdens(dados);
-    } catch (error) {
-      console.error("Erro ao carregar ordens do técnico:", error);
-    } finally {
-      setCarregando(false);
+  useEffect(() => {
+    if (usuario) {
+      buscarOrdens(usuario.id);
     }
-  }
-
-  fetchOrdens();
-}, [usuario]);
+  }, [usuario, buscarOrdens]);
 
   if (carregando) return <p>Carregando...</p>;
 
-const filtradas = ordens.filter(
-  (o) =>
-    o.titulo?.toLowerCase().includes(busca.toLowerCase()) ||
-    o.ativo?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
-    o.ativo?.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
-);
-
+  const filtradas = ordens.filter(
+    (o) =>
+      o.titulo?.toLowerCase().includes(busca.toLowerCase()) ||
+      o.ativo?.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+      o.ativo?.localizacao_interna?.toLowerCase().includes(busca.toLowerCase())
+  );
 
   return (
     <div className="p-4 bg-blue-50">

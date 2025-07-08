@@ -35,6 +35,7 @@ interface PlanejamentoState {
   criarTarefa: (tarefa: { descricao: string; ordemServicoId: number }) => Promise<void>;
   criarInsumo: (insumo: { nome: string; quantidade: number; ordemServicoId: number }) => Promise<void>;
   deletarOrdem: (id: number) => Promise<void>;
+  novaOrdem: (ordem: OrdemServicoItf) => Promise<void>;
 }
 
 export const usePlanejamento = create<PlanejamentoState>((set) => ({
@@ -227,6 +228,28 @@ export const usePlanejamento = create<PlanejamentoState>((set) => ({
         } catch (error) {
             console.error("Erro ao excluir ordem de serviço", error);
             set({ error: "Erro ao excluir ordem de serviço." });
+        }
+    },
+
+    novaOrdem: async (ordem: OrdemServicoItf) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemServico`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(ordem),
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao criar nova ordem de serviço");
+            }
+
+            const novaOrdem = await response.json();
+            set((state) => ({
+                ordens: [...state.ordens, novaOrdem],
+            }));
+        } catch (error) {
+            console.error("Erro ao criar nova ordem de serviço", error);
+            set({ error: "Erro ao criar nova ordem de serviço." });
         }
     },
 }));

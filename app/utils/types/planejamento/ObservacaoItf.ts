@@ -6,5 +6,5 @@ export interface ObservacaoItf {
   ordemServicoId: number;
   texto: string;
   criadoEm: string; // ou Date, dependendo de como você manipula datas
-  responsavel: UsuarioItf;
+  resposavel: UsuarioItf;
 }

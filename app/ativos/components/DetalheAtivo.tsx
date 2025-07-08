@@ -21,13 +21,12 @@ interface DetalhesAtivoProps {
   onVoltar: () => void;
 }
 
-export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps) {
-  const {
-    ativoSelecionado,
-    carregarAtivoPorId,
-    excluirAtivo,
-    carregando,
-  } = useAtivos();
+export default function DetalhesAtivo({
+  ativoId,
+  onVoltar,
+}: DetalhesAtivoProps) {
+  const { ativoSelecionado, carregarAtivoPorId, excluirAtivo, carregando } =
+    useAtivos();
 
   const [modalAberto, setModalAberto] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
@@ -64,7 +63,8 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
     );
   }
 
-  if (!ativoSelecionado) return <p className="text-gray-500">Ativo não encontrado.</p>;
+  if (!ativoSelecionado)
+    return <p className="text-gray-500">Ativo não encontrado.</p>;
 
   const ativo = ativoSelecionado;
 
@@ -105,22 +105,39 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
         </div>
 
         <div className="flex flex-wrap md:flex-row gap-2 items-center">
+          {/* Situação do ativo */}
           <Badge className={obterCorSituacao(ativo.situacao)}>
             {ativo.situacao}
           </Badge>
+
+          {/* Criticidade do ativo */}
           <Badge className={obterCorCriticidade(ativo.criticidade)}>
             Criticidade: {ativo.criticidade}
           </Badge>
-          <Button variant="outline" size="icon" onClick={onVoltar}>
+
+          {/* Botão voltar */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hover:bg-gray-100 text-gray-700"
+          >
             <X className="w-4 h-4" />
           </Button>
-          <Button size="icon" onClick={() => setModalAberto(true)}>
+
+          {/* Botão editar */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="text-blue-600 border-blue-600 hover:bg-blue-50"
+          >
             <Pencil className="w-4 h-4" />
           </Button>
+
+          {/* Botão deletar */}
           <Button
             variant="destructive"
             size="icon"
-            onClick={() => setConfirmarExclusao(true)}
+            className="hover:bg-red-600 hover:text-white"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -177,12 +194,17 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
                 {ativo.subativos.map((sub: SubAtivoItf) => (
                   <li key={sub.id}>
                     {sub.nome}
-                    <span className="text-gray-400 text-xs"> ({sub.codigo})</span>
+                    <span className="text-gray-400 text-xs">
+                      {" "}
+                      ({sub.codigo})
+                    </span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-500">Nenhum subativo cadastrado.</p>
+              <p className="text-sm text-gray-500">
+                Nenhum subativo cadastrado.
+              </p>
             )}
           </div>
         </div>
@@ -211,7 +233,10 @@ export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps)
             </p>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmarExclusao(false)}
+            >
               Cancelar
             </Button>
             <Button variant="destructive" onClick={handleExcluir}>

@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 
 import { usePlanejamento } from "../stores/usePlanejamento";
+import { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 
 interface ModalNovaOrdemProps {
   open: boolean;
@@ -61,6 +62,7 @@ export default function ModalNovaOrdem({
     fetchSistemas,
     fetchAtivos,
     fetchOrdens,
+    novaOrdem,
   } = usePlanejamento();
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<FormData>({
@@ -103,40 +105,33 @@ useEffect(() => {
     }
   }, [dataSelecionada, setValue]);
 
-  async function onSubmit(data: FormData) {
-    try {
-      const usuarioId = Number(localStorage.getItem("usuarioId") || "1");
+async function onSubmit(data: FormData) {
+  try {
+    const usuarioId = Number(localStorage.getItem("usuarioId") || "1");
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ordemservico`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          titulo: data.titulo,
-          status: data.status,
-          prioridade: data.prioridade,
-          tipoManutencao: data.tipoManutencao,
-          responsavelId: Number(data.responsavelId),
-          usuarioId,
-          ativoId: data.ativoId,
-          dataVencimento: data.dataVencimento,
-          dataInicioPlanejada: data.dataInicioPlanejada,
-        }),
-      });
+    const payload = {
+      titulo: data.titulo,
+      status: data.status,
+      prioridade: data.prioridade,
+      tipoManutencao: data.tipoManutencao,
+      responsavelId: Number(data.responsavelId),
+      usuarioId,
+      ativoId: data.ativoId,
+      dataVencimento: data.dataVencimento,
+      dataInicioPlanejada: data.dataInicioPlanejada,
+    };
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao cadastrar OS");
-      }
+    await novaOrdem(payload as OrdemServicoItf); // se `OrdemServicoItf` exigir campos adicionais, você pode ajustar o tipo aqui
 
-      toast.success("Ordem de Serviço cadastrada com sucesso!");
-      await fetchOrdens(); // atualiza estado global
-      reset();
-      onClose();
-    } catch (error) {
-      console.error("Erro ao cadastrar OS:", error);
-      toast.error((error as Error).message || "Erro ao cadastrar Ordem de Serviço");
-    }
+    toast.success("Ordem de Serviço cadastrada com sucesso!");
+    await fetchOrdens(); // atualiza a lista no estado global
+    reset();
+    onClose();
+  } catch (error) {
+    console.error("Erro ao cadastrar OS:", error);
+    toast.error("Erro ao cadastrar Ordem de Serviço");
   }
+}
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>

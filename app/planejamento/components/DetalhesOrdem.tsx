@@ -96,7 +96,7 @@ export default function DetalhesOrdem({ ordem }: Props) {
         <div className="flex flex-wrap justify-end gap-2">
           {ordem.status !== "EM_ABERTO" && (
             <Button
-              variant="secondary"
+              variant="default"
               onClick={() => handleAlterarStatus("EM_ABERTO")}
               disabled={loading}
             >
@@ -106,7 +106,7 @@ export default function DetalhesOrdem({ ordem }: Props) {
 
           {ordem.status !== "CONCLUIDA" && (
             <Button
-              variant="secondary"
+              variant="default"
               onClick={() => handleAlterarStatus("CONCLUIDA")}
               disabled={loading}
             >

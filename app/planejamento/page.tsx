@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import ModalNovaOrdem from "./components/ModalNovaOrdem";
 
 export default function PagePlanejamento() {
-  const [visualizacao, setVisualizacao] = useState<"lista" | "calendario" | "kanban">("lista");
+  const [visualizacao, setVisualizacao] = useState<
+    "lista" | "calendario" | "kanban"
+  >("lista");
 
   const [novaOrdemAberta, setNovaOrdemAberta] = useState(false);
 
@@ -19,7 +21,9 @@ export default function PagePlanejamento() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <Tabs
             value={visualizacao}
-            onValueChange={(v: string) => setVisualizacao(v as "lista" | "calendario" | "kanban")}
+            onValueChange={(v: string) =>
+              setVisualizacao(v as "lista" | "calendario" | "kanban")
+            }
           >
             <TabsList className="flex w-full md:w-auto overflow-x-auto">
               <TabsTrigger value="lista">
@@ -39,8 +43,8 @@ export default function PagePlanejamento() {
 
           {/* Botão para abrir modal */}
           <Button
-            variant="outline"
-            className="bg-blue-500 text-white hover:bg-blue-600 w-full md:w-auto"
+            variant="default"
+            className="bg-blue-500 hover:bg-blue-600 text-white w-full md:w-auto"
             onClick={() => setNovaOrdemAberta(true)}
           >
             Adicionar OS
@@ -56,7 +60,9 @@ export default function PagePlanejamento() {
 
         <Tabs
           value={visualizacao}
-          onValueChange={(v: string) => setVisualizacao(v as "lista" | "calendario" | "kanban")}
+          onValueChange={(v: string) =>
+            setVisualizacao(v as "lista" | "calendario" | "kanban")
+          }
         >
           <TabsContent value="lista">
             <PageListas />
