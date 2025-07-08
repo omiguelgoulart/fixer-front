@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import BarraFiltros from "./Filtros";
 import type { AbaType, CriticidadeType, TipoManutencaoType } from "./Filtros";
 import ListaOrdens from "./ListaOrdens";
@@ -9,6 +10,9 @@ import type { OrdemServicoItf } from "@/app/utils/types/planejamento/OSItf";
 import { usePlanejamento } from "../stores/usePlanejamento";
 
 export function PageListas() {
+  const searchParams = useSearchParams();
+  const ordemIdFromUrl = searchParams.get("ordem");
+
   const [busca, setBusca] = useState("");
   const [aba, setAba] = useState<AbaType>("TODAS");
   const [criticidade, setCriticidade] = useState<CriticidadeType>("TODAS");
@@ -20,6 +24,14 @@ export function PageListas() {
   useEffect(() => {
     fetchOrdens();
   }, [fetchOrdens]);
+
+  // Seleciona a ordem automaticamente se vier pela URL
+  useEffect(() => {
+    if (ordemIdFromUrl && ordens.length > 0) {
+      const ordem = ordens.find((o) => o.id.toString() === ordemIdFromUrl);
+      if (ordem) setOrdemSelecionada(ordem);
+    }
+  }, [ordemIdFromUrl, ordens]);
 
   const ordensFiltradas = useMemo(() => {
     const term = busca.toLowerCase();
