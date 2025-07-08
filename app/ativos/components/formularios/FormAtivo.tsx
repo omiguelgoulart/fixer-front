@@ -12,11 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
-import type { AreaItf } from "@/app/utils/types/ativo/AreaItf";
-import type { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
 import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
 import { toast } from "sonner";
+import { useAtivos } from "../../stores/useAtivos";
 
 export default function FormularioAtivo() {
   const {
@@ -28,90 +26,46 @@ export default function FormularioAtivo() {
     reset,
   } = useForm<AtivoItf>();
 
-  const [plantas, setPlantas] = useState<PlantaItf[]>([]);
-  const [areas, setAreas] = useState<AreaItf[]>([]);
-  const [sistemas, setSistemas] = useState<SistemaItf[]>([]);
   const [apiError, setApiError] = useState<string | null>(null);
+  const {
+    plantas,
+    areas,
+    sistemas,
+    carregarPlantas,
+    carregarAreasPorPlanta,
+    carregarSistemasPorArea,
+    cadastrarAtivo,
+  } = useAtivos();
 
   const id_planta = watch("id_planta");
   const id_area = watch("id_area");
 
-  // Carrega todas as plantas
   useEffect(() => {
-    async function carregarPlantas() {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/planta`
-        );
-        if (!response.ok) throw new Error("Erro ao carregar plantas");
-        const data = await response.json();
-        setPlantas(data);
-      } catch (error) {
-        console.error("Erro ao carregar plantas:", error);
-        setApiError("Erro ao carregar as plantas. Tente novamente mais tarde.");
-      }
-    }
-
     carregarPlantas();
-  }, []);
+  }, [carregarPlantas]);
 
-  // Ao selecionar a planta, carrega suas áreas
   useEffect(() => {
-    if (!id_planta) return;
+    if (id_planta) carregarAreasPorPlanta(id_planta);
+  }, [id_planta, carregarAreasPorPlanta]);
 
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta/${id_planta}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAreas(data.area || []);
-        setSistemas([]); // Limpa os sistemas enquanto a área não for selecionada
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar áreas da planta", err);
-        setApiError("Erro ao carregar dados da planta.");
-      });
-  }, [id_planta]);
-
-  // Ao selecionar a área, carrega os sistemas dela
   useEffect(() => {
-    if (!id_area) return;
-
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/area/${id_area}/sistemas`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSistemas(data.sistema || []);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar sistemas da área", err);
-        setApiError("Erro ao carregar sistemas da área.");
-      });
-  }, [id_area]);
+    if (id_area) carregarSistemasPorArea(id_area);
+  }, [id_area, carregarSistemasPorArea]);
 
   async function onSubmit(data: AtivoItf) {
-    try {
-      setApiError(null);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/ativo`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    setApiError(null);
+    const sucesso = await cadastrarAtivo(data);
 
-      if (!response.ok) {
-        throw new Error("Erro ao enviar formulário");
-      }
-
-      console.log("Dados enviados:", data);
-
+    if (sucesso) {
       toast.success("Cadastro realizado com sucesso!", {
-        description: "Sua área foi registrada no sistema.",
+        description: "Seu ativo foi registrado no sistema.",
       });
-
       reset();
-    } catch (error) {
-      console.error(error);
+    } else {
+      setApiError("Erro ao enviar os dados. Tente novamente.");
     }
   }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <div className="space-y-6">
@@ -209,21 +163,10 @@ export default function FormularioAtivo() {
             </Label>
             <Select
               onValueChange={(value) =>
-                setValue(
-                  "tipo_ativo",
-                  value as
-                    | "MECANICO"
-                    | "ELETRICO"
-                    | "ELETRONICO"
-                    | "HIDRAULICO"
-                    | "PNEUMATICO"
-                    | "OUTRO"
-                )
+                setValue("tipo_ativo", value as AtivoItf["tipo_ativo"])
               }
             >
-              <SelectTrigger
-                className={errors.tipo_ativo ? "border-red-500" : ""}
-              >
+              <SelectTrigger className={errors.tipo_ativo ? "border-red-500" : ""}>
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -250,15 +193,10 @@ export default function FormularioAtivo() {
             </Label>
             <Select
               onValueChange={(value) =>
-                setValue(
-                  "situacao",
-                  value as "ATIVO" | "INATIVO" | "MANUTENCAO" | "DESCARTADO"
-                )
+                setValue("situacao", value as AtivoItf["situacao"])
               }
             >
-              <SelectTrigger
-                className={errors.situacao ? "border-red-500" : ""}
-              >
+              <SelectTrigger className={errors.situacao ? "border-red-500" : ""}>
                 <SelectValue placeholder="Selecione a situação" />
               </SelectTrigger>
               <SelectContent>
@@ -278,12 +216,10 @@ export default function FormularioAtivo() {
             </Label>
             <Select
               onValueChange={(value) =>
-                setValue("criticidade", value as "ALTA" | "MEDIA" | "BAIXA")
+                setValue("criticidade", value as AtivoItf["criticidade"])
               }
             >
-              <SelectTrigger
-                className={errors.criticidade ? "border-red-500" : ""}
-              >
+              <SelectTrigger className={errors.criticidade ? "border-red-500" : ""}>
                 <SelectValue placeholder="Selecione a criticidade" />
               </SelectTrigger>
               <SelectContent>
@@ -301,7 +237,6 @@ export default function FormularioAtivo() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Planta */}
           <div className="space-y-4">
             <Label htmlFor="id_planta">
               Planta <span className="text-red-500">*</span>
@@ -309,9 +244,7 @@ export default function FormularioAtivo() {
             <Select
               onValueChange={(value) => setValue("id_planta", Number(value))}
             >
-              <SelectTrigger
-                className={errors.id_planta ? "border-red-500" : ""}
-              >
+              <SelectTrigger className={errors.id_planta ? "border-red-500" : ""}>
                 <SelectValue placeholder="Selecione uma planta" />
               </SelectTrigger>
               <SelectContent>
@@ -327,9 +260,8 @@ export default function FormularioAtivo() {
             )}
           </div>
 
-          {/* Área */}
           <div className="space-y-4">
-            <Label htmlFor="id">
+            <Label htmlFor="id_area">
               Área <span className="text-red-500">*</span>
             </Label>
             <Select
@@ -347,13 +279,11 @@ export default function FormularioAtivo() {
                 ))}
               </SelectContent>
             </Select>
-
             {errors.id_area && (
               <p className="text-sm text-red-500">{errors.id_area.message}</p>
             )}
           </div>
 
-          {/* Sistema */}
           <div className="space-y-4">
             <Label htmlFor="id_sistema">
               Sistema <span className="text-red-500">*</span>
@@ -362,9 +292,7 @@ export default function FormularioAtivo() {
               onValueChange={(v) => setValue("id_sistema", Number(v))}
               disabled={!id_area}
             >
-              <SelectTrigger
-                className={errors.id_sistema ? "border-red-500" : ""}
-              >
+              <SelectTrigger className={errors.id_sistema ? "border-red-500" : ""}>
                 <SelectValue placeholder="Selecione um sistema" />
               </SelectTrigger>
               <SelectContent>
@@ -376,9 +304,7 @@ export default function FormularioAtivo() {
               </SelectContent>
             </Select>
             {errors.id_sistema && (
-              <p className="text-sm text-red-500">
-                {errors.id_sistema.message}
-              </p>
+              <p className="text-sm text-red-500">{errors.id_sistema.message}</p>
             )}
           </div>
         </div>
@@ -401,6 +327,7 @@ export default function FormularioAtivo() {
         </div>
 
         {apiError && <p className="text-sm text-red-500">{apiError}</p>}
+
         <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={() => reset()}>
             Limpar

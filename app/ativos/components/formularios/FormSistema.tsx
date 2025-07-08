@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
 import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
+import { useAtivos } from "../../stores/useAtivos";
 
 export default function FormularioSistema() {
   const {
@@ -24,49 +24,25 @@ export default function FormularioSistema() {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<SistemaItf>();
+
   const [apiError, setApiError] = useState<string | null>(null);
-  const [areas, setAreas] = useState<AreaItf[]>([]);
+  const { areas, carregarAreas, cadastrarSistema } = useAtivos();
 
   useEffect(() => {
-    async function carregarArea() {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/area`);
-        const data = await response.json();
-        setAreas(data);
-      } catch (error) {
-        console.error("Erro ao carregar area:", error);
-      }
-    }
-
-    carregarArea();
-  }, []);
+    carregarAreas();
+  }, [carregarAreas]);
 
   const onSubmit = async (data: SistemaItf) => {
-    try {
-      setApiError(null);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/sistema`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+    setApiError(null);
+    const sucesso = await cadastrarSistema(data);
 
-      if (!response.ok) {
-        throw new Error("Erro ao enviar formulário");
-      }
-
+    if (sucesso) {
       toast.success("Cadastro realizado com sucesso!", {
-        description: "Sua área foi registrada no sistema.",
+        description: "Seu sistema foi registrado no sistema.",
       });
-
       reset();
-    } catch (error) {
+    } else {
       setApiError("Erro ao enviar os dados. Tente novamente.");
-      console.error(error);
     }
   };
 
@@ -90,6 +66,7 @@ export default function FormularioSistema() {
               <p className="text-sm text-red-500">{errors.nome.message}</p>
             )}
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="id_area">
               Área <span className="text-red-500">*</span>
@@ -99,7 +76,7 @@ export default function FormularioSistema() {
               defaultValue=""
             >
               <SelectTrigger className={errors.id_area ? "border-red-500" : ""}>
-                <SelectValue placeholder="Selecione uma area" />
+                <SelectValue placeholder="Selecione uma área" />
               </SelectTrigger>
               <SelectContent>
                 {areas.map((area) => (
@@ -115,7 +92,9 @@ export default function FormularioSistema() {
           </div>
         </div>
       </div>
+
       {apiError && <p className="text-sm text-red-500">{apiError}</p>}
+
       <div className="flex justify-end space-x-4">
         <Button type="button" variant="outline" onClick={() => reset()}>
           Limpar

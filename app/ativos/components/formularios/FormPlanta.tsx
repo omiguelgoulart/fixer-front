@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
-import { useState } from "react";
 import { toast } from "sonner";
+import { useState } from "react";
+import { useAtivos } from "../../stores/useAtivos";
 
 export default function FormularioPlanta() {
   const {
@@ -16,32 +17,19 @@ export default function FormularioPlanta() {
     reset,
   } = useForm<PlantaItf>();
   const [apiError, setApiError] = useState<string | null>(null);
+  const { cadastrarPlanta } = useAtivos();
 
   const onSubmit = async (data: PlantaItf) => {
-    try {
-      setApiError(null); // Limpa erro anterior
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/planta`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+    setApiError(null);
+    const sucesso = await cadastrarPlanta(data);
 
-      if (!response.ok) {
-        throw new Error("Erro ao enviar formulário");
-      }
-
+    if (sucesso) {
       toast.success("Cadastro realizado com sucesso!", {
         description: "Sua planta foi registrada no sistema.",
       });
-      reset(); // Limpa o formulário
-    } catch (error) {
+      reset();
+    } else {
       setApiError("Erro ao enviar os dados. Tente novamente.");
-      console.error(error);
     }
   };
 
@@ -66,6 +54,7 @@ export default function FormularioPlanta() {
             )}
           </div>
         </div>
+
         <div className="space-y-2">
           <Label htmlFor="localizacao">
             Localização <span className="text-red-500">*</span>
@@ -79,7 +68,9 @@ export default function FormularioPlanta() {
             className={errors.localizacao ? "border-red-500" : ""}
           />
           {errors.localizacao && (
-            <p className="text-sm text-red-500">{errors.localizacao.message}</p>
+            <p className="text-sm text-red-500">
+              {errors.localizacao.message}
+            </p>
           )}
         </div>
       </div>

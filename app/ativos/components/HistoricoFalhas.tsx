@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 interface OrdemServico {
@@ -13,83 +12,99 @@ interface OrdemServico {
 }
 
 interface HistoricoFalhasProps {
-  ativoId: number;
+  ordens: OrdemServico[];
 }
 
-export default function HistoricoFalhas({ ativoId }: HistoricoFalhasProps) {
-  const [ordens, setOrdens] = useState<OrdemServico[]>([]);
-  const [carregando, setCarregando] = useState(true);
-
-  useEffect(() => {
-    async function fetchHistorico() {
-      setCarregando(true);
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}/historico`
-        );
-        const data = await response.json();
-
-        if (data && Array.isArray(data.ordensServico)) {
-          setOrdens(data.ordensServico);
-        } else {
-          setOrdens([]);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar histórico:", error);
-        setOrdens([]);
-      } finally {
-        setCarregando(false);
-      }
-    }
-
-    fetchHistorico();
-  }, [ativoId]);
-
-  if (carregando) {
-    return <p className="text-gray-500 mt-6">Carregando histórico...</p>;
+// 🔧 Cores com fundo sólido + texto branco (igual à imagem)
+function corTipo(tipo: string) {
+  switch (tipo.toUpperCase()) {
+    case "CORRETIVA":
+      return "bg-red-500 text-white";
+    case "PREVENTIVA":
+      return "bg-blue-500 text-white";
+    default:
+      return "bg-gray-500 text-white";
   }
+}
+
+function corStatus(status: string) {
+  switch (status.toUpperCase()) {
+    case "CONCLUIDA":
+      return "bg-green-500 text-white";
+    case "EM_ABERTO":
+      return "bg-yellow-500 text-white";
+    case "CANCELADA":
+      return "bg-gray-500 text-white";
+    default:
+      return "bg-blue-500 text-white";
+  }
+}
+
+function corPrioridade(prioridade: string) {
+  switch (prioridade.toUpperCase()) {
+    case "ALTA":
+      return "bg-red-500 text-white";
+    case "MEDIA":
+      return "bg-yellow-500 text-white";
+    case "BAIXA":
+      return "bg-green-500 text-white";
+    default:
+      return "bg-gray-500 text-white";
+  }
+}
+
+export default function HistoricoFalhas({ ordens }: HistoricoFalhasProps) {
+  const renderTabela = (lista: OrdemServico[]) => (
+    <div className="overflow-x-auto border rounded-lg bg-white mb-6">
+      <table className="min-w-full text-sm text-left">
+        <thead className="bg-gray-100 text-xs uppercase text-gray-600">
+          <tr>
+            <th className="px-4 py-2 whitespace-nowrap">Título</th>
+            <th className="px-4 py-2 whitespace-nowrap">Tipo</th>
+            <th className="px-4 py-2 whitespace-nowrap">Status</th>
+            <th className="px-4 py-2 whitespace-nowrap">Prioridade</th>
+            <th className="px-4 py-2 whitespace-nowrap">Criado em</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lista.map((ordem) => (
+            <tr key={ordem.id} className="border-t hover:bg-gray-50">
+              <td className="px-4 py-2 font-medium">{ordem.titulo}</td>
+              <td className="px-4 py-2">
+                <Badge className={`${corTipo(ordem.tipoManutencao)} capitalize`}>
+                  {ordem.tipoManutencao.toLowerCase()}
+                </Badge>
+              </td>
+              <td className="px-4 py-2">
+                <Badge className={`${corStatus(ordem.status)} capitalize`}>
+                  {ordem.status.replace("_", " ").toLowerCase()}
+                </Badge>
+              </td>
+              <td className="px-4 py-2">
+                <Badge className={`${corPrioridade(ordem.prioridade)} capitalize`}>
+                  {ordem.prioridade.toLowerCase()}
+                </Badge>
+              </td>
+              <td className="px-4 py-2 text-gray-500">
+                {new Date(ordem.createdAt).toLocaleDateString("pt-BR")}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
     <div className="mt-6">
-      <h3 className="font-semibold text-lg mb-4">📜 Histórico de Falhas</h3>
+      <h3 className="font-semibold text-lg mb-4">📜 Histórico de Manutenções</h3>
 
       {ordens.length === 0 ? (
         <p className="text-sm text-gray-500">
           Nenhuma ordem registrada para este ativo.
         </p>
       ) : (
-        <div className="overflow-x-auto border rounded-lg bg-white">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-100 text-xs uppercase text-gray-600">
-              <tr>
-                <th className="px-4 py-2">Título</th>
-                <th className="px-4 py-2">Tipo</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Prioridade</th>
-                <th className="px-4 py-2">Criado em</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ordens.map((ordem) => (
-                <tr key={ordem.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2 font-medium">{ordem.titulo}</td>
-                  <td className="px-4 py-2">
-                    <Badge variant="outline">{ordem.tipoManutencao}</Badge>
-                  </td>
-                  <td className="px-4 py-2">
-                    <Badge variant="outline">{ordem.status.replace("_", " ").toUpperCase()}</Badge>
-                  </td>
-                  <td className="px-4 py-2">
-                    <Badge variant="outline">{ordem.prioridade}</Badge>
-                  </td>
-                  <td className="px-4 py-2 text-gray-500">
-                    {new Date(ordem.createdAt).toLocaleDateString("pt-BR")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        renderTabela(ordens)
       )}
     </div>
   );

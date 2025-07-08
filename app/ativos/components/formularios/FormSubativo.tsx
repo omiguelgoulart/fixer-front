@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -12,12 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
-import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
-import { SistemaItf } from "@/app/utils/types/ativo/SistemaItf";
-import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
 import { SubAtivoItf } from "@/app/utils/types/ativo/SubAtivoItf";
 import { toast } from "sonner";
+import { useAtivos } from "../../stores/useAtivos";
 
 export default function FormularioSubativo() {
   const {
@@ -28,112 +25,49 @@ export default function FormularioSubativo() {
     reset,
     watch,
   } = useForm<SubAtivoItf>();
-  const [plantas, setPlantas] = useState<PlantaItf[]>([]);
-  const [areas, setAreas] = useState<AreaItf[]>([]);
-  const [sistemas, setSistemas] = useState<SistemaItf[]>([]);
-  const [ativos, setAtivos] = useState<AtivoItf[]>([]);
-  const [apiError, setApiError] = useState<string | null>(null);
+
+  const {
+    plantas,
+    areas,
+    sistemas,
+    ativos,
+    carregarPlantas,
+    carregarAreasPorPlanta,
+    carregarSistemasPorArea,
+    carregarAtivosPorSistema,
+    cadastrarSubativo,
+    error,
+    limparErro,
+  } = useAtivos();
 
   const id_planta = watch("id_planta");
   const id_area = watch("id_area");
   const id_sistema = watch("id_sistema");
 
-  // Carrega todas as plantas
   useEffect(() => {
-    async function carregarPlantas() {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/planta`
-        );
-        if (!response.ok) throw new Error("Erro ao carregar plantas");
-        const data = await response.json();
-        setPlantas(data);
-      } catch (error) {
-        console.error("Erro ao carregar plantas:", error);
-        setApiError("Erro ao carregar as plantas. Tente novamente mais tarde.");
-      }
-    }
-
     carregarPlantas();
-  }, []);
+  }, [carregarPlantas]);
 
-  // Ao selecionar a planta, carrega suas áreas
   useEffect(() => {
-    if (!id_planta) return;
+    if (id_planta) carregarAreasPorPlanta(id_planta);
+  }, [id_planta, carregarAreasPorPlanta]);
 
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta/${id_planta}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAreas(data.area || []);
-        setSistemas([]); // Limpa os sistemas enquanto a área não for selecionada
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar áreas da planta", err);
-        setApiError("Erro ao carregar dados da planta.");
-      });
-  }, [id_planta]);
-
-  // Ao selecionar a área, carrega os sistemas dela
   useEffect(() => {
-    if (!id_area) return;
+    if (id_area) carregarSistemasPorArea(id_area);
+  }, [id_area, carregarSistemasPorArea]);
 
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/area/${id_area}/sistemas`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSistemas(data.sistema || []);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar sistemas da área", err);
-        setApiError("Erro ao carregar sistemas da área.");
-      });
-  }, [id_area]);
-
-  // Ao selecionar o sistema, carrega os ativos dele
   useEffect(() => {
-    if (!id_sistema) return;
-
-    fetch(`${process.env.NEXT_PUBLIC_URL_API}/sistema/${id_sistema}/ativos`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("ATIVOS CARREGADOS:", data);
-        setAtivos(data); // aqui `data` deve ser a lista de ativos
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar ativos do sistema", err);
-        setApiError("Erro ao carregar ativos do sistema.");
-      });
-  }, [id_sistema]);
+    if (id_sistema) carregarAtivosPorSistema(id_sistema);
+  }, [id_sistema, carregarAtivosPorSistema]);
 
   async function onSubmit(data: SubAtivoItf) {
-    try {
-      setApiError(null); // Limpa erro anterior
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/subativo`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao enviar formulário");
-      }
-
+    limparErro();
+    const sucesso = await cadastrarSubativo(data);
+    if (sucesso) {
       toast.success("Cadastro realizado com sucesso!", {
         description: "Seu subativo foi registrado no sistema.",
       });
-      reset(); // Limpa o formulário
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Erro desconhecido ao enviar os dados.";
-      setApiError(`Erro ao enviar os dados: ${errorMessage}`);
-      console.error("Erro ao enviar formulário:", error);
+      reset();
     }
   }
 
@@ -298,7 +232,7 @@ export default function FormularioSubativo() {
           </div>
         </div>
 
-        {apiError && <p className="text-sm text-red-500">{apiError}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <div className="flex justify-end space-x-4">
           <Button type="button" variant="outline" onClick={() => reset()}>
             Limpar

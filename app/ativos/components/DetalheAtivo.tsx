@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ModalEditarAtivo from "./ModalEditarAtivo";
@@ -13,60 +13,39 @@ import {
 import { toast } from "sonner";
 import { Pencil, Trash2, X } from "lucide-react";
 import { SubAtivoItf } from "@/app/utils/types/ativo/SubAtivoItf";
-import { AtivoItf } from "@/app/utils/types/ativo/Ativo";
 import HistoricoFalhas from "./HistoricoFalhas";
+import { useAtivos } from "../stores/useAtivos";
 
 interface DetalhesAtivoProps {
   ativoId: number;
   onVoltar: () => void;
 }
 
-export default function DetalhesAtivo({
-  ativoId,
-  onVoltar,
-}: DetalhesAtivoProps) {
-  const [ativo, setAtivo] = useState<AtivoItf | null>(null);
-  const [carregando, setCarregando] = useState(true);
+export default function DetalhesAtivo({ ativoId, onVoltar }: DetalhesAtivoProps) {
+  const {
+    ativoSelecionado,
+    carregarAtivoPorId,
+    excluirAtivo,
+    carregando,
+  } = useAtivos();
+
   const [modalAberto, setModalAberto] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
 
-  const fetchAtivo = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`
-      );
-      if (!response.ok) throw new Error("Erro ao carregar dados");
-      const dados = await response.json();
-      setAtivo(dados);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setCarregando(false);
-    }
-  }, [ativoId]);
+  useEffect(() => {
+    carregarAtivoPorId(ativoId);
+  }, [ativoId, carregarAtivoPorId]);
 
-  async function excluirAtivo() {
+  const handleExcluir = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativoId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) throw new Error("Erro ao excluir ativo");
+      await excluirAtivo(ativoId);
       toast.success("Ativo excluído com sucesso");
       setConfirmarExclusao(false);
       onVoltar();
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error("Erro ao excluir ativo");
     }
-  }
-
-  useEffect(() => {
-    setCarregando(true); // mostra o loading ao trocar de ativo
-    fetchAtivo();
-  }, [ativoId, fetchAtivo]);
+  };
 
   if (carregando) {
     return (
@@ -85,7 +64,9 @@ export default function DetalhesAtivo({
     );
   }
 
-  if (!ativo) return <p className="text-gray-500">Ativo não encontrado.</p>;
+  if (!ativoSelecionado) return <p className="text-gray-500">Ativo não encontrado.</p>;
+
+  const ativo = ativoSelecionado;
 
   const obterCorCriticidade = (criticidade: string) => {
     switch (criticidade.toUpperCase()) {
@@ -114,7 +95,7 @@ export default function DetalhesAtivo({
   };
 
   return (
-    <div className="bg-white rounded-md shadow-sm border overflow-hidden ">
+    <div className="bg-white rounded-md shadow-sm border overflow-hidden">
       <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-6 border-b">
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold leading-snug">{ativo.nome}</h2>
@@ -196,32 +177,28 @@ export default function DetalhesAtivo({
                 {ativo.subativos.map((sub: SubAtivoItf) => (
                   <li key={sub.id}>
                     {sub.nome}
-                    <span className="text-gray-400 text-xs">
-                      {" "}
-                      ({sub.codigo})
-                    </span>
+                    <span className="text-gray-400 text-xs"> ({sub.codigo})</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-500">
-                Nenhum subativo cadastrado.
-              </p>
+              <p className="text-sm text-gray-500">Nenhum subativo cadastrado.</p>
             )}
           </div>
         </div>
       </div>
 
       <div className="p-6">
-        <HistoricoFalhas ativoId={ativo.id} />
+        {/* 📋 Histórico de ordens de serviço */}
+        <HistoricoFalhas ordens={ativo.ordensServico || []} />
       </div>
 
-      {modalAberto && ativo && (
+      {modalAberto && (
         <ModalEditarAtivo
           aberto={modalAberto}
           aoFechar={() => setModalAberto(false)}
-          ativo={ativo}
-          aoAtualizar={fetchAtivo}
+          ativo={ativoSelecionado}
+          aoAtualizar={() => carregarAtivoPorId(ativo.id)}
         />
       )}
 
@@ -234,13 +211,10 @@ export default function DetalhesAtivo({
             </p>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setConfirmarExclusao(false)}
-            >
+            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>
               Cancelar
             </Button>
-            <Button variant="destructive" onClick={excluirAtivo}>
+            <Button variant="destructive" onClick={handleExcluir}>
               Confirmar exclusão
             </Button>
           </div>

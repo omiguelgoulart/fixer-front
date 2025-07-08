@@ -1,3 +1,4 @@
+import { OrdemServicoItf } from "../planejamento/OSItf";
 import { SubAtivoItf } from "./SubAtivoItf";
 
 export interface AtivoItf {
@@ -20,6 +21,7 @@ export interface AtivoItf {
 
   subativos?: SubAtivoItf[];
 
+  ordensServico?: OrdemServicoItf[];
   // Campo "name" pode ser excluído se for redundante com "nome"
   name?: string;
 }

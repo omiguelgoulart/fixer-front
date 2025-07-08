@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { AreaItf } from "@/app/utils/types/ativo/AreaItf";
-import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
+import { useAtivos } from "../../stores/useAtivos";
 
 export default function FormularioArea() {
   const {
@@ -24,48 +24,25 @@ export default function FormularioArea() {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<AreaItf>();
+
   const [apiError, setApiError] = useState<string | null>(null);
-  const [plantas, setPlantas] = useState<PlantaItf[]>([]);
+  const { plantas, carregarPlantas, cadastrarArea } = useAtivos();
 
   useEffect(() => {
-    const carregarPlantas = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_API}/planta`
-        );
-        const data = await response.json();
-        setPlantas(data);
-      } catch (error) {
-        console.error("Erro ao carregar plantas:", error);
-      }
-    };
-
     carregarPlantas();
-  }, []);
+  }, [carregarPlantas]);
 
   const onSubmit = async (data: AreaItf) => {
-    try {
-      setApiError(null);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/area`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    setApiError(null);
+    const sucesso = await cadastrarArea(data);
 
-      if (!response.ok) {
-        throw new Error("Erro ao enviar formulário");
-      }
-
+    if (sucesso) {
       toast.success("Cadastro realizado com sucesso!", {
         description: "Sua área foi registrada no sistema.",
       });
-
       reset();
-    } catch (error) {
+    } else {
       setApiError("Erro ao enviar os dados. Tente novamente.");
-      console.error(error);
     }
   };
 

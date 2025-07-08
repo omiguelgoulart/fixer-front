@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Building2,
   FolderCog,
@@ -9,32 +9,19 @@ import {
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
-import { PlantaItf } from "@/app/utils/types/ativo/PlantaItf";
+import { useAtivos } from "../stores/useAtivos";
 
 export default function ArvoreAtivos({
   onSelecionarAtivo,
 }: {
   onSelecionarAtivo: (id: number) => void;
 }) {
-  const [plantas, setPlantas] = useState<PlantaItf[]>([]);
-  const [carregando, setCarregando] = useState(true);
+  const { plantas, carregarPlantas } = useAtivos();
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    async function fetchPlantas() {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/planta`);
-        if (!response.ok) throw new Error("Erro ao carregar dados");
-        const dados = await response.json();
-        setPlantas(dados);
-      } catch {
-        console.error("Erro ao carregar plantas");
-      } finally {
-        setCarregando(false);
-      }
-    }
-    fetchPlantas();
-  }, []);
+    carregarPlantas();
+  }, [carregarPlantas]);
 
   const alternarExpansao = (tipo: string, id: number) => {
     const chave = `${tipo}-${id}`;
@@ -54,13 +41,13 @@ export default function ArvoreAtivos({
     }
   };
 
-  if (carregando) {
+  if (!plantas || plantas.length === 0) {
     return (
       <div className="py-4 px-2">
         <div className="animate-pulse space-y-2">
-          <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-5 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-5 bg-gray-200 rounded w-2/3"></div>
+          <div className="h-5 bg-gray-200 rounded w-3/4" />
+          <div className="h-5 bg-gray-200 rounded w-1/2" />
+          <div className="h-5 bg-gray-200 rounded w-2/3" />
         </div>
       </div>
     );
