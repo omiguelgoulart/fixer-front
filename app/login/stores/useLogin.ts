@@ -1,6 +1,7 @@
-import { create } from "zustand";
-import { toast } from "sonner";
-import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
+import { create } from "zustand"
+import { toast } from "sonner"
+import Cookies from "js-cookie"
+import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf"
 
 type LoginState = {
   login: (
@@ -29,8 +30,8 @@ export const useLogin = create<LoginState>(() => ({
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.token);
-        logarUsuario(data.usuario); // usa o contexto
+        Cookies.set("token", data.token, { expires: 7 }); // cookie com validade de 7 dias
+        logarUsuario(data.usuario);
         toast.success("Login realizado!");
         return data.usuario;
       } else if (res.status === 401) {
@@ -47,28 +48,19 @@ export const useLogin = create<LoginState>(() => ({
   },
 
   enviarCodigoRecuperacao: async (email) => {
-    console.log("🔧 URL DA API:", process.env.NEXT_PUBLIC_URL_API);
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/esqueci-senha`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/esqueci-senha`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
-
       });
 
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        toast.success(
-          data.message ||
-            "Solicitação enviada com sucesso! Verifique seu e-mail."
-        );
+        toast.success(data.message || "Solicitação enviada com sucesso!");
         return true;
       } else {
-        toast.error(
-          data?.detalhes?.email?.[0] ||
-            data.erro ||
-            "Erro ao enviar código de recuperação."
-        );
+        toast.error(data?.detalhes?.email?.[0] || data.erro || "Erro ao enviar código.");
         return false;
       }
     } catch {

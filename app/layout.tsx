@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import ClientLayout from "./components/ClientLayout";
 import { UsuarioProvider } from "./contexts/UsuarioContex";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,13 +43,13 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <UsuarioProvider>
-            <ClientLayout>
-              <Header />
-              <main className="flex-1 overflow-y-auto">
-                {children}
-              </main>
-              <Toaster />
-            </ClientLayout>
+          <ClientLayout>
+            <Header />
+            <main className="flex-1 overflow-y-auto">
+              <AuthProvider>{children}</AuthProvider>
+            </main>
+            <Toaster />
+          </ClientLayout>
         </UsuarioProvider>
       </body>
     </html>

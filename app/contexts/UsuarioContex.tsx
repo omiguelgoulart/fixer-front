@@ -1,7 +1,7 @@
-// contexts/UsuarioContext.tsx
 "use client"
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react"
+import Cookies from "js-cookie"
 import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf"
 
 interface UsuarioContextType {
@@ -16,10 +16,10 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
   const [usuario, setUsuario] = useState<FuncionarioItf | null>(null)
 
   useEffect(() => {
-    const usuarioSalvo = localStorage.getItem("usuario")
-    if (usuarioSalvo) {
+    const usuarioCookie = Cookies.get("usuario")
+    if (usuarioCookie) {
       try {
-        const usuarioParse: FuncionarioItf = JSON.parse(usuarioSalvo)
+        const usuarioParse: FuncionarioItf = JSON.parse(usuarioCookie)
         setUsuario(usuarioParse)
       } catch {
         setUsuario(null)
@@ -29,12 +29,13 @@ export const UsuarioProvider = ({ children }: { children: ReactNode }) => {
 
   const logarUsuario = (usuarioLogado: FuncionarioItf) => {
     setUsuario(usuarioLogado)
-    localStorage.setItem("usuario", JSON.stringify(usuarioLogado))
+    Cookies.set("usuario", JSON.stringify(usuarioLogado), { expires: 7 }) // expira em 7 dias
   }
 
   const deslogarUsuario = () => {
     setUsuario(null)
-    localStorage.removeItem("usuario")
+    Cookies.remove("usuario")
+    Cookies.remove("token")
   }
 
   return (

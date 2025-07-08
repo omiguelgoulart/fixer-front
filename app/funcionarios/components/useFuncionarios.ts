@@ -25,7 +25,6 @@ export const useFuncionarios = create<FuncionarioStore>((set) => ({
       const res = await fetch(`${process.env.NEXT_PUBLIC_URL_API}/usuario`);
       const dados = await res.json();
       set({ funcionarios: dados });
-      toast.success("Funcionários listados com sucesso!");
     } catch (err) {
       console.error("Erro ao listar funcionários:", err);
       toast.error("Erro ao listar funcionários.");
