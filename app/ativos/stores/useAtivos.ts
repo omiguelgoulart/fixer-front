@@ -277,80 +277,77 @@ export const useAtivos = create<AtivosState>((set, get) => ({
     }
   },
 
-  editarPlanta: async (planta) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/planta/${planta.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(planta),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao editar planta");
+editarPlanta: async (planta) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/planta/${planta.id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(planta),
       }
-      const updatedPlanta = await response.json();
-      set((state) => ({
-        plantas: state.plantas.map((p) =>
-          p.id === updatedPlanta.id ? updatedPlanta : p
-        ),
-      }));
-    } catch (error) {
-      console.error("Erro ao editar planta:", error);
-      set({ error: "Erro ao editar planta" });
-    }
-  },
+    );
+    if (!response.ok) throw new Error("Erro ao editar planta");
 
-  editarArea: async (area) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/area/${area.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(area),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao editar área");
-      }
-      const updatedArea = await response.json();
-      set((state) => ({
-        areas: state.areas.map((a) =>
-          a.id === updatedArea.id ? updatedArea : a
-        ),
-      }));
-    } catch (error) {
-      console.error("Erro ao editar área:", error);
-      set({ error: "Erro ao editar área" });
-    }
-  },
+    const updatedPlanta = await response.json();
+    set((state) => ({
+      plantas: state.plantas.map((p) =>
+        p.id === updatedPlanta.id ? updatedPlanta : p
+      ),
+    }));
+  } catch (error) {
+    console.error("Erro ao editar planta:", error);
+    set({ error: "Erro ao editar planta" });
+  }
+},
 
-  editarSistema: async (sistema) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/sistema/${sistema.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(sistema),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao editar sistema");
+editarArea: async (area) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/area/${area.id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(area),
       }
-      const updatedSistema = await response.json();
-      set((state) => ({
-        sistemas: state.sistemas.map((s) =>
-          s.id === updatedSistema.id ? updatedSistema : s
-        ),
-      }));
-    } catch (error) {
-      console.error("Erro ao editar sistema:", error);
-      set({ error: "Erro ao editar sistema" });
-    }
-  },
+    );
+    if (!response.ok) throw new Error("Erro ao editar área");
+
+    const updatedArea = await response.json();
+    set((state) => ({
+      areas: state.areas.map((a) =>
+        a.id === updatedArea.id ? updatedArea : a
+      ),
+    }));
+  } catch (error) {
+    console.error("Erro ao editar área:", error);
+    set({ error: "Erro ao editar área" });
+  }
+},
+
+editarSistema: async (sistema) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/sistema/${sistema.id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sistema),
+      }
+    );
+    if (!response.ok) throw new Error("Erro ao editar sistema");
+
+    const updatedSistema = await response.json();
+    set((state) => ({
+      sistemas: state.sistemas.map((s) =>
+        s.id === updatedSistema.id ? updatedSistema : s
+      ),
+    }));
+  } catch (error) {
+    console.error("Erro ao editar sistema:", error);
+    set({ error: "Erro ao editar sistema" });
+  }
+},
 
   excluirPlanta: async (id) => {
     try {
@@ -403,31 +400,34 @@ export const useAtivos = create<AtivosState>((set, get) => ({
     }
   },
 
-  editarAtivo: async (ativo) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativo.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(ativo),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao editar ativo");
+editarAtivo: async (ativo) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL_API}/ativo/${ativo.id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ativo),
       }
-      const updatedAtivo = await response.json();
-      set((state) => ({
-        ativos: state.ativos.map((a) =>
-          a.id === updatedAtivo.id ? updatedAtivo : a
-        ),
-        ativoSelecionado: updatedAtivo,
-      }));
-    } catch (error) {
-      console.error("Erro ao editar ativo:", error);
-      set({ error: "Erro ao editar ativo" });
+    );
+
+    if (!response.ok) {
+      throw new Error("Erro ao editar ativo");
     }
-  },
+
+    const updatedAtivo = await response.json();
+
+    set((state) => ({
+      ativos: state.ativos.map((a) =>
+        a.id === updatedAtivo.id ? updatedAtivo : a
+      ),
+      ativoSelecionado: updatedAtivo,
+    }));
+  } catch (error) {
+    console.error("Erro ao editar ativo:", error);
+    set({ error: "Erro ao editar ativo" });
+  }
+},
 
   carregando: false,
 

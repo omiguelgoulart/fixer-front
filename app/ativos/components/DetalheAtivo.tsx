@@ -25,8 +25,7 @@ export default function DetalhesAtivo({
   ativoId,
   onVoltar,
 }: DetalhesAtivoProps) {
-  const { ativoSelecionado, carregarAtivoPorId, excluirAtivo, carregando } =
-    useAtivos();
+  const { ativoSelecionado, carregarAtivoPorId, excluirAtivo, carregando } = useAtivos();
 
   const [modalAberto, setModalAberto] = useState(false);
   const [confirmarExclusao, setConfirmarExclusao] = useState(false);
@@ -70,27 +69,19 @@ export default function DetalhesAtivo({
 
   const obterCorCriticidade = (criticidade: string) => {
     switch (criticidade.toUpperCase()) {
-      case "ALTA":
-        return "bg-red-500";
-      case "MEDIA":
-        return "bg-yellow-500";
-      case "BAIXA":
-        return "bg-green-500";
-      default:
-        return "bg-gray-500";
+      case "ALTA": return "bg-red-500";
+      case "MEDIA": return "bg-yellow-500";
+      case "BAIXA": return "bg-green-500";
+      default: return "bg-gray-500";
     }
   };
 
   const obterCorSituacao = (situacao: string) => {
     switch (situacao.toUpperCase()) {
-      case "ATIVO":
-        return "bg-green-500";
-      case "INATIVO":
-        return "bg-gray-500";
-      case "MANUTENCAO":
-        return "bg-yellow-500";
-      default:
-        return "bg-blue-500";
+      case "ATIVO": return "bg-green-500";
+      case "INATIVO": return "bg-gray-500";
+      case "MANUTENCAO": return "bg-yellow-500";
+      default: return "bg-blue-500";
     }
   };
 
@@ -105,39 +96,34 @@ export default function DetalhesAtivo({
         </div>
 
         <div className="flex flex-wrap md:flex-row gap-2 items-center">
-          {/* Situação do ativo */}
-          <Badge className={obterCorSituacao(ativo.situacao)}>
-            {ativo.situacao}
-          </Badge>
-
-          {/* Criticidade do ativo */}
+          <Badge className={obterCorSituacao(ativo.situacao)}>{ativo.situacao}</Badge>
           <Badge className={obterCorCriticidade(ativo.criticidade)}>
             Criticidade: {ativo.criticidade}
           </Badge>
 
-          {/* Botão voltar */}
           <Button
             variant="ghost"
             size="icon"
             className="hover:bg-gray-100 text-gray-700"
+            onClick={onVoltar}
           >
             <X className="w-4 h-4" />
           </Button>
 
-          {/* Botão editar */}
           <Button
             variant="outline"
             size="icon"
             className="text-blue-600 border-blue-600 hover:bg-blue-50"
+            onClick={() => setModalAberto(true)}
           >
             <Pencil className="w-4 h-4" />
           </Button>
 
-          {/* Botão deletar */}
           <Button
             variant="destructive"
             size="icon"
             className="hover:bg-red-600 hover:text-white"
+            onClick={() => setConfirmarExclusao(true)}
           >
             <Trash2 className="w-4 h-4" />
           </Button>
@@ -174,15 +160,11 @@ export default function DetalhesAtivo({
               <p>{ativo.modelo}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">
-                Data de Aquisição
-              </p>
+              <p className="text-sm text-gray-500 font-medium">Data de Aquisição</p>
               <p>{ativo.data_aquisicao?.split("T")[0]}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">
-                Localização Interna
-              </p>
+              <p className="text-sm text-gray-500 font-medium">Localização Interna</p>
               <p>{ativo.localizacao_interna || "-"}</p>
             </div>
           </div>
@@ -194,24 +176,18 @@ export default function DetalhesAtivo({
                 {ativo.subativos.map((sub: SubAtivoItf) => (
                   <li key={sub.id}>
                     {sub.nome}
-                    <span className="text-gray-400 text-xs">
-                      {" "}
-                      ({sub.codigo})
-                    </span>
+                    <span className="text-gray-400 text-xs"> ({sub.codigo})</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-500">
-                Nenhum subativo cadastrado.
-              </p>
+              <p className="text-sm text-gray-500">Nenhum subativo cadastrado.</p>
             )}
           </div>
         </div>
       </div>
 
       <div className="p-6">
-        {/* 📋 Histórico de ordens de serviço */}
         <HistoricoFalhas ordens={ativo.ordensServico || []} />
       </div>
 
@@ -228,15 +204,10 @@ export default function DetalhesAtivo({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Deseja realmente excluir este ativo?</DialogTitle>
-            <p className="text-sm text-gray-500">
-              Essa ação não poderá ser desfeita.
-            </p>
+            <p className="text-sm text-gray-500">Essa ação não poderá ser desfeita.</p>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setConfirmarExclusao(false)}
-            >
+            <Button variant="outline" onClick={() => setConfirmarExclusao(false)}>
               Cancelar
             </Button>
             <Button variant="destructive" onClick={handleExcluir}>
