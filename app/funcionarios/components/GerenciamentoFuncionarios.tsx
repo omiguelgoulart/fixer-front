@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Plus } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,7 +85,6 @@ export default function GerenciamentoFuncionarios() {
                   setMostrarFormulario(true);
                 }}
               >
-                <Plus className="mr-2 h-4 w-4" />
                 Novo Funcionário
               </Button>
             </div>
