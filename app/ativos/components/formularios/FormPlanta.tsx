@@ -9,40 +9,53 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useAtivos } from "../../stores/useAtivos";
 
-export default function FormularioPlanta() {
+export default function FormularioPlanta({
+  valoresIniciais,
+  onClose,
+}: {
+  valoresIniciais?: Partial<PlantaItf>;
+  onClose?: () => void;
+}) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<PlantaItf>();
+  } = useForm<PlantaItf>({
+    defaultValues: valoresIniciais,
+  });
+
   const [apiError, setApiError] = useState<string | null>(null);
-  const { cadastrarPlanta } = useAtivos();
+  const { cadastrarPlanta, editarPlanta } = useAtivos();
 
   const onSubmit = async (data: PlantaItf) => {
     setApiError(null);
-    const sucesso = await cadastrarPlanta(data);
+    const sucesso = valoresIniciais?.id
+      ? await editarPlanta(data)
+      : await cadastrarPlanta(data);
 
     if (sucesso) {
-      toast.success("Cadastro realizado com sucesso!", {
-        description: "Sua planta foi registrada no sistema.",
-      });
+      toast.success("Planta salva com sucesso!");
+      console.log("Dados enviados:", data);
       reset();
+      onClose?.();
     } else {
       setApiError("Erro ao enviar os dados. Tente novamente.");
+      console.error("Erro ao salvar planta:", sucesso);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 ">
           <div className="space-y-2">
             <Label htmlFor="nome">
               Nome da Planta <span className="text-red-500">*</span>
             </Label>
             <Input
               id="nome"
+              defaultValue={valoresIniciais?.nome}
               placeholder="Ex: Planta Industrial Norte"
               {...register("nome", {
                 required: "O nome da planta é obrigatório",
@@ -53,6 +66,10 @@ export default function FormularioPlanta() {
               <p className="text-sm text-red-500">{errors.nome.message}</p>
             )}
           </div>
+            {errors.codigo && (
+              <p className="text-sm text-red-500">{errors.codigo.message}</p>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -61,6 +78,7 @@ export default function FormularioPlanta() {
           </Label>
           <Input
             id="localizacao"
+            defaultValue={valoresIniciais?.localizacao}
             placeholder="Ex: Cuiabá - MT"
             {...register("localizacao", {
               required: "A localização é obrigatória",
@@ -73,7 +91,6 @@ export default function FormularioPlanta() {
             </p>
           )}
         </div>
-      </div>
 
       {apiError && <p className="text-sm text-red-500">{apiError}</p>}
 
@@ -82,7 +99,7 @@ export default function FormularioPlanta() {
           Limpar
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Cadastrando..." : "Cadastrar Planta"}
+          {isSubmitting ? "Salvando..." : "Salvar Planta"}
         </Button>
       </div>
     </form>

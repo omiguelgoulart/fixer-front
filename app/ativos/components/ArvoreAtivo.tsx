@@ -5,19 +5,82 @@ import {
   Building2,
   FolderCog,
   Cog,
-  CircleDot,
   ChevronRight,
   ChevronDown,
+  Pencil,
+  Trash,
 } from "lucide-react";
 import { useAtivos } from "../stores/useAtivos";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import FormularioPlanta from "./formularios/FormPlanta";
+import FormularioArea from "./formularios/FormArea";
+import FormularioSistema from "./formularios/FormSistema";
+
+// Tipos específicos
+type SubAtivo = {
+  id: number;
+  nome: string;
+  codigo: string;
+};
+
+type Ativo = {
+  id: number;
+  nome: string;
+  codigo: string;
+  subativos?: SubAtivo[];
+};
+
+type Sistema = {
+  id: number;
+  nome: string;
+  codigo: string;
+  id_area: number;
+  ativo: Ativo[];
+};
+
+type Area = {
+  id: number;
+  nome: string;
+  codigo: string;
+  id_planta: number;
+  sistema: Sistema[];
+};
+
+type Planta = {
+  id: number;
+  nome: string;
+  codigo: string;
+  localizacao: string;
+  area: Area[];
+  id_area?: number;
+};
 
 export default function ArvoreAtivos({
   onSelecionarAtivo,
 }: {
   onSelecionarAtivo: (id: number) => void;
 }) {
-  const { plantas, carregarPlantas } = useAtivos();
+  const {
+    plantas,
+    carregarPlantas,
+    excluirPlanta,
+    excluirArea,
+    excluirSistema,
+  } = useAtivos();
+
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
+  const [dialog, setDialog] = useState<{
+    tipo: "planta" | "area" | "sistema";
+    acao: "editar" | "excluir";
+    item: Planta | Area | Sistema;
+  } | null>(null);
 
   useEffect(() => {
     carregarPlantas();
@@ -35,9 +98,40 @@ export default function ArvoreAtivos({
     return !!expandidos[`${tipo}-${id}`];
   };
 
-  const selecionarDetalhes = (tipo: string, id: number) => {
-    if (tipo === "ativo") {
-      onSelecionarAtivo(id);
+  const Acoes = ({
+    tipo,
+    item,
+  }: {
+    tipo: "planta" | "area" | "sistema";
+    item: Planta | Area | Sistema;
+  }) => (
+    <span className="ml-auto flex items-center gap-1">
+      <Pencil
+        onClick={(e) => {
+          e.stopPropagation();
+          setDialog({ tipo, acao: "editar", item });
+        }}
+        className="h-4 w-4 text-gray-400 hover:text-blue-600 cursor-pointer"
+      />
+      <Trash
+        onClick={(e) => {
+          e.stopPropagation();
+          setDialog({ tipo, acao: "excluir", item });
+        }}
+        className="h-4 w-4 text-gray-400 hover:text-red-600 cursor-pointer"
+      />
+    </span>
+  );
+
+  const confirmarAcao = () => {
+    if (!dialog) return;
+    const { tipo, acao, item } = dialog;
+
+    if (acao === "excluir") {
+      if (tipo === "planta") excluirPlanta(item.id);
+      if (tipo === "area") excluirArea(item.id);
+      if (tipo === "sistema") excluirSistema(item.id);
+      setDialog(null);
     }
   };
 
@@ -72,11 +166,14 @@ export default function ArvoreAtivos({
               <Building2 className="h-4 w-4 text-red-600" />
               <div className="ml-2 text-sm font-medium">
                 <span>{planta.nome}</span>
-                <span className="ml-2 text-xs text-gray-500">({planta.codigo})</span>
+                <span className="ml-2 text-xs text-gray-500">
+                  ({planta.codigo})
+                </span>
                 <span className="ml-2 text-xs italic text-gray-400">
                   - {planta.localizacao}
                 </span>
               </div>
+              <Acoes tipo="planta" item={planta} />
             </div>
 
             {estaExpandido("planta", planta.id) && (
@@ -99,6 +196,7 @@ export default function ArvoreAtivos({
                       <span className="ml-2 text-xs text-gray-500">
                         {area.codigo}
                       </span>
+                      <Acoes tipo="area" item={area} />
                     </div>
 
                     {estaExpandido("area", area.id) && (
@@ -107,7 +205,9 @@ export default function ArvoreAtivos({
                           <li key={`sistema-${sistema.id}`} className="py-1">
                             <div
                               className="flex items-center cursor-pointer hover:bg-blue-100 rounded-md px-2 py-1"
-                              onClick={() => alternarExpansao("sistema", sistema.id)}
+                              onClick={() =>
+                                alternarExpansao("sistema", sistema.id)
+                              }
                             >
                               <span className="mr-1">
                                 {estaExpandido("sistema", sistema.id) ? (
@@ -117,49 +217,36 @@ export default function ArvoreAtivos({
                                 )}
                               </span>
                               <Cog className="h-4 w-4 text-blue-600" />
-                              <span className="ml-2 text-sm">{sistema.nome}</span>
+                              <span className="ml-2 text-sm">
+                                {sistema.nome}
+                              </span>
                               <span className="ml-2 text-xs text-gray-500">
                                 {sistema.codigo}
                               </span>
+                              <Acoes tipo="sistema" item={sistema} />
                             </div>
 
                             {estaExpandido("sistema", sistema.id) && (
                               <ul className="ml-6 mt-1 space-y-1">
                                 {sistema.ativo.map((ativo) => (
-                                  <li key={`ativo-${ativo.id}`} className="py-1">
+                                  <li
+                                    key={`ativo-${ativo.id}`}
+                                    className="py-1"
+                                  >
                                     <div
                                       className="flex items-center cursor-pointer hover:bg-blue-100 rounded-md px-2 py-1"
-                                      onClick={() => selecionarDetalhes("ativo", ativo.id)}
+                                      onClick={() =>
+                                        onSelecionarAtivo(ativo.id)
+                                      }
                                     >
                                       <Cog className="h-4 w-4 text-green-600" />
-                                      <span className="ml-2 text-sm">{ativo.nome}</span>
+                                      <span className="ml-2 text-sm">
+                                        {ativo.nome}
+                                      </span>
                                       <span className="ml-2 text-xs text-gray-500">
                                         {ativo.codigo}
                                       </span>
                                     </div>
-
-                                    {estaExpandido("ativo", ativo.id) &&
-                                      ativo.subativos &&
-                                      ativo.subativos.length > 0 && (
-                                        <ul className="ml-6 mt-1 space-y-1">
-                                          {ativo.subativos.map((subativo) => (
-                                            <li
-                                              key={`subativo-${subativo.id}`}
-                                              className="py-1"
-                                            >
-                                              <div className="flex items-center hover:bg-blue-100 rounded-md px-2 py-1">
-                                                <CircleDot className="h-4 w-4 text-purple-600" />
-                                                <span className="ml-2 text-sm">
-                                                  {subativo.nome}
-                                                </span>
-                                                <span className="ml-2 text-xs text-gray-500">
-                                                  {subativo.codigo}
-                                                </span>
-                                              </div>
-                                            </li>
-                                          ))}
-                                        </ul>
-                                      )}
                                   </li>
                                 ))}
                               </ul>
@@ -175,6 +262,67 @@ export default function ArvoreAtivos({
           </li>
         ))}
       </ul>
+
+<Dialog open={!!dialog} onOpenChange={(open) => !open && setDialog(null)}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>
+        {dialog?.acao === "excluir"
+          ? `Tem certeza que deseja excluir esta ${dialog?.tipo}?`
+          : `Editar ${dialog?.tipo}`}
+      </DialogTitle>
+    </DialogHeader>
+
+    <div className="py-4 text-sm">
+      {dialog?.acao === "excluir" ? (
+        "Esta ação não poderá ser desfeita."
+      ) : dialog?.tipo === "planta" ? (
+        <FormularioPlanta
+          valoresIniciais={{
+            id: dialog.item.id,
+            nome: dialog.item.nome,
+            codigo: dialog.item.codigo,
+            localizacao: (dialog.item as Planta).localizacao,
+          }}
+          onClose={() => setDialog(null)}
+        />
+      ) : dialog?.tipo === "area" ? (
+        <FormularioArea
+          valoresIniciais={{
+            id: dialog.item.id,
+            nome: dialog.item.nome,
+            codigo: dialog.item.codigo,
+            id_planta: (dialog.item as Area).id_planta, // ajuste conforme necessário
+          }}
+          onClose={() => setDialog(null)}
+        />
+      ) : dialog?.tipo === "sistema" ? (
+        <FormularioSistema
+          valoresIniciais={{
+            id: dialog.item.id,
+            nome: dialog.item.nome,
+            codigo: dialog.item.codigo,
+            id_area: (dialog.item as Sistema).id_area, // ajuste conforme necessário
+          }}
+          onClose={() => setDialog(null)}
+        />
+      ) : null}
+    </div>
+
+    <DialogFooter>
+      {dialog?.acao === "excluir" && (
+        <>
+          <Button variant="outline" onClick={() => setDialog(null)}>
+            Cancelar
+          </Button>
+          <Button onClick={confirmarAcao}>Excluir</Button>
+        </>
+      )}
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+
     </div>
   );
 }

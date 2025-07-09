@@ -18,7 +18,7 @@ const navItems = [
 
 export default function Header() {
   const pathname = usePathname();
-  const [hasToken, setHasToken] = useState<boolean | null>(null);
+  const [hasToken, setHasToken] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
@@ -30,20 +30,14 @@ export default function Header() {
   const isHiddenRoute = hiddenRoutes.includes(pathname);
   const isTecnicoRoute = pathname.startsWith("/tecnico");
 
-  if (hasToken === null || isHiddenRoute) {
-    return null;
-  }
+  // Se for uma rota oculta ou não tiver token, não renderiza nada
+  if (!hasToken || isHiddenRoute) return null;
 
   return (
     <header className="bg-blue-500 text-white p-4 flex justify-between items-center shadow-md">
       <div className="flex items-center gap-2">
         <div className="relative w-8 h-8">
-          <Image
-            src="/logo_branco.png"
-            alt="FIXER Logo"
-            fill
-            className="object-contain"
-          />
+          <Image src="/logo_branco.png" alt="FIXER Logo" fill className="object-contain" />
         </div>
         {!isTecnicoRoute && (
           <span className="font-bold text-xl hidden sm:inline">FIXER</span>
@@ -54,7 +48,7 @@ export default function Header() {
         <AvatarLogout />
       ) : (
         <>
-          {/* NAVEGAÇÃO DESKTOP */}
+          {/* Navegação Desktop */}
           <nav className="hidden md:flex items-center space-x-6 text-base font-medium">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href} className="transition-colors hover:text-gray-200">
@@ -64,7 +58,7 @@ export default function Header() {
             <AvatarLogout />
           </nav>
 
-          {/* MENU HAMBÚRGUER MOBILE */}
+          {/* Menu Mobile */}
           <div className="md:hidden">
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
