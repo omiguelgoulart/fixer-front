@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Calendar, List, Kanban } from "lucide-react";
 import { PageListas } from "./components/PageListas";
@@ -41,7 +41,6 @@ export default function PagePlanejamento() {
             </TabsList>
           </Tabs>
 
-          {/* Botão para abrir modal */}
           <Button
             variant="default"
             className="bg-blue-500 hover:bg-blue-600 text-white w-full md:w-auto"
@@ -50,7 +49,6 @@ export default function PagePlanejamento() {
             Adicionar OS
           </Button>
 
-          {/* Modal aberto com clique no botão */}
           <ModalNovaOrdem
             open={novaOrdemAberta}
             onClose={() => setNovaOrdemAberta(false)}
@@ -65,7 +63,9 @@ export default function PagePlanejamento() {
           }
         >
           <TabsContent value="lista">
-            <PageListas />
+            <Suspense fallback={<div className="text-center p-4">Carregando lista...</div>}>
+              <PageListas />
+            </Suspense>
           </TabsContent>
           <TabsContent value="calendario">
             <CalendarioManutencoes />
