@@ -12,6 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
 import ListaFuncionarios from "./ListaFuncionarios";
 import FormularioFuncionario from "./FormularioFuncionario";
 import { FuncionarioItf } from "@/app/utils/types/FuncionarioItf";
@@ -88,21 +95,25 @@ export default function GerenciamentoFuncionarios() {
         </CardContent>
       </Card>
 
-      {mostrarFormulario && (
-        <Card>
-          <CardContent className="pt-6">
-            <FormularioFuncionario
-              funcionarioInicial={funcionarioEmEdicao}
-              onCriar={adicionarFuncionario}
-              onAtualizar={atualizarFuncionarioFinal}
-              onCancelar={() => {
-                setFuncionarioEmEdicao(null);
-                setMostrarFormulario(false);
-              }}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <Dialog open={mostrarFormulario} onOpenChange={setMostrarFormulario}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {funcionarioEmEdicao ? "Editar Funcionário" : "Novo Funcionário"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <FormularioFuncionario
+            funcionarioInicial={funcionarioEmEdicao}
+            onCriar={adicionarFuncionario}
+            onAtualizar={atualizarFuncionarioFinal}
+            onCancelar={() => {
+              setFuncionarioEmEdicao(null);
+              setMostrarFormulario(false);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
