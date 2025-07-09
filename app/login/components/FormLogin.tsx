@@ -30,8 +30,12 @@ export function FormLogin() {
 
   async function handleLogin(data: LoginItf) {
     const usuario = await login(data.email, data.senha, logarUsuario);
+
     if (usuario) {
-      router.push(usuario.tipo === "TECNICO" ? "/tecnico" : "/dashboard");
+      // Garantir atualização do contexto antes de redirecionar
+      setTimeout(() => {
+        router.push(usuario.tipo === "TECNICO" ? "/tecnico" : "/dashboard");
+      }, 0);
     }
   }
 
